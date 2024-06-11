@@ -20,6 +20,7 @@
         </div>
     @endif
 
+    <!-- Form for adding tasks -->
     <form id="taskForm" action="{{ route('tasks.store') }}" method="POST" class="mb-5">
         @csrf
         <div class="form-group">
@@ -92,6 +93,7 @@
     </table>
 </div>
 
+<!-- Calendar to display tasks -->
 <div id="calendar"></div>
 
 <script>
@@ -104,7 +106,7 @@
         const progressError = document.getElementById('progress_error');
         const taskForm = document.getElementById('taskForm');
 
-        start_date.addEventListener('input', function() {
+        startDate.addEventListener('input', function() {
             if (new Date(endDate.value) < new Date(startDate.value)) {
                 endDateError.style.display = 'block';
                 taskForm.querySelector('button[type="submit"]').disabled = true;
@@ -144,13 +146,19 @@
             }
         });
 
+        // Initialize FullCalendar
         let calendarEl = document.getElementById('calendar');
 
         if (calendarEl) {
             let calendar = new FullCalendar.Calendar(calendarEl, {
-                plugins: [ FullCalendar.dayGridPlugin, FullCalendar.interactionPlugin, FullCalendar.timeGridPlugin ],
-                initialView: 'dayGridMonth',
-                events: '/tasks/events',
+                plugins: [ FullCalendar.dayGridPlugin, FullCalendar.interactionPlugin, FullCalendar.timeGridPlugin, FullCalendar.listPlugin ],
+                initialView: 'timeGridWeek', // You can change this to dayGridMonth, timeGridWeek, listWeek, etc.
+                events: '/tasks/events', // URL to fetch events
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,listWeek'
+                },
                 dateClick: function(info) {
                     alert('Clicked on: ' + info.dateStr);
                 }

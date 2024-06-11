@@ -12,14 +12,12 @@
         "laravel-vite-plugin": "^1.0.0",
         "sass": "^1.56.1",
         "vite": "^5.0.0"
-<<<<<<< HEAD
     },
     "dependencies": {
-        "@fullcalendar/core": "^6.1.14",
-        "@fullcalendar/daygrid": "^6.1.14",
-        "@fullcalendar/interaction": "^6.1.14",
-        "@fullcalendar/timegrid": "^6.1.14"
-=======
->>>>>>> parent of 70fe66f (Removed secret from the commit)
+        "@fullcalendar/core": "^5.11.5",
+        "@fullcalendar/daygrid": "^5.11.5",
+        "@fullcalendar/interaction": "^5.11.5",
+        "@fullcalendar/list": "^5.11.5",
+        "@fullcalendar/timegrid": "^5.11.5"
     }
 }
