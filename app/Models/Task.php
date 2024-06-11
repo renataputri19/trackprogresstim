@@ -17,6 +17,7 @@ class Task extends Model
         'end_date',
         'target',
         'progress',
+        'user_id', // Add user_id to the fillable array
     ];
 
     // Define the percentage attribute as an accessor
@@ -28,5 +29,12 @@ class Task extends Model
             return 0;
         }
         return ($this->progress / $this->target) * 100;
+    }
+
+    // Define the relationship with the User model
+    public function user()
+    {
+        // A task belongs to a user
+        return $this->belongsTo(User::class);
     }
 }
