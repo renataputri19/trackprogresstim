@@ -82,4 +82,11 @@ class TaskController extends Controller
         // Redirect back to the tasks index with a success message
         return redirect()->route('tasks.index')->with('success', 'Task deleted successfully!');
     }
+
+    public function calendar()
+    {
+        // Fetch tasks for the logged-in user and format them for FullCalendar
+        $tasks = Task::where('user_id', Auth::id())->get(['name as title', 'start_date as start', 'end_date as end']);
+        return response()->json($tasks);
+    }
 }

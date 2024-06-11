@@ -51,6 +51,9 @@
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 
+
+    
+
     <h3 class="mb-4">Tasks List</h3>
     <table class="table table-bordered">
         <thead>
@@ -88,6 +91,8 @@
         </tbody>
     </table>
 </div>
+
+<div id="calendar"></div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -138,6 +143,20 @@
                 taskForm.querySelector('button[type="submit"]').disabled = false;
             }
         });
+
+        let calendarEl = document.getElementById('calendar');
+
+        if (calendarEl) {
+            let calendar = new FullCalendar.Calendar(calendarEl, {
+                plugins: [ FullCalendar.dayGridPlugin, FullCalendar.interactionPlugin, FullCalendar.timeGridPlugin ],
+                initialView: 'dayGridMonth',
+                events: '/tasks/events',
+                dateClick: function(info) {
+                    alert('Clicked on: ' + info.dateStr);
+                }
+            });
+            calendar.render();
+        }
     });
 </script>
 @endsection
