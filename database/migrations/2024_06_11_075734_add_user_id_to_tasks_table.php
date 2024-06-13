@@ -30,5 +30,5 @@ class AddUserIdToTasksTable extends Migration
             $table->dropColumn('user_id');
         });
     }
-}
+};
 

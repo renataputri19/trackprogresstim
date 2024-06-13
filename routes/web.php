@@ -4,6 +4,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\UserTaskController;
+use App\Http\Controllers\AdminTaskController;
+use App\Http\Controllers\TaskAssignmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,3 +33,14 @@ Route::get('/tasks/{task}/edit', [TaskController::class, 'edit'])->name('tasks.e
 Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
 Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 Route::get('/tasks/events', [TaskController::class, 'events'])->name('tasks.events');
+
+Route::middleware(['auth'])->group(function () {
+    // Admin Task Routes
+    Route::resource('admin_tasks', AdminTaskController::class);
+
+    // User Task Routes
+    Route::resource('user_tasks', UserTaskController::class);
+
+    // Task Assignment Routes
+    Route::resource('task_assignments', TaskAssignmentController::class);
+});
