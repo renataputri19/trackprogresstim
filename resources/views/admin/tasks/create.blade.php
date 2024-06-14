@@ -1,10 +1,10 @@
 @extends('layouts.main')
 
-@section('title', 'Create Task Assignment')
+@section('title', 'Create Task')
 
 @section('content')
 <div class="container">
-    <h2 class="my-4">Create Task Assignment</h2>
+    <h2 class="my-4">Create Task</h2>
 
     @if($errors->any())
         <div class="alert alert-danger">
@@ -16,23 +16,19 @@
         </div>
     @endif
 
-    <form action="{{ route('task_assignments.store') }}" method="POST">
+    <form action="{{ route('admin.tasks.store') }}" method="POST">
         @csrf
         <div class="form-group">
-            <label for="task_name">Task Name</label>
-            <select class="form-control" id="task_name" name="task_name" required>
-                @foreach($adminTasks as $adminTask)
-                    <option value="{{ $adminTask->task_name }}">{{ $adminTask->task_name }}</option>
+            <label for="leader_id">Leader Name</label>
+            <select name="leader_id" id="leader_id" class="form-control" required>
+                @foreach($leaders as $leader)
+                    <option value="{{ $leader->id }}">{{ $leader->name }}</option>
                 @endforeach
             </select>
         </div>
         <div class="form-group">
-            <label for="leader_name">Leader Name</label>
-            <select class="form-control" id="leader_name" name="leader_name" required>
-                @foreach($adminTasks as $adminTask)
-                    <option value="{{ $adminTask->leader_name }}">{{ $adminTask->leader_name }}</option>
-                @endforeach
-            </select>
+            <label for="name">Task Name</label>
+            <input type="text" class="form-control" id="name" name="name" required>
         </div>
         <div class="form-group">
             <label for="start_date">Start Date</label>
@@ -41,14 +37,6 @@
         <div class="form-group">
             <label for="end_date">End Date</label>
             <input type="date" class="form-control" id="end_date" name="end_date" required>
-        </div>
-        <div class="form-group">
-            <label for="user_id">User</label>
-            <select class="form-control" id="user_id" name="user_id" required>
-                @foreach($users as $user)
-                    <option value="{{ $user->id }}">{{ $user->name }}</option>
-                @endforeach
-            </select>
         </div>
         <div class="form-group">
             <label for="target">Target</label>

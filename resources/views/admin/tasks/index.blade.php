@@ -10,36 +10,37 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <a href="{{ route('task_assignments.create') }}" class="btn btn-primary mb-3">Create Task Assignment</a>
-
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Task Name</th>
                 <th>Leader Name</th>
+                <th>Task Name</th>
                 <th>Start Date</th>
                 <th>End Date</th>
-                <th>User</th>
                 <th>Target</th>
+                <th>Progress Total</th>
+                <th>Percentage</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($taskAssignments as $taskAssignment)
+            @foreach($tasks as $task)
                 <tr>
-                    <td>{{ $taskAssignment->task_name }}</td>
-                    <td>{{ $taskAssignment->leader_name }}</td>
-                    <td>{{ $taskAssignment->start_date }}</td>
-                    <td>{{ $taskAssignment->end_date }}</td>
-                    <td>{{ $taskAssignment->user->name }}</td>
-                    <td>{{ $taskAssignment->target }}</td>
+                    <td>{{ $task->leader->name }}</td>
+                    <td>{{ $task->name }}</td>
+                    <td>{{ $task->start_date }}</td>
+                    <td>{{ $task->end_date }}</td>
+                    <td>{{ $task->target }}</td>
+                    <td>{{ $task->progress_total }}</td>
+                    <td>{{ number_format(($task->progress_total / $task->target) * 100, 2) }}%</td>
                     <td>
-                        <a href="{{ route('task_assignments.edit', $taskAssignment->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                        <form action="{{ route('task_assignments.destroy', $taskAssignment->id) }}" method="POST" style="display:inline-block;">
+                        <a href="{{ route('admin.tasks.edit', $task->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                        <form action="{{ route('admin.tasks.destroy', $task->id) }}" method="POST" style="display:inline-block;">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                         </form>
+                        <a href="{{ route('admin.tasks.assign', $task->id) }}" class="btn btn-primary btn-sm">Assign</a>
                     </td>
                 </tr>
             @endforeach

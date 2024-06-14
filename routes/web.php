@@ -7,6 +7,8 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserTaskController;
 use App\Http\Controllers\AdminTaskController;
 use App\Http\Controllers\TaskAssignmentController;
+use App\Http\Controllers\UserAssignmentController;
+use App\Http\Controllers\AdminTasksAssignmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,13 +36,17 @@ Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.upda
 Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 Route::get('/tasks/events', [TaskController::class, 'events'])->name('tasks.events');
 
-Route::middleware(['auth'])->group(function () {
-    // Admin Task Routes
-    Route::resource('admin_tasks', AdminTaskController::class);
-
-    // User Task Routes
-    Route::resource('user_tasks', UserTaskController::class);
-
-    // Task Assignment Routes
-    Route::resource('task_assignments', TaskAssignmentController::class);
+// Admin Task Assignments Routes
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('tasks', [AdminTasksAssignmentController::class, 'index'])->name('tasks.index');
+    Route::get('tasks/create', [AdminTasksAssignmentController::class, 'create'])->name('tasks.create');
+    Route::post('tasks', [AdminTasksAssignmentController::class, 'store'])->name('tasks.store');
+    Route::get('tasks/{task}/edit', [AdminTasksAssignmentController::class, 'edit'])->name('tasks.edit');
+    Route::put('tasks/{task}', [AdminTasksAssignmentController::class, 'update'])->name('tasks.update');
+    Route::delete('tasks/{task}', [AdminTasksAssignmentController::class, 'destroy'])->name('tasks.destroy');
+    Route::get('tasks/{task}/assign', [AdminTasksAssignmentController::class, 'assign'])->name('tasks.assign');
+    Route::post('tasks/{task}/assign', [UserAssignmentController::class, 'store'])->name('assignments.store');
+    Route::delete('assignments/{assignment}', [UserAssignmentController::class, 'destroy'])->name('assignments.destroy');
+    Route::get('assignments/{assignment}/edit', [UserAssignmentController::class, 'edit'])->name('assignments.edit');
+    Route::put('assignments/{assignment}', [UserAssignmentController::class, 'update'])->name('assignments.update');
 });
