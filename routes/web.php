@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserTaskController;
 use App\Http\Controllers\AdminTaskController;
+use App\Http\Controllers\UserTasksController;
 use App\Http\Controllers\TaskAssignmentController;
 use App\Http\Controllers\UserAssignmentController;
 use App\Http\Controllers\AdminTasksAssignmentController;
@@ -49,4 +50,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('assignments/{assignment}', [UserAssignmentController::class, 'destroy'])->name('assignments.destroy');
     Route::get('assignments/{assignment}/edit', [UserAssignmentController::class, 'edit'])->name('assignments.edit');
     Route::put('assignments/{assignment}', [UserAssignmentController::class, 'update'])->name('assignments.update');
+});
+
+// User Task Routes
+Route::middleware(['auth'])->name('user.')->group(function () {
+    Route::get('tasks', [UserTasksController::class, 'index'])->name('tasks.index');
+    Route::get('tasks/{task}/edit', [UserTasksController::class, 'edit'])->name('tasks.edit');
+    Route::put('tasks/{task}', [UserTasksController::class, 'update'])->name('tasks.update');
+    Route::delete('tasks/{task}', [UserTasksController::class, 'destroy'])->name('tasks.destroy');
 });
