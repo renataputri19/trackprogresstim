@@ -57,6 +57,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     
     // Admin View Assigned Tasks (same as user view)
     Route::get('assigned-tasks', [AdminTasksAssignmentController::class, 'assignedTasks'])->name('tasks.assigned');
+    
+    // Fetch Calendar Events
+    Route::get('calendar/events', [AdminTasksAssignmentController::class, 'calendarEvents'])->name('calendar.events');
+    Route::get('dashboard', [AdminTasksAssignmentController::class, 'dashboard'])->name('dashboard');
+    
 });
 
 // User Task Routes

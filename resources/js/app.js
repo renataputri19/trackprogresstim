@@ -10,15 +10,12 @@ document.addEventListener('DOMContentLoaded', function() {
     if (calendarEl) {
         let calendar = new Calendar(calendarEl, {
             plugins: [ dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin ],
-            initialView: 'timeGridWeek', // You can change this to dayGridMonth, timeGridWeek, listWeek, etc.
-            events: '/tasks/events', // URL to fetch events
+            initialView: 'dayGridMonth',
+            events: '/admin/calendar/events',
             headerToolbar: {
                 left: 'prev,next today',
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,listWeek'
-            },
-            dateClick: function(info) {
-                alert('Clicked on: ' + info.dateStr);
             }
         });
         calendar.render();

@@ -92,8 +92,44 @@ class AdminTasksAssignmentController extends Controller
         return view('admin.assigned-tasks.index', compact('assignments'));
     }
     
+    public function calendarEvents()
+    {
+        $tasks = TasksAssignment::with('userAssignments')->get();
     
+        $events = [];
     
+        foreach ($tasks as $task) {
+            $progressPercentage = ($task->progress_total / $task->target) * 100;
+            $color = $this->getColorBasedOnProgress($progressPercentage);
+    
+            $events[] = [
+                'title' => $task->name . ' - ' . number_format($progressPercentage, 2) . '%',
+                'start' => $task->start_date,
+                'end' => $task->end_date,
+                'color' => $color,
+            ];
+        }
+    
+        return response()->json($events);
+    }
+    
+    private function getColorBasedOnProgress($progress)
+    {
+        if ($progress >= 75) {
+            return '#28a745'; // green
+        } elseif ($progress >= 50) {
+            return '#ffc107'; // yellow
+        } elseif ($progress >= 25) {
+            return '#fd7e14'; // orange
+        } else {
+            return '#dc3545'; // red
+        }
+    }
+    
+    public function dashboard()
+    {
+        return view('admin.dashboard');
+    }
     
     
 
