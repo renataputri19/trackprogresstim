@@ -71,7 +71,7 @@ class UserAssignmentController extends Controller
         $assignment->task->progress_total = $assignment->task->userAssignments->sum('progress');
         $assignment->task->save();
 
-        return redirect()->route('admin.tasks.assign', $assignment->task_id)->with('success', 'Assignment updated successfully');
+        return redirect()->route('admin.tasks.assigned', $assignment->task_id)->with('success', 'Assignment updated successfully');
     }
 
     public function destroy($id)

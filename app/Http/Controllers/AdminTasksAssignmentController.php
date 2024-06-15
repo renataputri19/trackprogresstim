@@ -84,14 +84,14 @@ class AdminTasksAssignmentController extends Controller
         return view('admin.superadmin.tasks.index', compact('tasks'));
     }
 
-    public function myTasks()
+    public function assignedTasks()
     {
-        $userId = auth()->user()->id;
-        $tasks = UserAssignment::with('task')
-                    ->where('user_id', $userId)
-                    ->get();
-        return view('admin.tasks.assign', compact('tasks'));
+        $user = Auth::user();
+        $assignments = UserAssignment::where('user_id', $user->id)->with('task')->get();
+    
+        return view('admin.assigned-tasks.index', compact('assignments'));
     }
+    
     
     
     

@@ -56,7 +56,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('superadmin/tasks', [AdminTasksAssignmentController::class, 'superadminIndex'])->name('superadmin.tasks.index');
     
     // Admin View Assigned Tasks (same as user view)
-    Route::get('assigned-tasks', [UserTasksController::class, 'index'])->name('tasks.assigned');
+    Route::get('assigned-tasks', [AdminTasksAssignmentController::class, 'assignedTasks'])->name('tasks.assigned');
 });
 
 // User Task Routes
