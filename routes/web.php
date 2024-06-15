@@ -10,6 +10,7 @@ use App\Http\Controllers\UserTasksController;
 use App\Http\Controllers\TaskAssignmentController;
 use App\Http\Controllers\UserAssignmentController;
 use App\Http\Controllers\AdminTasksAssignmentController;
+use App\Http\Controllers\SuperAdminTasksAssignmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,6 +51,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('assignments/{assignment}', [UserAssignmentController::class, 'destroy'])->name('assignments.destroy');
     Route::get('assignments/{assignment}/edit', [UserAssignmentController::class, 'edit'])->name('assignments.edit');
     Route::put('assignments/{assignment}', [UserAssignmentController::class, 'update'])->name('assignments.update');
+
+    // Super Admin View (all tasks and assignments)
+    Route::get('superadmin/tasks', [AdminTasksAssignmentController::class, 'superadminIndex'])->name('superadmin.tasks.index');
+    
+    // Admin View Assigned Tasks (same as user view)
+    Route::get('assigned-tasks', [UserTasksController::class, 'index'])->name('tasks.assigned');
 });
 
 // User Task Routes
@@ -59,3 +66,4 @@ Route::middleware(['auth'])->name('user.')->group(function () {
     Route::put('tasks/{task}', [UserTasksController::class, 'update'])->name('tasks.update');
     Route::delete('tasks/{task}', [UserTasksController::class, 'destroy'])->name('tasks.destroy');
 });
+

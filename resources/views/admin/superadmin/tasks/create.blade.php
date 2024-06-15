@@ -16,12 +16,15 @@
         </div>
     @endif
 
-    <form action="{{ route('admin.tasks.store') }}" method="POST">
+    <form action="{{ route('superadmin.tasks.store') }}" method="POST">
         @csrf
         <div class="form-group">
-            <label for="leader_name">Leader Name</label>
-            <input type="text" class="form-control" id="leader_name" name="leader_name" value="{{ $user->name }}" readonly>
-            <input type="hidden" name="leader_id" value="{{ $user->id }}">
+            <label for="leader_id">Leader Name</label>
+            <select name="leader_id" id="leader_id" class="form-control select2" required>
+                @foreach($users as $user)
+                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                @endforeach
+            </select>
         </div>
         <div class="form-group">
             <label for="name">Task Name</label>
@@ -42,4 +45,10 @@
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
+
+<script>
+    $(document).ready(function() {
+        $('.select2').select2();
+    });
+</script>
 @endsection

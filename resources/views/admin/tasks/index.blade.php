@@ -1,10 +1,10 @@
 @extends('layouts.main')
 
-@section('title', 'Task Assignments')
+@section('title', 'My Assigned Tasks')
 
 @section('content')
 <div class="container">
-    <h2 class="my-4">Task Assignments</h2>
+    <h2 class="my-4">My Assigned Tasks</h2>
 
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
@@ -13,34 +13,35 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Leader Name</th>
                 <th>Task Name</th>
+                <th>Leader Name</th>
                 <th>Start Date</th>
                 <th>End Date</th>
                 <th>Target</th>
-                <th>Progress Total</th>
+                <th>Your Target</th>
+                <th>Progress</th>
                 <th>Percentage</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($tasks as $task)
+            @foreach($assignments as $assignment)
                 <tr>
-                    <td>{{ $task->leader->name }}</td>
-                    <td>{{ $task->name }}</td>
-                    <td>{{ $task->start_date }}</td>
-                    <td>{{ $task->end_date }}</td>
-                    <td>{{ $task->target }}</td>
-                    <td>{{ $task->progress_total }}</td>
-                    <td>{{ number_format(($task->progress_total / $task->target) * 100, 2) }}%</td>
+                    <td>{{ $assignment->task->name }}</td>
+                    <td>{{ $assignment->task->leader->name }}</td>
+                    <td>{{ $assignment->task->start_date }}</td>
+                    <td>{{ $assignment->task->end_date }}</td>
+                    <td>{{ $assignment->task->target }}</td>
+                    <td>{{ $assignment->target }}</td>
+                    <td>{{ $assignment->progress }}</td>
+                    <td>{{ number_format(($assignment->progress / $assignment->target) * 100, 2) }}%</td>
                     <td>
-                        <a href="{{ route('admin.tasks.edit', $task->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                        <form action="{{ route('admin.tasks.destroy', $task->id) }}" method="POST" style="display:inline-block;">
+                        <a href="{{ route('user.tasks.edit', $assignment->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                        <form action="{{ route('user.tasks.destroy', $assignment->id) }}" method="POST" style="display:inline-block;">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                         </form>
-                        <a href="{{ route('admin.tasks.assign', $task->id) }}" class="btn btn-primary btn-sm">Assign</a>
                     </td>
                 </tr>
             @endforeach

@@ -2,25 +2,25 @@
 
 namespace App\Http\Controllers;
 
-namespace App\Http\Controllers;
-
 use App\Models\TasksAssignment;
 use App\Models\User;
 use App\Models\UserAssignment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AdminTasksAssignmentController extends Controller
 {
     public function index()
     {
-        $tasks = TasksAssignment::with('leader')->get();
+        $userId = Auth::id();
+        $tasks = TasksAssignment::where('leader_id', $userId)->get();
         return view('admin.tasks.index', compact('tasks'));
     }
-
+    
     public function create()
     {
-        $leaders = User::where('is_admin', 1)->get();
-        return view('admin.tasks.create', compact('leaders'));
+        $user = Auth::user();
+        return view('admin.tasks.create', compact('user'));
     }
 
     public function store(Request $request)
@@ -32,8 +32,16 @@ class AdminTasksAssignmentController extends Controller
             'end_date' => 'required|date|after_or_equal:start_date',
             'target' => 'required|integer|min:1',
         ]);
-
-        TasksAssignment::create($validated);
+    
+        TasksAssignment::create([
+            'leader_id' => $validated['leader_id'],
+            'name' => $validated['name'],
+            'start_date' => $validated['start_date'],
+            'end_date' => $validated['end_date'],
+            'target' => $validated['target'],
+            'progress_total' => 0,
+        ]);
+    
         return redirect()->route('admin.tasks.index')->with('success', 'Task created successfully');
     }
 
@@ -69,6 +77,26 @@ class AdminTasksAssignmentController extends Controller
         $users = User::all();
         return view('admin.assignments.create', compact('task', 'users'));
     }
+
+    public function superadminIndex()
+    {
+        $tasks = TasksAssignment::with('leader', 'userAssignments.user')->get();
+        return view('admin.superadmin.tasks.index', compact('tasks'));
+    }
+
+    public function myTasks()
+    {
+        $userId = auth()->user()->id;
+        $tasks = UserAssignment::with('task')
+                    ->where('user_id', $userId)
+                    ->get();
+        return view('admin.tasks.assign', compact('tasks'));
+    }
+    
+    
+    
+    
+
 }
 
 
