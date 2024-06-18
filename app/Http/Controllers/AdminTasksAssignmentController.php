@@ -97,16 +97,18 @@ class AdminTasksAssignmentController extends Controller
         $tasks = TasksAssignment::with('userAssignments')->get();
     
         $events = [];
-    
+
         foreach ($tasks as $task) {
             $progressPercentage = ($task->progress_total / $task->target) * 100;
-            $color = $this->getColorBasedOnProgress($progressPercentage);
     
             $events[] = [
-                'title' => $task->name . ' - ' . number_format($progressPercentage, 2) . '%',
+                'title' => $task->name,
                 'start' => $task->start_date,
                 'end' => $task->end_date,
-                'color' => $color,
+                'color' => '#007bff',
+                'extendedProps' => [
+                    'progress' => $progressPercentage
+                ]
             ];
         }
     
