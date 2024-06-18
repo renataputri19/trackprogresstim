@@ -10,7 +10,7 @@ class TasksAssignment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'leader_id', 'name', 'start_date', 'end_date', 'target', 'progress_total',
+        'leader_id', 'name', 'start_date', 'end_date', 'target', 'progress_total', 'tim'
     ];
 
     public function leader()

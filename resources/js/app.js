@@ -27,35 +27,36 @@ document.addEventListener('DOMContentLoaded', function() {
                 eventContainer.style.backgroundColor = arg.event.backgroundColor;
                 eventContainer.style.position = 'relative';
 
-                // Create a span for the event title and progress
+                // Create a span for the event title
                 let eventTitle = document.createElement('span');
                 eventTitle.innerText = `${arg.event.title} - ${arg.event.extendedProps.progress}%`;
+                eventTitle.style.flex = '1';
                 eventTitle.style.zIndex = '2';
-                eventTitle.style.color = 'white';
-                eventTitle.style.padding = '0 5px';
-                eventTitle.style.width = '100%';
-                eventTitle.style.textAlign = 'center';
+                eventTitle.style.color = 'black';
+                eventTitle.style.padding = '0 10px';
+                eventTitle.style.textAlign = 'left';
 
                 // Create a container for the progress bar
                 let progressBarContainer = document.createElement('div');
                 progressBarContainer.style.width = '100%';
                 progressBarContainer.style.height = '100%';
+                progressBarContainer.style.backgroundColor = '#e9ecef';
                 progressBarContainer.style.position = 'absolute';
                 progressBarContainer.style.top = '0';
                 progressBarContainer.style.left = '0';
-                progressBarContainer.style.display = 'flex';
-                progressBarContainer.style.alignItems = 'center';
+                progressBarContainer.style.zIndex = '1';
 
                 // Create the progress bar
                 let progressBar = document.createElement('div');
                 progressBar.style.width = arg.event.extendedProps.progress + '%';
                 progressBar.style.height = '100%';
                 progressBar.style.backgroundColor = '#28a745';
-                progressBar.style.position = 'relative';
-                progressBar.style.zIndex = '1';
+                progressBar.style.borderRadius = '3px';
+
+                // Append the progress bar to its container
+                progressBarContainer.appendChild(progressBar);
 
                 // Append the title and progress bar to the event container
-                progressBarContainer.appendChild(progressBar);
                 eventContainer.appendChild(progressBarContainer);
                 eventContainer.appendChild(eventTitle);
 
@@ -64,5 +65,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         calendar.render();
+
+        // Filter events based on TIM selection
+        document.getElementById('tim-filter').addEventListener('change', function() {
+            let tim = this.value;
+            calendar.getEventSources().forEach(function(source) {
+                source.remove();
+            });
+            calendar.addEventSource({
+                url: '/admin/calendar/events',
+                extraParams: {
+                    tim: tim
+                }
+            });
+            calendar.refetchEvents();
+        });
     }
 });

@@ -19,6 +19,18 @@
     <form action="{{ route('admin.tasks.store') }}" method="POST">
         @csrf
         <div class="form-group">
+            <label for="tim">TIM</label>
+            <select class="form-control" id="tim" name="tim">
+                <option value="">Select TIM</option>
+                <option value="SUBBAGIAN UMUM">SUBBAGIAN UMUM</option>
+                <option value="TIM SOSIAL">TIM SOSIAL</option>
+                <option value="TIM PRODUKSI">TIM PRODUKSI</option>
+                <option value="TIM DISTRIBUSI">TIM DISTRIBUSI</option>
+                <option value="TIM NERWILIS">TIM NERWILIS</option>
+                <option value="TIM PENGOLAHAN DAN IT">TIM PENGOLAHAN DAN IT</option>
+            </select>
+        </div>
+        <div class="form-group">
             <label for="leader_name">Leader Name</label>
             <input type="text" class="form-control" id="leader_name" name="leader_name" value="{{ $user->name }}" readonly>
             <input type="hidden" name="leader_id" value="{{ $user->id }}">

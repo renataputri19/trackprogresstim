@@ -19,6 +19,7 @@
     <table class="table table-bordered">
         <thead>
             <tr>
+                <th>TIM</th>
                 <th>Leader Name</th>
                 <th>Task Name</th>
                 <th>Start Date</th>
@@ -32,6 +33,7 @@
         <tbody>
             @foreach($tasks as $task)
                 <tr>
+                    <td>{{ $task->tim }}</td>
                     <td>{{ $task->leader->name }}</td>
                     <td>{{ $task->name }}</td>
                     <td>{{ $task->start_date }}</td>

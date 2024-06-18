@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\UserAssignment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class AdminTasksAssignmentController extends Controller
 {
@@ -31,6 +32,7 @@ class AdminTasksAssignmentController extends Controller
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'target' => 'required|integer|min:1',
+            'tim' => 'required|string',
         ]);
     
         TasksAssignment::create([
@@ -40,6 +42,7 @@ class AdminTasksAssignmentController extends Controller
             'end_date' => $validated['end_date'],
             'target' => $validated['target'],
             'progress_total' => 0,
+            'tim' => $validated['tim'],
         ]);
     
         return redirect()->route('admin.tasks.index')->with('success', 'Task created successfully');
@@ -59,6 +62,7 @@ class AdminTasksAssignmentController extends Controller
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'target' => 'required|integer|min:1',
+            'tim' => 'required|string',
         ]);
 
         $task->update($validated);
@@ -92,19 +96,25 @@ class AdminTasksAssignmentController extends Controller
         return view('admin.assigned-tasks.index', compact('assignments'));
     }
     
-    public function calendarEvents()
+    public function calendarEvents(Request $request)
     {
-        $tasks = TasksAssignment::with('userAssignments')->get();
+        $query = TasksAssignment::with('userAssignments');
     
+        if ($request->has('tim') && $request->tim) {
+            $query->where('tim', $request->tim);
+        }
+    
+        $tasks = $query->get();
+        
         $events = [];
-
+    
         foreach ($tasks as $task) {
             $progressPercentage = ($task->progress_total / $task->target) * 100;
     
             $events[] = [
                 'title' => $task->name,
                 'start' => $task->start_date,
-                'end' => $task->end_date,
+                'end' => Carbon::parse($task->end_date)->addDay()->format('Y-m-d'),
                 'color' => '#007bff',
                 'extendedProps' => [
                     'progress' => $progressPercentage
@@ -115,18 +125,7 @@ class AdminTasksAssignmentController extends Controller
         return response()->json($events);
     }
     
-    private function getColorBasedOnProgress($progress)
-    {
-        if ($progress >= 75) {
-            return '#28a745'; // green
-        } elseif ($progress >= 50) {
-            return '#ffc107'; // yellow
-        } elseif ($progress >= 25) {
-            return '#fd7e14'; // orange
-        } else {
-            return '#dc3545'; // red
-        }
-    }
+    
     
     public function dashboard()
     {
