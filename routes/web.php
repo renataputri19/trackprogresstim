@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\UserTaskController;
 use App\Http\Controllers\AdminTaskController;
 use App\Http\Controllers\UserTasksController;
@@ -29,14 +30,18 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
-Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
-Route::get('/tasks/{task}/edit', [TaskController::class, 'edit'])->name('tasks.edit');
-Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
-Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
-Route::get('/tasks/events', [TaskController::class, 'events'])->name('tasks.events');
+// Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
+// Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
+// Route::get('/tasks/{task}/edit', [TaskController::class, 'edit'])->name('tasks.edit');
+// Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
+// Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
+// Route::get('/tasks/events', [TaskController::class, 'events'])->name('tasks.events');
+
+// Public route for calendar events
+Route::get('/calendar/events', [CalendarController::class, 'publicCalendarEvents'])->name('public.calendar.events');
+
 
 // Admin Task Assignments Routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
