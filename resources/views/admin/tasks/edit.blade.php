@@ -21,23 +21,19 @@
         @method('PUT')
         <div class="form-group">
             <label for="tim">TIM</label>
-            <select class="form-control" id="tim" name="tim">
-                <option value="">Select TIM</option>
-                <option value="SUBBAGIAN UMUM">SUBBAGIAN UMUM</option>
-                <option value="TIM SOSIAL">TIM SOSIAL</option>
-                <option value="TIM PRODUKSI">TIM PRODUKSI</option>
-                <option value="TIM DISTRIBUSI">TIM DISTRIBUSI</option>
-                <option value="TIM NERWILIS">TIM NERWILIS</option>
-                <option value="TIM PENGOLAHAN DAN IT">TIM PENGOLAHAN DAN IT</option>
+            <select class="form-control" id="tim" name="tim" required>
+                <option value="SUBBAGIAN UMUM" {{ $task->tim == 'SUBBAGIAN UMUM' ? 'selected' : '' }}>SUBBAGIAN UMUM</option>
+                <option value="TIM SOSIAL" {{ $task->tim == 'TIM SOSIAL' ? 'selected' : '' }}>TIM SOSIAL</option>
+                <option value="TIM PRODUKSI" {{ $task->tim == 'TIM PRODUKSI' ? 'selected' : '' }}>TIM PRODUKSI</option>
+                <option value="TIM DISTRIBUSI" {{ $task->tim == 'TIM DISTRIBUSI' ? 'selected' : '' }}>TIM DISTRIBUSI</option>
+                <option value="TIM NERWILIS" {{ $task->tim == 'TIM NERWILIS' ? 'selected' : '' }}>TIM NERWILIS</option>
+                <option value="TIM PENGOLAHAN DAN IT" {{ $task->tim == 'TIM PENGOLAHAN DAN IT' ? 'selected' : '' }}>TIM PENGOLAHAN DAN IT</option>
             </select>
         </div>
         <div class="form-group">
-            <label for="leader_id">Leader Name</label>
-            <select name="leader_id" id="leader_id" class="form-control" required>
-                @foreach($leaders as $leader)
-                    <option value="{{ $leader->id }}" @if($leader->id == $task->leader_id) selected @endif>{{ $leader->name }}</option>
-                @endforeach
-            </select>
+            <label for="leader_name">Leader Name</label>
+            <input type="text" class="form-control" id="leader_name" name="leader_name" value="{{ $task->leader->name }}" readonly>
+            <input type="hidden" name="leader_id" value="{{ $task->leader->id }}">
         </div>
         <div class="form-group">
             <label for="name">Task Name</label>

@@ -21,8 +21,19 @@
                     <a href="#" class="mr-3">How it works</a>
                     <a href="#" class="mr-3">Pricing</a>
                     <a href="#" class="mr-3">FAQs</a>
-                    <a href="{{ route('login') }}" class="mr-3">Login</a>
-                    <a href="{{ route('register') }}" class="btn btn-dark">Sign Up</a>
+                    @guest
+                        <a href="{{ route('login') }}" class="mr-3">Login</a>
+                        <a href="{{ route('register') }}" class="btn btn-dark">Sign Up</a>
+                    @else
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                        <a href="{{ route('logout') }}"
+                           class="mr-3"
+                           onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            Logout
+                        </a>
+                    @endguest
                 </nav>
             </div>
         </div>

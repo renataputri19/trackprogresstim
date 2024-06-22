@@ -31,6 +31,8 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
 
 // Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
 // Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
