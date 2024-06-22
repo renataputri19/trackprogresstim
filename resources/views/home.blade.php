@@ -31,36 +31,33 @@
 @section('content')
     <div class="bg-white shadow p-5 rounded-lg d-flex align-items-center mb-5">
         <div class="w-50">
-            <h1 class="display-4 font-weight-bold">Always Track & Analyze Your Business Statistics To Succeed.</h1>
-            <p class="lead">A better way to manage your sales, team, clients & marketing — on a single platform. Powerful, affordable & easy.</p>
-            <form class="form-inline my-4">
-                <input type="email" class="form-control mr-2" placeholder="Enter your email">
-                <button type="submit" class="btn btn-dark">Get started</button>
-            </form>
-            <div class="d-flex align-items-center">
-                <img src="path/to/visa.png" alt="Visa" class="mr-2">
-                <img src="path/to/mastercard.png" alt="MasterCard" class="mr-2">
-                <img src="path/to/paypal.png" alt="PayPal">
-            </div>
+            <h1 class="display-4 font-weight-bold">RENTAK - Integrasi Sistem Data dan Proses Kerja di BPS Batam</h1>
+            <p class="lead">Sistem RENTAK (Reformasi dan Integrasi Kinerja) dirancang untuk mengoptimalkan kinerja dan mendukung tugas BPS Batam melalui integrasi sistem data dan proses kerja.</p>
+            <a href="#dashboard" class="btn btn-dark my-4">Lihat Dashboard</a>
+            {{-- <div class="d-flex align-items-center">
+                <a href="harian2171.bpskepri.com" class="btn btn-link mr-2">Laporan Harian</a>
+                <a href="https://s.id/link_bps" class="btn btn-link mr-2">Link All Aplikasi BPS</a>
+                <a href="https://s.id/monumen" class="btn btn-link">MONUMEN 2171</a>
+            </div> --}}
         </div>
         <div class="w-50">
-            <img src="path/to/illustration.png" alt="Illustration" class="img-fluid">
+            <img src="{{ asset('img/asset-illus.jpg') }}" alt="Ilustrasi" class="img-fluid">
         </div>
     </div>
 
     <div class="bg-white shadow p-5 rounded-lg d-flex align-items-center mb-5">
         <div class="w-50">
-            <img src="path/to/second-illustration.png" alt="Illustration" class="img-fluid">
+            <img src="{{ asset('img/asset-illus2.jpg') }}" alt="Ilustrasi" class="img-fluid">
         </div>
         <div class="w-50">
-            <h2 class="h4 font-weight-bold">Faster, friendlier feedback loops make life easier.</h2>
-            <p class="lead">Add a Viewer to your team so they can see everything you share, or invite people to individual documents. It's up to you. Stakeholders can check out designs in their web browser, test prototypes and leave feedback for free.</p>
+            <h2 class="h4 font-weight-bold">Meningkatkan Efisiensi dan Transparansi di BPS Batam</h2>
+            <p class="lead">Proyek RENTAK bertujuan untuk mengintegrasikan pengelolaan reformasi birokrasi, EPSS, statistik sektoral, dan monitoring kinerja pegawai di BPS Batam. Sistem ini dirancang untuk mempermudah koordinasi antar unit kerja dan memastikan transparansi data.</p>
             <ul class="list-unstyled">
-                <li class="mb-2">✔️ Shared Cloud Libraries, for a single source of truth</li>
-                <li class="mb-2">✔️ Prototype previews for user testing and research</li>
-                <li class="mb-2">✔️ Easy organization with projects</li>
-                <li class="mb-2">✔️ Free developer handoff, right inside the browser</li>
-                <li class="mb-2">✔️ Two-factor authentication and SSO</li>
+                <li class="mb-2">✔️ Integrasi Sistem Data dan Proses Kerja</li>
+                <li class="mb-2">✔️ Monitoring Kinerja Real-Time</li>
+                <li class="mb-2">✔️ Pelatihan Berkelanjutan untuk Pegawai</li>
+                <li class="mb-2">✔️ Prototipe UI/UX yang User-Friendly</li>
+                <li class="mb-2">✔️ Efisiensi dan Akuntabilitas yang Lebih Tinggi</li>
             </ul>
         </div>
     </div>
@@ -68,7 +65,7 @@
 
     <div class="bg-white shadow p-5 rounded-lg d-flex align-items-center mb-5">
         <div class="container">
-            <h1>Welcome to Our Dashboard</h1>
+            <h1>Link dan Aplikasi</h1>
             
             <div class="helpful-links">
                 <h2>Helpful Links</h2>
@@ -93,7 +90,7 @@
                 <div class="app-grid">
                     <a href="https://monita.bpsbatam.com/" class="app-item">
                         <div class="app-icon"><i class="fas fa-tools"></i></div>
-                        <div class="app-title">Monita</div>
+                        <div class="app-title">Statistik Sektoral</div>
                     </a>
                     <a href="https://rb.bpsbatam.com/" class="app-item">
                         <div class="app-icon"><i class="fas fa-balance-scale"></i></div>
@@ -104,9 +101,9 @@
         </div>
     </div>
 
-    <div class="bg-white shadow p-5 rounded-lg d-flex align-items-center mb-5">
+    <div class="bg-white shadow p-5 rounded-lg d-flex align-items-center mb-5" id="dashboard">
         <div class="container">
-            <h1>Dashboard</h1>
+            <h1>Dashboard Monitoring Kinerja</h1>
         
             <!-- TIM Filter -->
             <div class="form-group">
