@@ -16,12 +16,12 @@
         </div>
     @endif
 
-    <form action="{{ route('admin.tasks.store') }}" method="POST">
+    <form id="taskForm" action="{{ route('admin.tasks.store') }}" method="POST">
         @csrf
         <div class="form-group">
             <label for="tim">TIM</label>
-            <select class="form-control" id="tim" name="tim">
-                <option value="">Select TIM</option>
+            <select class="form-control" id="tim" name="tim" required>
+                <option value="" disabled selected>Select TIM</option>
                 <option value="SUBBAGIAN UMUM">SUBBAGIAN UMUM</option>
                 <option value="TIM SOSIAL">TIM SOSIAL</option>
                 <option value="TIM PRODUKSI">TIM PRODUKSI</option>
@@ -39,7 +39,7 @@
             <label for="name">Task Name</label>
             <input type="text" class="form-control" id="name" name="name" required>
         </div>
-        <div class="form-group">
+        {{-- <div class="form-group">
             <label for="start_date">Start Date</label>
             <input type="date" class="form-control" id="start_date" name="start_date" required>
         </div>
@@ -50,7 +50,21 @@
         <div class="form-group">
             <label for="target">Target</label>
             <input type="number" class="form-control" id="target" name="target" required>
+        </div> --}}
+        <div class="form-group">
+            <label for="start_date">Start Date</label>
+            <input type="date" class="form-control" id="start_date" name="start_date" required>
         </div>
+        <div class="form-group">
+            <label for="end_date">End Date</label>
+            <input type="date" class="form-control" id="end_date" name="end_date" required>
+            <span id="end_date_error" class="text-danger" style="display: none;">The end date must be after or equal to the start date.</span>
+        </div>
+        <div class="form-group">
+            <label for="target">Target</label>
+            <input type="number" class="form-control" id="target" name="target" required>
+        </div>
+
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>

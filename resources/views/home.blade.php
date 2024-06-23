@@ -72,7 +72,7 @@
                 <div class="link-grid">
                     <a href="https://harian2171.bpskepri.com" class="link-item">
                         <div class="link-icon"><i class="fas fa-chart-line"></i></div>
-                        <div class="link-title">Laporan harian</div>
+                        <div class="link-title">Laporan harian Provinsi</div>
                     </a>
                     <a href="https://s.id/link_bps" class="link-item">
                         <div class="link-icon"><i class="fas fa-link"></i></div>
