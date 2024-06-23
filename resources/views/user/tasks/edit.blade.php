@@ -24,6 +24,7 @@
             <input type="number" class="form-control" id="progress" name="progress" value="{{ $assignment->progress }}" required>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
+        <a href="{{ route('user.tasks.index') }}" class="btn btn-secondary">Back</a>
     </form>
 </div>
 @endsection

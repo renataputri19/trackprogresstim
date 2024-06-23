@@ -54,5 +54,6 @@
             @endforeach
         </tbody>
     </table>
+    <a href="{{ url('/') }}" class="btn btn-secondary">Back to Homepage</a>
 </div>
 @endsection

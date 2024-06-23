@@ -10,6 +10,10 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
+    <div class="mb-3">
+        <a href="{{ route('admin.superadmin.tasks.create') }}" class="btn btn-primary">Create Task</a>
+    </div>
+
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -36,17 +40,19 @@
                     <td>{{ $task->progress_total }}</td>
                     <td>{{ number_format(($task->progress_total / $task->target) * 100, 2) }}%</td>
                     <td>
-                        <a href="{{ route('admin.tasks.edit', $task->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                        <form action="{{ route('admin.tasks.destroy', $task->id) }}" method="POST" style="display:inline-block;">
+                        <a href="{{ route('admin.superadmin.tasks.edit', ['task' => $task->id]) }}" class="btn btn-primary">Edit</a>
+                        <form action="{{ route('admin.superadmin.tasks.destroy', ['task' => $task->id, 'superadmin' => true]) }}" method="POST" style="display:inline-block;">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                        </form>
-                        <a href="{{ route('admin.tasks.assign', $task->id) }}" class="btn btn-info btn-sm">Assign</a>
+                        </form>                        
+                        <a href="{{ route('admin.superadmin.assignments.create', $task->id) }}" class="btn btn-info btn-sm">Assign</a>
                     </td>
+                    
                 </tr>
             @endforeach
         </tbody>
     </table>
+    <a href="{{ route('admin.tasks.index') }}" class="btn btn-secondary">Back</a>
 </div>
 @endsection

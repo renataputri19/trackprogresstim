@@ -66,6 +66,8 @@
         </div>
 
         <button type="submit" class="btn btn-primary">Submit</button>
+        <a href="{{ route('admin.tasks.index') }}" class="btn btn-secondary">Back</a>
     </form>
+    
 </div>
 @endsection

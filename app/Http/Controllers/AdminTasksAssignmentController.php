@@ -56,6 +56,88 @@ class AdminTasksAssignmentController extends Controller
 
     public function update(Request $request, TasksAssignment $task)
     {
+        // Print all request parameters
+        // dd($request->all());
+        
+        $validated = $request->validate([
+            'leader_id' => 'required|exists:users,id',
+            'name' => 'required|string|max:255',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'target' => 'required|integer|min:1',
+            'tim' => 'required|string',
+        ]);
+    
+        $task->update($validated);
+    
+        return redirect()->route('admin.tasks.index')->with('success', 'Task updated successfully');
+    }
+    
+
+    public function destroy(TasksAssignment $task, Request $request)
+    {
+        $task->delete();
+        
+        if ($request->has('superadmin') && $request->superadmin) {
+            return redirect()->route('admin.superadmin.tasks.index')->with('success', 'Task deleted successfully');
+        }
+    
+        return redirect()->route('admin.tasks.index')->with('success', 'Task deleted successfully');
+    }
+    
+
+    public function assign($taskId)
+    {
+        $task = TasksAssignment::with('userAssignments.user')->findOrFail($taskId);
+        $users = User::all();
+        return view('admin.assignments.create', compact('task', 'users'));
+    }
+
+    // Superadmin functions
+    public function superadminIndex()
+    {
+        $tasks = TasksAssignment::with('leader', 'userAssignments.user')->get();
+        return view('admin.superadmin.tasks.index', compact('tasks'));
+    }
+
+    public function superadminCreate()
+    {
+        $leaders = User::where('is_admin', 1)->get();
+        return view('admin.superadmin.tasks.create', compact('leaders'));
+    }
+
+    public function superadminStore(Request $request)
+    {
+        $validated = $request->validate([
+            'leader_id' => 'required|exists:users,id',
+            'name' => 'required|string|max:255',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'target' => 'required|integer|min:1',
+            'tim' => 'required|string',
+        ]);
+
+        TasksAssignment::create([
+            'leader_id' => $validated['leader_id'],
+            'name' => $validated['name'],
+            'start_date' => $validated['start_date'],
+            'end_date' => $validated['end_date'],
+            'target' => $validated['target'],
+            'progress_total' => 0,
+            'tim' => $validated['tim'],
+        ]);
+
+        return redirect()->route('admin.superadmin.tasks.index')->with('success', 'Task created successfully');
+    }
+
+    public function superadminEdit(TasksAssignment $task)
+    {
+        $leaders = User::where('is_admin', 1)->get();
+        return view('admin.superadmin.tasks.edit', compact('task', 'leaders'));
+    }
+
+    public function superadminUpdate(Request $request, TasksAssignment $task)
+    {
         $validated = $request->validate([
             'leader_id' => 'required|exists:users,id',
             'name' => 'required|string|max:255',
@@ -66,27 +148,10 @@ class AdminTasksAssignmentController extends Controller
         ]);
 
         $task->update($validated);
-        return redirect()->route('admin.tasks.index')->with('success', 'Task updated successfully');
-    }
 
-    public function destroy(TasksAssignment $task)
-    {
-        $task->delete();
-        return redirect()->route('admin.tasks.index')->with('success', 'Task deleted successfully');
+        return redirect()->route('admin.superadmin.tasks.index')->with('success', 'Task updated successfully');
     }
-
-    public function assign($taskId)
-    {
-        $task = TasksAssignment::with('userAssignments.user')->findOrFail($taskId);
-        $users = User::all();
-        return view('admin.assignments.create', compact('task', 'users'));
-    }
-
-    public function superadminIndex()
-    {
-        $tasks = TasksAssignment::with('leader', 'userAssignments.user')->get();
-        return view('admin.superadmin.tasks.index', compact('tasks'));
-    }
+       
 
     public function assignedTasks()
     {

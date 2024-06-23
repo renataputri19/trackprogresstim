@@ -16,11 +16,11 @@
         </div>
     @endif
 
-    <form action="{{ route('superadmin.tasks.store') }}" method="POST">
+    <form id="taskForm" action="{{ route('admin.superadmin.tasks.store') }}" method="POST">
         @csrf
         <div class="form-group">
             <label for="tim">TIM</label>
-            <select class="form-control" id="tim" name="tim">
+            <select class="form-control" id="tim" name="tim" required>
                 <option value="">Select TIM</option>
                 <option value="SUBBAGIAN UMUM">SUBBAGIAN UMUM</option>
                 <option value="TIM SOSIAL">TIM SOSIAL</option>
@@ -30,12 +30,11 @@
                 <option value="TIM PENGOLAHAN DAN IT">TIM PENGOLAHAN DAN IT</option>
             </select>
         </div>
-        
         <div class="form-group">
             <label for="leader_id">Leader Name</label>
-            <select name="leader_id" id="leader_id" class="form-control select2" required>
-                @foreach($users as $user)
-                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+            <select name="leader_id" id="leader_id" class="form-control" required>
+                @foreach($leaders as $leader)
+                    <option value="{{ $leader->id }}">{{ $leader->name }}</option>
                 @endforeach
             </select>
         </div>
@@ -50,18 +49,14 @@
         <div class="form-group">
             <label for="end_date">End Date</label>
             <input type="date" class="form-control" id="end_date" name="end_date" required>
+            <span id="end_date_error" class="text-danger" style="display: none;">The end date must be after or equal to the start date.</span>
         </div>
         <div class="form-group">
             <label for="target">Target</label>
             <input type="number" class="form-control" id="target" name="target" required>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
+        <a href="{{ route('admin.superadmin.tasks.index') }}" class="btn btn-secondary">Back</a>
     </form>
 </div>
-
-<script>
-    $(document).ready(function() {
-        $('.select2').select2();
-    });
-</script>
 @endsection

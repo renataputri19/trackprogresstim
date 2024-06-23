@@ -16,7 +16,7 @@
         </div>
     @endif
 
-    <form action="{{ route('admin.tasks.update', $task->id) }}" method="POST">
+    <form id="taskForm" action="{{ route('admin.tasks.update', $task->id) }}" method="POST">
         @csrf
         @method('PUT')
         <div class="form-group">
@@ -46,12 +46,15 @@
         <div class="form-group">
             <label for="end_date">End Date</label>
             <input type="date" class="form-control" id="end_date" name="end_date" value="{{ $task->end_date }}" required>
+            <span id="end_date_error" class="text-danger" style="display: none;">The end date must be after or equal to the start date.</span>
         </div>
         <div class="form-group">
             <label for="target">Target</label>
             <input type="number" class="form-control" id="target" name="target" value="{{ $task->target }}" required>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
+        <a href="{{ route('admin.tasks.index') }}" class="btn btn-secondary">Back</a>
+        
     </form>
 </div>
 @endsection

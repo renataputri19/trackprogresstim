@@ -33,14 +33,6 @@ Auth::routes();
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-
-// Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
-// Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
-// Route::get('/tasks/{task}/edit', [TaskController::class, 'edit'])->name('tasks.edit');
-// Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
-// Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
-// Route::get('/tasks/events', [TaskController::class, 'events'])->name('tasks.events');
-
 // Public route for calendar events
 Route::get('/calendar/events', [CalendarController::class, 'publicCalendarEvents'])->name('public.calendar.events');
 
@@ -59,9 +51,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('assignments/{assignment}/edit', [UserAssignmentController::class, 'edit'])->name('assignments.edit');
     Route::put('assignments/{assignment}', [UserAssignmentController::class, 'update'])->name('assignments.update');
 
-    // Super Admin View (all tasks and assignments)
-    Route::get('superadmin/tasks', [AdminTasksAssignmentController::class, 'superadminIndex'])->name('superadmin.tasks.index');
-    
+    // Superadmin specific routes
+    Route::get('/superadmin/tasks', [AdminTasksAssignmentController::class, 'superadminIndex'])->name('superadmin.tasks.index');
+    Route::get('/superadmin/tasks/create', [AdminTasksAssignmentController::class, 'superadminCreate'])->name('superadmin.tasks.create');
+    Route::post('/superadmin/tasks', [AdminTasksAssignmentController::class, 'superadminStore'])->name('superadmin.tasks.store');
+    Route::get('/superadmin/tasks/{task}/edit', [AdminTasksAssignmentController::class, 'superadminEdit'])->name('superadmin.tasks.edit');
+    Route::put('/superadmin/tasks/{task}', [AdminTasksAssignmentController::class, 'superadminUpdate'])->name('superadmin.tasks.update');
+    Route::delete('/superadmin/tasks/{task}', [AdminTasksAssignmentController::class, 'destroy'])->name('superadmin.tasks.destroy');
+
+
+
     // Admin View Assigned Tasks (same as user view)
     Route::get('assigned-tasks', [AdminTasksAssignmentController::class, 'assignedTasks'])->name('tasks.assigned');
     
