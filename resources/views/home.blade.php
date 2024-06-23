@@ -29,7 +29,7 @@
 @section('title', 'Business Tracker - Home')
 
 @section('content')
-    <div class="bg-white shadow p-5 rounded-lg d-flex align-items-center mb-5">
+    <div id="about-us" class="bg-white shadow p-5 rounded-lg d-flex align-items-center mb-5">
         <div class="w-50">
             <h1 class="display-4 font-weight-bold">RENTAK - Integrasi Sistem Data dan Proses Kerja di BPS Batam</h1>
             <p class="lead">Sistem RENTAK (Reformasi dan Integrasi Kinerja) dirancang untuk mengoptimalkan kinerja dan mendukung tugas BPS Batam melalui integrasi sistem data dan proses kerja.</p>
@@ -45,7 +45,7 @@
         </div>
     </div>
 
-    <div class="bg-white shadow p-5 rounded-lg d-flex align-items-center mb-5">
+    <div id="how-it-works" class="bg-white shadow p-5 rounded-lg d-flex align-items-center mb-5">
         <div class="w-50">
             <img src="{{ asset('img/asset-illus2.jpg') }}" alt="Ilustrasi" class="img-fluid">
         </div>
@@ -63,7 +63,7 @@
     </div>
 
 
-    <div class="bg-white shadow p-5 rounded-lg d-flex align-items-center mb-5">
+    <div id="links-apps" class="bg-white shadow p-5 rounded-lg d-flex align-items-center mb-5">
         <div class="container">
             <h1>Link dan Aplikasi</h1>
             
@@ -101,7 +101,7 @@
         </div>
     </div>
 
-    <div class="bg-white shadow p-5 rounded-lg d-flex align-items-center mb-5" id="dashboard">
+    <div id="dashboard" class="bg-white shadow p-5 rounded-lg d-flex align-items-center mb-5" id="dashboard">
         <div class="container">
             <h1>Dashboard Monitoring Kinerja</h1>
         

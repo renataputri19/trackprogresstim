@@ -15,16 +15,20 @@
     <header class="bg-white shadow">
         <div class="container">
             <div class="d-flex justify-content-between align-items-center py-3">
-                <div class="h4">i8</div>
+                <div class="h4">RENTAK</div>
                 <nav>
-                    <a href="#" class="mr-3">About Us</a>
-                    <a href="#" class="mr-3">How it works</a>
-                    <a href="#" class="mr-3">Pricing</a>
-                    <a href="#" class="mr-3">FAQs</a>
+                    
+                    
                     @guest
+                        <a href="#about-us" class="mr-3">About Us</a>
+                        <a href="#how-it-works" class="mr-3">How it works</a>
+                        <a href="#links-apps" class="mr-3">Link Apps</a>
+                        <a href="#dashboard" class="mr-3">Dashboard</a>
                         <a href="{{ route('login') }}" class="mr-3">Login</a>
                         <a href="{{ route('register') }}" class="btn btn-dark">Sign Up</a>
+                        
                     @else
+                        <a href="{{ route(auth()->user()->is_admin ? 'admin.tasks.index' : 'user.tasks.index') }}" class="mr-3">Tasks</a>
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf
                         </form>
