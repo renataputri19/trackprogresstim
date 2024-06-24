@@ -47,6 +47,47 @@
         @yield('content')
     </main>
 
+    <footer>
+        <div class="footer-content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3">
+                        <h5>Contact Us</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="mailto:bps2171@bps.go.id">bps2171@bps.go.id</a></li>
+                            <li><a href="https://batamkota.bps.go.id/">batamkota.bps.go.id</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3">
+                        <h5>Follow Us</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="https://www.facebook.com/BPS.KOTA.BATAM/?locale=id_ID"><i class="fab fa-facebook"></i> Facebook</a></li>
+                            <li><a href="https://www.instagram.com/bps.batam/"><i class="fab fa-instagram"></i> Instagram</a></li>
+                            <li><a href="https://www.youtube.com/channel/UCjNSyjtj4Y9fBhxcJG3Xaag"><i class="fab fa-youtube"></i> YouTube</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3">
+                        <h5>Quick Links</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="https://harian2171.bpskepri.com">Laporan Harian</a></li>
+                            <li><a href="https://s.id/link_bps">Link All Aplikasi BPS</a></li>
+                            <li><a href="https://s.id/monumen">MONUMEN 2171</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3">
+                        <h5>Renata Putri Henessa</h5>
+                        <p>Pelatihan Dasar CPNS 2024</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container text-center">
+                <p>&copy; 2024 BPS Kota Batam | <a href="https://batamkota.bps.go.id/" class="text-white">batamkota.bps.go.id</a></p>
+            </div>
+        </div>
+    </footer>
+
     @vite('resources/js/app.js')
     @vite('resources/js/homepage.js')
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
