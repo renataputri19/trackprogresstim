@@ -15,7 +15,8 @@
     <header class="bg-white shadow">
         <div class="container">
             <div class="d-flex justify-content-between align-items-center py-3">
-                <div class="h4">RENTAK</div>
+                <a href="{{ url('/') }}" class="h4 text-decoration-none text-dark">RENTAK</a>
+
                 <nav>
                     
                     
@@ -24,8 +25,8 @@
                         <a href="#how-it-works" class="mr-3">How it works</a>
                         <a href="#links-apps" class="mr-3">Link Apps</a>
                         <a href="#dashboard" class="mr-3">Dashboard</a>
-                        <a href="{{ route('login') }}" class="mr-3">Login</a>
-                        <a href="{{ route('register') }}" class="btn btn-dark">Sign Up</a>
+                        <a href="{{ route('login') }}" class="btn btn-dark">Login</a>
+                        {{-- <a href="{{ route('register') }}" class="btn btn-dark">Sign Up</a> --}}
                         
                     @else
                         <a href="{{ route(auth()->user()->is_admin ? 'admin.tasks.index' : 'user.tasks.index') }}" class="mr-3">Tasks</a>

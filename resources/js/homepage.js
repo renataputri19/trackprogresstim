@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (calendarEl) {
         let calendar = new Calendar(calendarEl, {
             plugins: [ dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin ],
-            initialView: 'dayGridMonth', // Gantt chart style works better in time grid view
+            initialView: 'dayGridMonth',
             events: '/calendar/events',
             headerToolbar: {
                 left: 'prev,next today',

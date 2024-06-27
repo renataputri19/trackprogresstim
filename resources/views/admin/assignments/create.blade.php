@@ -65,7 +65,7 @@
             @endforeach
         </tbody>
     </table>
-    <a href="{{ route('admin.tasks.index') }}" class="btn btn-secondary">Back</a>
+    <a href="{{ url()->previous() }}" class="btn btn-secondary">Back</a>
 </div>
 
 <script>

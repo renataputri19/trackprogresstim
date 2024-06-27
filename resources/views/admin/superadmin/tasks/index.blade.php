@@ -46,7 +46,7 @@
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                         </form>                        
-                        <a href="{{ route('admin.superadmin.assignments.create', $task->id) }}" class="btn btn-info btn-sm">Assign</a>
+                        <a href="{{ route('admin.tasks.assign', $task->id) }}" class="btn btn-info btn-sm">Assign</a>
                     </td>
                     
                 </tr>
