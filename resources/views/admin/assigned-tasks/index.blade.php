@@ -10,7 +10,7 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <table class="table table-bordered">
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th>Task Name</th>
@@ -47,6 +47,9 @@
             @endforeach
         </tbody>
     </table>
-    <a href="{{ route('admin.tasks.index') }}" class="btn btn-secondary">Back</a>
+    {{ $assignments->links() }}
+    <div class="d-flex justify-content-end">
+        <a href="{{ route('admin.tasks.index') }}" class="btn btn-secondary">Back</a>
+    </div>
 </div>
 @endsection

@@ -16,7 +16,7 @@
         <a href="{{ route('admin.tasks.assigned') }}" class="btn btn-info">My Assigned Tasks</a>
     </div>
 
-    <table class="table table-bordered">
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th>TIM</th>
@@ -54,6 +54,11 @@
             @endforeach
         </tbody>
     </table>
-    <a href="{{ url('/') }}" class="btn btn-secondary">Back to Homepage</a>
+
+    {{ $tasks->links() }}
+
+    <div class="d-flex justify-content-end">
+        <a href="{{ url('/') }}" class="btn btn-secondary">Back to Homepage</a>
+    </div>
 </div>
 @endsection
