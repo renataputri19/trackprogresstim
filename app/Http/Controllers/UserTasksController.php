@@ -11,7 +11,7 @@ class UserTasksController extends Controller
     public function index()
     {
         $userId = Auth::id();
-        $assignments = UserAssignment::with('task.leader')->where('user_id', $userId)->get();
+        $assignments = UserAssignment::with('task.leader')->where('user_id', $userId)->paginate(10);
         return view('user.tasks.index', compact('assignments'));
     }
 

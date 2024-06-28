@@ -14,7 +14,7 @@ class UserAssignmentController extends Controller
     {
         $userAssignments = UserAssignment::with('task', 'user')
             ->where('user_id', Auth::id())
-            ->get();
+            ->paginate(10);
         return view('user.assignments.index', compact('userAssignments'));
     }
 

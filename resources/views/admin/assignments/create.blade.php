@@ -25,6 +25,7 @@
                     <option value="{{ $user->id }}">{{ $user->name }}</option>
                 @endforeach
             </select>
+            {{ $users->appends(['assignments_page' => $assignments->currentPage()])->links() }}
         </div>
         <div class="form-group">
             <label for="target">Target</label>
@@ -38,7 +39,7 @@
     </form>
 
     <h3 class="my-4">Current Assignments</h3>
-    <table class="table table-bordered">
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th>Person</th>
@@ -48,7 +49,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($task->userAssignments as $assignment)
+            @foreach($assignments as $assignment)
                 <tr>
                     <td>{{ $assignment->user->name }}</td>
                     <td>{{ $assignment->target }}</td>
@@ -65,7 +66,12 @@
             @endforeach
         </tbody>
     </table>
-    <a href="{{ url()->previous() }}" class="btn btn-secondary">Back</a>
+
+    {{ $assignments->appends(['users_page' => $users->currentPage()])->links() }}
+
+    <div class="d-flex justify-content-end">
+        <a href="{{ route('admin.tasks.index') }}" class="btn btn-secondary">Back</a>
+    </div>
 </div>
 
 <script>

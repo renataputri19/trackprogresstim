@@ -14,7 +14,7 @@ class AdminTasksAssignmentController extends Controller
     public function index()
     {
         $userId = Auth::id();
-        $tasks = TasksAssignment::where('leader_id', $userId)->get();
+        $tasks = TasksAssignment::where('leader_id', $userId)->paginate(10);
         return view('admin.tasks.index', compact('tasks'));
     }
     
@@ -89,14 +89,16 @@ class AdminTasksAssignmentController extends Controller
     public function assign($taskId)
     {
         $task = TasksAssignment::with('userAssignments.user')->findOrFail($taskId);
-        $users = User::all();
-        return view('admin.assignments.create', compact('task', 'users'));
+        $users = User::paginate(10, ['*'], 'users_page');
+        $assignments = $task->userAssignments()->paginate(10, ['*'], 'assignments_page');
+        return view('admin.assignments.create', compact('task', 'users', 'assignments'));
     }
+    
 
     // Superadmin functions
     public function superadminIndex()
     {
-        $tasks = TasksAssignment::with('leader', 'userAssignments.user')->get();
+        $tasks = TasksAssignment::with('leader', 'userAssignments.user')->paginate(10);
         return view('admin.superadmin.tasks.index', compact('tasks'));
     }
 
@@ -156,7 +158,7 @@ class AdminTasksAssignmentController extends Controller
     public function assignedTasks()
     {
         $user = Auth::user();
-        $assignments = UserAssignment::where('user_id', $user->id)->with('task')->get();
+        $assignments = UserAssignment::where('user_id', $user->id)->with('task')->paginate(10);
     
         return view('admin.assigned-tasks.index', compact('assignments'));
     }

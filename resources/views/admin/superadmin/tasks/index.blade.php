@@ -14,7 +14,7 @@
         <a href="{{ route('admin.superadmin.tasks.create') }}" class="btn btn-primary">Create Task</a>
     </div>
 
-    <table class="table table-bordered">
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th>TIM</th>
@@ -53,6 +53,12 @@
             @endforeach
         </tbody>
     </table>
-    <a href="{{ route('admin.tasks.index') }}" class="btn btn-secondary">Back</a>
+
+    {{ $tasks->links() }}
+
+    
+    <div class="d-flex justify-content-end">
+        <a href="{{ route('admin.tasks.index') }}" class="btn btn-secondary">Back</a>
+    </div>
 </div>
 @endsection
