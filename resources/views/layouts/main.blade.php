@@ -97,5 +97,9 @@
     <!-- FullCalendar JS from CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.js"></script>
     <script src="{{ asset('js/date.js') }}"></script>
+    <script src="{{ asset('js/columns-toggle.js') }}"></script>
+
+
+
 </body>
 </html>

@@ -10,15 +10,22 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="mb-3">
+            
+        </div>
+        <button id="toggle-columns" class="btn btn-info">Show All Columns</button>
+    </div>
+
     <table class="table table-striped">
         <thead>
             <tr>
                 <th>Task Name</th>
                 <th>Leader Name</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Target</th>
-                <th>Your Target</th>
+                <th class="extra-columns">Start Date</th>
+                <th class="extra-columns">End Date</th>
+                <th class="extra-columns">Target</th>
+                <th >Your Target</th>
                 <th>Progress</th>
                 <th>Percentage</th>
                 <th>Actions</th>
@@ -29,9 +36,9 @@
                 <tr>
                     <td>{{ $assignment->task->name }}</td>
                     <td>{{ $assignment->task->leader->name }}</td>
-                    <td>{{ $assignment->task->start_date }}</td>
-                    <td>{{ $assignment->task->end_date }}</td>
-                    <td>{{ $assignment->task->target }}</td>
+                    <td class="extra-columns">{{ $assignment->task->start_date }}</td>
+                    <td class="extra-columns">{{ $assignment->task->end_date }}</td>
+                    <td class="extra-columns">{{ $assignment->task->target }}</td>
                     <td>{{ $assignment->target }}</td>
                     <td>{{ $assignment->progress }}</td>
                     <td>{{ number_format(($assignment->progress / $assignment->target) * 100, 2) }}%</td>
