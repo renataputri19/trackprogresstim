@@ -29,6 +29,7 @@
                         {{-- <a href="{{ route('register') }}" class="btn btn-dark">Sign Up</a> --}}
                         
                     @else
+                        <span class="mr-3">Welcome, {{ Auth::user()->name }}</span>
                         <a href="{{ route(auth()->user()->is_admin ? 'admin.tasks.index' : 'user.tasks.index') }}" class="mr-3">Tasks</a>
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf
