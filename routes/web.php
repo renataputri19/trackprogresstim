@@ -78,3 +78,17 @@ Route::middleware(['auth'])->name('user.')->group(function () {
     Route::delete('tasks/{task}', [UserTasksController::class, 'destroy'])->name('tasks.destroy');
 });
 
+
+Route::get('register', function() {
+    return redirect('/');
+});
+
+Auth::routes(['register' => false]);
+
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+
+// This route should be placed at the end of your route definitions
+Route::fallback(function () {
+    return redirect('/');
+});
