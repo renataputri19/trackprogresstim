@@ -21,7 +21,7 @@
         <thead>
             <tr>
                 <th>Task Name</th>
-                <th>Leader Name</th>
+                <th class="extra-columns">Leader Name</th>
                 <th class="extra-columns">Start Date</th>
                 <th class="extra-columns">End Date</th>
                 <th class="extra-columns">Target</th>
@@ -35,7 +35,7 @@
             @foreach($assignments as $assignment)
                 <tr>
                     <td>{{ $assignment->task->name }}</td>
-                    <td>{{ $assignment->task->leader->name }}</td>
+                    <td class="extra-columns">{{ $assignment->task->leader->name }}</td>
                     <td class="extra-columns">{{ $assignment->task->start_date }}</td>
                     <td class="extra-columns">{{ $assignment->task->end_date }}</td>
                     <td class="extra-columns">{{ $assignment->task->target }}</td>
