@@ -10,10 +10,13 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <div class="mb-3">
-        <a href="{{ route('admin.tasks.create') }}" class="btn btn-primary">Create Task</a>
-        <a href="{{ route('admin.superadmin.tasks.index') }}" class="btn btn-secondary">Superadmin View</a>
-        <a href="{{ route('admin.tasks.assigned') }}" class="btn btn-info">My Assigned Tasks</a>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <a href="{{ route('admin.tasks.create') }}" class="btn btn-primary">Create Task</a>
+            <a href="{{ route('admin.superadmin.tasks.index') }}" class="btn btn-secondary">Superadmin View</a>
+            <a href="{{ route('admin.tasks.assigned') }}" class="btn btn-success">My Assigned Tasks</a>
+        </div>
+        <button id="toggle-columns" class="btn btn-info">Show All Columns</button>
     </div>
 
     <table class="table table-striped">
@@ -22,10 +25,10 @@
                 <th>TIM</th>
                 <th>Leader Name</th>
                 <th>Task Name</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Target</th>
-                <th>Progress Total</th>
+                <th class="extra-columns">Start Date</th>
+                <th class="extra-columns">End Date</th>
+                <th class="extra-columns">Target</th>
+                <th class="extra-columns">Progress Total</th>
                 <th>Percentage</th>
                 <th>Actions</th>
             </tr>
@@ -36,10 +39,10 @@
                     <td>{{ $task->tim }}</td>
                     <td>{{ $task->leader->name }}</td>
                     <td>{{ $task->name }}</td>
-                    <td>{{ $task->start_date }}</td>
-                    <td>{{ $task->end_date }}</td>
-                    <td>{{ $task->target }}</td>
-                    <td>{{ $task->progress_total }}</td>
+                    <td class="extra-columns">{{ $task->start_date }}</td>
+                    <td class="extra-columns">{{ $task->end_date }}</td>
+                    <td class="extra-columns">{{ $task->target }}</td>
+                    <td class="extra-columns">{{ $task->progress_total }}</td>
                     <td>{{ number_format(($task->progress_total / $task->target) * 100, 2) }}%</td>
                     <td>
                         <a href="{{ route('admin.tasks.edit', $task->id) }}" class="btn btn-warning btn-sm">Edit</a>
