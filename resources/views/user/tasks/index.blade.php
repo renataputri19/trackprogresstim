@@ -10,15 +10,21 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="mb-3">
+        </div>
+        <button id="toggle-columns" class="btn btn-info">Show All Columns</button>
+    </div>
+
     <table class="table table-bordered">
         <thead>
             <tr>
                 <th>Task Name</th>
-                <th>TIM</th>
-                <th>Leader Name</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Target Total</th>
+                <th class="extra-columns">TIM</th>
+                <th class="extra-columns">Leader Name</th>
+                <th class="extra-columns">Start Date</th>
+                <th class="extra-columns">End Date</th>
+                <th class="extra-columns">Target Total</th>
                 <th>Your Target</th>
                 <th>Progress</th>
                 <th>Percentage</th>
@@ -29,11 +35,11 @@
             @foreach($assignments as $assignment)
                 <tr>
                     <td>{{ $assignment->task->name }}</td>
-                    <td>{{ $assignment->task->tim }}</td>
-                    <td>{{ $assignment->task->leader->name }}</td>
-                    <td>{{ $assignment->task->start_date }}</td>
-                    <td>{{ $assignment->task->end_date }}</td>
-                    <td>{{ $assignment->task->target }}</td>
+                    <td class="extra-columns">{{ $assignment->task->tim }}</td>
+                    <td class="extra-columns">{{ $assignment->task->leader->name }}</td>
+                    <td class="extra-columns">{{ $assignment->task->start_date }}</td>
+                    <td class="extra-columns">{{ $assignment->task->end_date }}</td>
+                    <td class="extra-columns">{{ $assignment->task->target }}</td>
                     <td>{{ $assignment->target }}</td>
                     <td>{{ $assignment->progress }}</td>
                     <td>{{ number_format(($assignment->progress / $assignment->target) * 100, 2) }}%</td>
@@ -49,6 +55,13 @@
             @endforeach
         </tbody>
     </table>
+    
+</div>
+
+<!-- Pagination links -->
+{{ $assignments->links() }}
+
+<div class="d-flex justify-content-end">
     <a href="{{ url('/') }}" class="btn btn-secondary">Back to Homepage</a>
 </div>
 @endsection
