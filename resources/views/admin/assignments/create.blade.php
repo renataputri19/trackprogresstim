@@ -38,8 +38,6 @@
     </form>
 
     <h3 class="my-4">Current Assignments</h3>
-
-
     <table class="table table-striped">
         <thead>
             <tr>
@@ -68,11 +66,12 @@
         </tbody>
     </table>
 
-    {{ $assignments->appends(['users_page' => $users->currentPage()])->links() }}
+    {{ $assignments->links() }} <!-- Add pagination links for assignments -->
 
     <div class="d-flex justify-content-end">
         <a href="{{ route('admin.tasks.index') }}" class="btn btn-secondary">Back</a>
     </div>
+
 </div>
 
 <script>
