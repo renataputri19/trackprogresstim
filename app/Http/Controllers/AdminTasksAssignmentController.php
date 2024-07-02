@@ -89,10 +89,11 @@ class AdminTasksAssignmentController extends Controller
     public function assign($taskId)
     {
         $task = TasksAssignment::with('userAssignments.user')->findOrFail($taskId);
-        $users = User::paginate(10, ['*'], 'users_page');
+        $users = User::all(); // Fetch all users without pagination for dropdown
         $assignments = $task->userAssignments()->paginate(10, ['*'], 'assignments_page');
         return view('admin.assignments.create', compact('task', 'users', 'assignments'));
     }
+    
     
 
     // Superadmin functions
