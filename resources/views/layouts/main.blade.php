@@ -10,6 +10,7 @@
     <!-- FullCalendar CSS from CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    {{-- <link href="{{ asset('css/login.css') }}" rel="stylesheet"> --}}
 </head>
 <body>
     <header class="bg-white shadow">
