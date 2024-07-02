@@ -1,13 +1,34 @@
 {
+  "_index-CBQq8RrD.js": {
+    "file": "assets/index-CBQq8RrD.js",
+    "name": "index"
+  },
   "resources/css/app.css": {
     "file": "assets/app-BSAabns2.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
+  "resources/css/homepage.css": {
+    "file": "assets/homepage-BwgWT8O8.css",
+    "src": "resources/css/homepage.css",
+    "isEntry": true
+  },
   "resources/js/app.js": {
-    "file": "assets/app-Rc5RTJZD.js",
+    "file": "assets/app-D1v4Ahe-.js",
     "name": "app",
     "src": "resources/js/app.js",
-    "isEntry": true
+    "isEntry": true,
+    "imports": [
+      "_index-CBQq8RrD.js"
+    ]
+  },
+  "resources/js/homepage.js": {
+    "file": "assets/homepage-BlOoAl8D.js",
+    "name": "homepage",
+    "src": "resources/js/homepage.js",
+    "isEntry": true,
+    "imports": [
+      "_index-CBQq8RrD.js"
+    ]
   }
 }
