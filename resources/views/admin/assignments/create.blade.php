@@ -25,7 +25,6 @@
                     <option value="{{ $user->id }}">{{ $user->name }}</option>
                 @endforeach
             </select>
-            {{ $users->appends(['assignments_page' => $assignments->currentPage()])->links() }}
         </div>
         <div class="form-group">
             <label for="target">Target</label>
