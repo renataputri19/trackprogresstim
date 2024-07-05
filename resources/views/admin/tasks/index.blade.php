@@ -19,6 +19,27 @@
         <button id="toggle-columns" class="btn btn-info">Show All Columns</button>
     </div>
 
+    <form method="GET" action="{{ route('admin.tasks.index') }}" class="mb-3">
+        <div class="form-row align-items-end">
+            <div class="col">
+                <label for="tim">Filter by TIM</label>
+                <select name="tim" id="tim" class="form-control">
+                    <option value="">All TIM</option>
+                    @foreach($tims as $tim)
+                        <option value="{{ $tim->tim }}" {{ request('tim') == $tim->tim ? 'selected' : '' }}>{{ $tim->tim }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col">
+                <label for="task_name">Filter by Task Name</label>
+                <input type="text" name="task_name" id="task_name" class="form-control" value="{{ request('task_name') }}" placeholder="Search by Task Name">
+            </div>
+            <div class="col">
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </div>
+        </div>
+    </form>
+
     <table class="table table-striped">
         <thead>
             <tr>
@@ -58,10 +79,16 @@
         </tbody>
     </table>
 
-    {{ $tasks->links() }}
+    {{ $tasks->appends(request()->query())->links() }}
 
     <div class="d-flex justify-content-end">
         <a href="{{ url('/') }}" class="btn btn-secondary">Back to Homepage</a>
     </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        $('.select2').select2();
+    });
+</script>
 @endsection

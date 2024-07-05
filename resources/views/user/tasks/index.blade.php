@@ -12,6 +12,26 @@
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div class="mb-3">
+            <form method="GET" action="{{ route('user.tasks.index') }}">
+                <div class="form-row align-items-end">
+                    <div class="col">
+                        <label for="tim">Filter by TIM</label>
+                        <select name="tim" id="tim" class="form-control">
+                            <option value="">All TIM</option>
+                            @foreach($tims as $tim)
+                                <option value="{{ $tim->tim }}" {{ request('tim') == $tim->tim ? 'selected' : '' }}>{{ $tim->tim }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label for="task_name">Filter by Task Name</label>
+                        <input type="text" name="task_name" id="task_name" class="form-control" value="{{ request('task_name') }}" placeholder="Search by Task Name">
+                    </div>
+                    <div class="col">
+                        <button type="submit" class="btn btn-primary">Filter</button>
+                    </div>
+                </div>
+            </form>
         </div>
         <button id="toggle-columns" class="btn btn-info">Show All Columns</button>
     </div>
@@ -19,8 +39,8 @@
     <table class="table table-bordered">
         <thead>
             <tr>
+                <th>TIM</th>
                 <th>Task Name</th>
-                <th class="extra-columns">TIM</th>
                 <th class="extra-columns">Leader Name</th>
                 <th class="extra-columns">Start Date</th>
                 <th class="extra-columns">End Date</th>
@@ -34,8 +54,8 @@
         <tbody>
             @foreach($assignments as $assignment)
                 <tr>
+                    <td>{{ $assignment->task->tim }}</td>
                     <td>{{ $assignment->task->name }}</td>
-                    <td class="extra-columns">{{ $assignment->task->tim }}</td>
                     <td class="extra-columns">{{ $assignment->task->leader->name }}</td>
                     <td class="extra-columns">{{ $assignment->task->start_date }}</td>
                     <td class="extra-columns">{{ $assignment->task->end_date }}</td>
@@ -56,12 +76,16 @@
         </tbody>
     </table>
     
+    {{ $assignments->appends(request()->query())->links() }}
+    
+    <div class="d-flex justify-content-end">
+        <a href="{{ url('/') }}" class="btn btn-secondary">Back to Homepage</a>
+    </div>
 </div>
 
-<!-- Pagination links -->
-{{ $assignments->links() }}
-
-<div class="d-flex justify-content-end">
-    <a href="{{ url('/') }}" class="btn btn-secondary">Back to Homepage</a>
-</div>
+<script>
+    $(document).ready(function() {
+        $('.select2').select2();
+    });
+</script>
 @endsection
