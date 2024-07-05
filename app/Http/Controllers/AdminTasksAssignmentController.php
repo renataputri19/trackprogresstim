@@ -11,12 +11,28 @@ use Carbon\Carbon;
 
 class AdminTasksAssignmentController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $userId = Auth::id();
-        $tasks = TasksAssignment::where('leader_id', $userId)->paginate(10);
-        return view('admin.tasks.index', compact('tasks'));
+        $query = TasksAssignment::where('leader_id', $userId);
+        
+        if ($request->filled('tim')) {
+            $query->where('tim', $request->tim);
+        }
+    
+        if ($request->filled('task_name')) {
+            $query->where('name', 'like', '%' . $request->task_name . '%');
+        }
+    
+        $tasks = $query->orderBy('tim')->orderBy('name')->paginate(10);
+    
+        // Get unique TIMs for the filter
+        $tims = TasksAssignment::select('tim')->distinct()->get();
+    
+        return view('admin.tasks.index', compact('tasks', 'tims'));
     }
+    
+    
     
     public function create()
     {
@@ -97,11 +113,27 @@ class AdminTasksAssignmentController extends Controller
     
 
     // Superadmin functions
-    public function superadminIndex()
+    public function superadminIndex(Request $request)
     {
-        $tasks = TasksAssignment::with('leader', 'userAssignments.user')->paginate(10);
-        return view('admin.superadmin.tasks.index', compact('tasks'));
+        $query = TasksAssignment::with('leader', 'userAssignments.user');
+        
+        if ($request->filled('tim')) {
+            $query->where('tim', $request->tim);
+        }
+    
+        if ($request->filled('task_name')) {
+            $query->where('name', 'like', '%' . $request->task_name . '%');
+        }
+    
+        $tasks = $query->orderBy('tim')->orderBy('name')->paginate(10);
+        
+        // Get unique TIMs for the filter
+        $tims = TasksAssignment::select('tim')->distinct()->get();
+    
+        return view('admin.superadmin.tasks.index', compact('tasks', 'tims'));
     }
+    
+    
 
     public function superadminCreate()
     {
@@ -156,13 +188,34 @@ class AdminTasksAssignmentController extends Controller
     }
        
 
-    public function assignedTasks()
+    public function assignedTasks(Request $request)
     {
         $user = Auth::user();
-        $assignments = UserAssignment::where('user_id', $user->id)->with('task')->paginate(10);
+        $query = UserAssignment::where('user_id', $user->id)->with('task');
     
-        return view('admin.assigned-tasks.index', compact('assignments'));
+        if ($request->filled('tim')) {
+            $query->whereHas('task', function($q) use ($request) {
+                $q->where('tim', $request->tim);
+            });
+        }
+    
+        if ($request->filled('task_name')) {
+            $query->whereHas('task', function($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->task_name . '%');
+            });
+        }
+    
+        $assignments = $query->orderBy(TasksAssignment::select('tim')->whereColumn('tasks_assignments.id', 'user_assignments.task_id'))
+                             ->orderBy(TasksAssignment::select('name')->whereColumn('tasks_assignments.id', 'user_assignments.task_id'))
+                             ->paginate(10);
+    
+        // Get unique TIMs for the filter
+        $tims = TasksAssignment::select('tim')->distinct()->get();
+    
+        return view('admin.assigned-tasks.index', compact('assignments', 'tims'));
     }
+    
+    
     
     public function calendarEvents(Request $request)
     {
