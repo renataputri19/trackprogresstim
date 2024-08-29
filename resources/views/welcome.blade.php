@@ -13,74 +13,52 @@
             </div>
         </div>
 
-        {{-- <div class="row text-center mb-4">
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title"><i class="fas fa-tasks"></i> Total Tasks</h5>
-                        <p class="card-text display-4">{{ 2 }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title"><i class="fas fa-check-circle"></i> Completed Tasks</h5>
-                        <p class="card-text display-4">{{  2 }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title"><i class="fas fa-bell"></i> Upcoming Deadlines</h5>
-                        <p class="card-text display-4">{{  2 }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title"><i class="fas fa-chart-line"></i> Progress</h5>
-                        <p class="card-text display-4">{{  2 }}%</p>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
-
-        <div class="row mb-4">
+        <div class="row">
+            <!-- Company Overview Dashboard -->
             <div class="col-md-4">
-                <div class="card">
+                <div class="card shadow-sm">
                     <div class="card-body text-center">
-                        <h5 class="card-title"><i class="fas fa-chart-pie"></i> Dashboard</h5>
-                        <p class="card-text">View task progress and details.</p>
-                        <a href="{{ route(auth()->user()->is_admin ? 'admin.dashboard' : 'user.dashboard') }}" class="btn btn-primary">Go to Dashboard</a>
+                        <h5 class="card-title"><i class="fas fa-chart-line fa-2x text-primary"></i></h5>
+                        <h5 class="card-title mt-3">Company Dashboard</h5>
+                        <p class="card-text">View and analyze the overall progress of all teams and projects.</p>
+                        <a href="{{ route('admin.dashboard') }}" class="btn btn-primary">Go to Company Dashboard</a>
                     </div>
                 </div>
             </div>
+        
+            <!-- User-Specific Dashboard -->
             <div class="col-md-4">
-                <div class="card">
+                <div class="card shadow-sm">
                     <div class="card-body text-center">
-                        <h5 class="card-title"><i class="fas fa-tasks"></i> Task Management</h5>
-                        <p class="card-text">Manage and assign tasks.</p>
-                        <a href="{{ route(auth()->user()->is_admin ? 'admin.tasks.index' : 'user.tasks.index') }}" class="btn btn-primary">Go to Tasks</a>
+                        <h5 class="card-title"><i class="fas fa-user fa-2x text-success"></i></h5>
+                        <h5 class="card-title mt-3">My Dashboard</h5>
+                        <p class="card-text">Monitor your personal tasks and track your individual progress.</p>
+                        <a href="{{ route('user.dashboard') }}" class="btn btn-success">Go to My Dashboard</a>
                     </div>
                 </div>
             </div>
+        
+            <!-- Task Management -->
             <div class="col-md-4">
-                <div class="card">
+                <div class="card shadow-sm">
                     <div class="card-body text-center">
-                        <h5 class="card-title"><i class="fas fa-link"></i> Other Apps & Links</h5>
-                        <p class="card-text">Access other applications and resources.</p>
-                        <a href="#links-apps" class="btn btn-primary">View Links</a>
+                        <h5 class="card-title"><i class="fas fa-tasks fa-2x text-warning"></i></h5>
+                        <h5 class="card-title mt-3">Task Management</h5>
+                        <p class="card-text">Create, assign, and manage tasks efficiently to ensure timely completion.</p>
+                        @if(Auth::user()->is_admin)
+                            <a href="{{ route('admin.tasks.index') }}" class="btn btn-warning">Manage Tasks</a>
+                        @else
+                            <a href="{{ route('user.tasks.index') }}" class="btn btn-warning">View My Tasks</a>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
         
+
         
 
-        <div id="links-apps" class="bg-white shadow p-5 rounded-lg d-flex align-items-center mt-3 mb-5">
+        <div id="links-apps" class="bg-white shadow p-5 rounded-lg d-flex align-items-center mt-5 mb-5">
             <div class="container">
                 <h1>Link dan Aplikasi</h1>
                 
