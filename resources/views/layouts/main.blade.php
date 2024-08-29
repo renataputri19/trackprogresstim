@@ -17,21 +17,34 @@
         <div class="container">
             <div class="d-flex justify-content-between align-items-center py-3">
                 <a href="{{ url('/') }}" class="h4 text-decoration-none text-dark">RENTAK</a>
-
+    
                 <nav>
-                    
-                    
                     @guest
                         <a href="#about-us" class="mr-3">About Us</a>
                         <a href="#how-it-works" class="mr-3">How it works</a>
-                        <a href="#links-apps" class="mr-3">Link Apps</a>
-                        <a href="#dashboard" class="mr-3">Dashboard</a>
+                        {{-- <a href="#links-apps" class="mr-3">Link Apps</a>
+                        <a href="#dashboard" class="mr-3">Dashboard</a> --}}
                         <a href="{{ route('login') }}" class="btn btn-dark">Login</a>
                         {{-- <a href="{{ route('register') }}" class="btn btn-dark">Sign Up</a> --}}
-                        
                     @else
                         <span class="mr-3">Welcome, {{ Auth::user()->name }}</span>
+    
+                        <!-- Home link -->
+                        <a href="{{ route('welcome') }}" class="mr-3">Home</a>
+    
+                        <!-- Unified Dashboard link -->
+                        <a href="{{ route('admin.dashboard') }}" class="mr-3">Dashboard</a>
+    
+                        <!-- My Dashboard link (user-specific) -->
+                        <a href="{{ route('user.dashboard') }}" class="mr-3">My Dashboard</a>
+    
+                        <!-- Link Apps section -->
+                        {{-- <a href="#links-apps" class="mr-3">Link Apps</a> --}}
+    
+                        <!-- Tasks link -->
                         <a href="{{ route(auth()->user()->is_admin ? 'admin.tasks.index' : 'user.tasks.index') }}" class="mr-3">Tasks</a>
+    
+                        <!-- Logout -->
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf
                         </form>

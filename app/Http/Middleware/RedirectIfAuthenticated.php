@@ -19,11 +19,7 @@ class RedirectIfAuthenticated
     {
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                $user = Auth::user();
-                if ($user->is_admin) {
-                    return redirect('/admin/tasks');
-                }
-                return redirect('/home');
+                return redirect('/welcome');
             }
         }
 
