@@ -18,7 +18,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/home';
+    public const HOME = '/welcome';
 
     /**
      * Define your route model bindings, pattern filters, and other route configuration.
@@ -41,11 +41,6 @@ class RouteServiceProvider extends ServiceProvider
 
     public static function home()
     {
-        $user = Auth::user();
-        if ($user && $user->is_admin) {
-            return '/admin/tasks';
-        }
-
-        return '/tasks';
+        return self::HOME;
     }
 }

@@ -69,5 +69,10 @@ public function index(Request $request)
 
         return back()->with('success', 'Task deleted successfully');
     }
+
+    public function dashboard()
+    {
+        return view('user.dashboard');
+    }
 }
 

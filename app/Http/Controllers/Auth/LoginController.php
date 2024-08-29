@@ -26,7 +26,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/welcome';
 
     /**
      * Create a new controller instance.
@@ -39,14 +39,14 @@ class LoginController extends Controller
         $this->middleware('auth')->only('logout');
     }
 
-    public function redirectTo()
-    {
-        // Check user role and redirect accordingly
-        $user = Auth::user();
-        if ($user->is_admin) {
-            return '/admin/tasks';
-        }
-
-        return '/tasks';
-    }
+   // Override redirectTo method to handle role-based redirection
+   protected function redirectTo()
+   {
+       $user = Auth::user();
+       if ($user->is_admin) {
+           return '/admin/dashboard';
+       } else {
+           return '/user/dashboard';
+       }
+   }
 }
