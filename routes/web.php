@@ -77,6 +77,9 @@ Route::middleware(['auth'])->group(function () {
         
         // Fetch Calendar Events
         Route::get('calendar/events', [AdminTasksAssignmentController::class, 'calendarEvents'])->name('calendar.events');
+
+        // Calendar Events for Gantt chart
+        Route::get('calendar/gantt-chart', [AdminTasksAssignmentController::class, 'ganttChartEvents'])->name('calendar.gantt_chart');
     });
 
     Route::prefix('user')->name('user.')->group(function () {

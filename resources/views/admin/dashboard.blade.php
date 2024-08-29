@@ -48,6 +48,29 @@
         </div>
     </div>
 
+
+    <div class="container">
+        <h1>Gantt Chart Dashboard</h1>
+    
+        <!-- TIM Filter -->
+        <div class="form-group">
+            <label for="tim-filter">Filter by TIM</label>
+            <select class="form-control" id="tim-filter">
+                <option value="">All TIM</option>
+                <option value="SUBBAGIAN UMUM">SUBBAGIAN UMUM</option>
+                <option value="TIM SOSIAL">TIM SOSIAL</option>
+                <option value="TIM PRODUKSI">TIM PRODUKSI</option>
+                <option value="TIM DISTRIBUSI">TIM DISTRIBUSI</option>
+                <option value="TIM NERWILIS">TIM NERWILIS</option>
+                <option value="TIM PENGOLAHAN DAN IT">TIM PENGOLAHAN DAN IT</option>
+            </select>
+        </div>
+    
+        <!-- Gantt chart container -->
+        <div id="gantt_here" style="width:100%; height:500px;"></div>
+    </div>
+    
+
     <!-- Add more sections or widgets as needed -->
 
     <div class="container">
@@ -97,6 +120,36 @@
         }
     });
 </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        gantt.config.columns = [
+            { name: "text", label: "Task Name", width: "*", tree: true },
+            { name: "start_date", label: "Start Date", align: "center" },
+            { name: "duration", label: "Duration", align: "center" },
+            { name: "progress", label: "Progress", align: "center" },
+            { name: "add", label: "" }
+        ];
+
+        gantt.init("gantt_here");
+
+        gantt.load("/admin/calendar/gantt-chart"); // This should load the adjusted data
+
+        // Handle filtering based on TIM
+        document.getElementById('tim-filter').addEventListener('change', function() {
+            let tim = this.value;
+            gantt.clearAll();
+            gantt.load("/admin/calendar/gantt-chart?tim=" + tim); // Load filtered data
+        });
+
+        // Optional: Configure tooltip for better UX
+        gantt.templates.tooltip_text = function(start, end, task) {
+            return `<b>Task:</b> ${task.text}<br/><b>Start date:</b> ${task.start_date}<br/><b>Progress:</b> ${(task.progress * 100).toFixed(2)}%`;
+        };
+    });
+
+</script>
+
 @endsection
 
 

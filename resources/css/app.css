@@ -105,6 +105,77 @@
     text-decoration: underline;
 }
 
+.nav-link {
+    color: black;
+    text-decoration: none;
+    font-weight: normal;
+}
+
+.nav-link.active {
+    font-weight: bold;
+    border-bottom: 2px solid blue; /* Or any other indication of active state */
+    color: blue; /* Changes color for the active state */
+}
+
+.nav-link:hover {
+    text-decoration: none;
+    color: darkblue;
+}
+
+a.h4 {
+    font-weight: bold;
+    color: black !important;
+}
+
+nav a {
+    color: #007bff;
+    font-weight: 500;
+}
+
+nav a.active {
+    color: #0056b3;
+    font-weight: bold;
+    border-bottom: 2px solid #0056b3;
+}
+
+.dropdown-toggle::after {
+    margin-left: .255em;
+    vertical-align: .255em;
+    content: "";
+    border-top: .3em solid;
+    border-right: .3em solid transparent;
+    border-left: .3em solid transparent;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0; /* Aligns the dropdown menu to the left */
+    z-index: 1000;
+    display: none;
+    float: left;
+    min-width: 10rem;
+    padding: .5rem 0;
+    margin: .125rem 0 0;
+    font-size: 1rem;
+    color: #212529;
+    text-align: left;
+    list-style: none;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: .25rem;
+}
+
+.dropdown-menu.show {
+    display: block;
+    left: 0; /* Ensures the menu stays left-aligned when displayed */
+}
+
+
+
+
+
 
 
 
