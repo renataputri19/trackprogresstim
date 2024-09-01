@@ -247,36 +247,55 @@ class AdminTasksAssignmentController extends Controller
     }
     
     public function ganttChartEvents(Request $request)
-{
-    $query = TasksAssignment::with('userAssignments');
-
-    if ($request->has('tim') && $request->tim) {
-        $query->where('tim', $request->tim);
+    {
+        $query = TasksAssignment::with('userAssignments');
+    
+        if ($request->has('tim') && $request->tim) {
+            $query->where('tim', $request->tim);
+        }
+    
+        $tasks = $query->get();
+    
+        $ganttTasks = [];
+    
+        foreach ($tasks as $task) {
+            $start = Carbon::parse($task->start_date);
+            $end = Carbon::parse($task->end_date);
+            $duration = $start->diffInDays($end) + 1; // Ensure duration is calculated correctly
+    
+            $progressPercentage = ($task->progress_total / $task->target) * 100;
+    
+            $ganttTasks[] = [
+                'id' => $task->id, // Unique identifier for the task
+                'text' => $task->name, // Task name
+                'start_date' => $start->format('Y-m-d H:i'), // Ensure the format is 'YYYY-MM-DD HH:mm'
+                'duration' => $duration, // Duration in days
+                'progress' => $progressPercentage / 100, // Progress as a decimal
+                'parent' => 0, // Assuming no parent tasks; use appropriate value if you have parent-child relationships
+            ];
+        }
+    
+        return response()->json(['data' => $ganttTasks]);
     }
-
-    $tasks = $query->get();
-
-    $ganttTasks = [];
-
-    foreach ($tasks as $task) {
-        $start = Carbon::parse($task->start_date);
-        $end = Carbon::parse($task->end_date);
-        $duration = $start->diffInDays($end) + 1; // Gantt expects duration in days
-
-        $progressPercentage = ($task->progress_total / $task->target) * 100;
-
-        $ganttTasks[] = [
-            'id' => $task->id, // Unique identifier for the task
-            'text' => $task->name, // Task name
-            'start_date' => $start->format('Y-m-d H:i'), // Start date in the required format
-            'duration' => $duration, // Duration in days
-            'progress' => $progressPercentage / 100, // Progress as a decimal
-            'parent' => 0, // Assuming no parent tasks; use appropriate value if you have parent-child relationships
-        ];
+    
+    public function updateGantt(Request $request)
+    {
+        $task = TasksAssignment::find($request->id);
+        if ($task) {
+            $task->name = $request->text;
+            $task->start_date = $request->start_date;
+            $task->end_date = Carbon::parse($request->start_date)->addDays($request->duration)->format('Y-m-d');
+            $task->progress_total = $request->progress * $task->target; // Update total progress
+            $task->save();
+    
+            return response()->json(['status' => 'success']);
+        } else {
+            return response()->json(['status' => 'error', 'message' => 'Task not found']);
+        }
     }
-
-    return response()->json(['data' => $ganttTasks]);
-}
+    
+    
+    
     
     
     public function dashboard()
