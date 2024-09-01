@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>@yield('title', 'Rentak')</title>
     @vite('resources/css/app.css')
     @vite('resources/css/homepage.css')
@@ -121,6 +123,9 @@
         </div>
     </footer>
 
+
+    <input type="hidden" value="{{ route('admin.gantt.update') }}" id="routing-gantt-update">
+
     @vite('resources/js/app.js')
     @vite('resources/js/homepage.js')
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -131,6 +136,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.js"></script>
     <script src="{{ asset('js/date.js') }}"></script>
     <script src="{{ asset('js/columns-toggle.js') }}"></script>
+    <script src="{{ asset('js/gantt_initialization.js') }}"></script>
 
     <script>
         $(document).ready(function() {

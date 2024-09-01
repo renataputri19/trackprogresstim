@@ -121,34 +121,6 @@
     });
 </script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        gantt.config.columns = [
-            { name: "text", label: "Task Name", width: "*", tree: true },
-            { name: "start_date", label: "Start Date", align: "center" },
-            { name: "duration", label: "Duration", align: "center" },
-            { name: "progress", label: "Progress", align: "center" },
-            { name: "add", label: "" }
-        ];
-
-        gantt.init("gantt_here");
-
-        gantt.load("/admin/calendar/gantt-chart"); // This should load the adjusted data
-
-        // Handle filtering based on TIM
-        document.getElementById('tim-filter').addEventListener('change', function() {
-            let tim = this.value;
-            gantt.clearAll();
-            gantt.load("/admin/calendar/gantt-chart?tim=" + tim); // Load filtered data
-        });
-
-        // Optional: Configure tooltip for better UX
-        gantt.templates.tooltip_text = function(start, end, task) {
-            return `<b>Task:</b> ${task.text}<br/><b>Start date:</b> ${task.start_date}<br/><b>Progress:</b> ${(task.progress * 100).toFixed(2)}%`;
-        };
-    });
-
-</script>
 
 @endsection
 
