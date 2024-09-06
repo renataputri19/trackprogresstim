@@ -23,10 +23,10 @@
         <div class="form-row align-items-end">
             <div class="col">
                 <label for="tim">Filter by TIM</label>
-                <select name="tim" id="tim" class="form-control">
+                <select name="tim_id" id="tim" class="form-control">
                     <option value="">All TIM</option>
                     @foreach($tims as $tim)
-                        <option value="{{ $tim->tim }}" {{ request('tim') == $tim->tim ? 'selected' : '' }}>{{ $tim->tim }}</option>
+                        <option value="{{ $tim->id }}" {{ request('tim_id') == $tim->id ? 'selected' : '' }}>{{ $tim->name }}</option>
                     @endforeach
                 </select>
             </div>
@@ -39,6 +39,7 @@
             </div>
         </div>
     </form>
+    
 
     <table class="table table-striped">
         <thead>
@@ -57,7 +58,7 @@
         <tbody>
             @foreach($tasks as $task)
                 <tr>
-                    <td>{{ $task->tim }}</td>
+                    <td>{{ $task->tim ? $task->tim->name : 'No TIM Assigned' }}</td>
                     <td>{{ $task->leader->name }}</td>
                     <td>{{ $task->name }}</td>
                     <td class="extra-columns">{{ $task->start_date }}</td>

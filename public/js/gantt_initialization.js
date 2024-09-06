@@ -1,10 +1,16 @@
 document.addEventListener('DOMContentLoaded', function() {
     gantt.config.date_format = "%Y-%m-%d %H:%i";
     gantt.config.columns = [
-        { name: "text", label: "Task Name", width: "*", tree: true },
-        { name: "start_date", label: "Start Date", align: "center" },
-        { name: "duration", label: "Duration", align: "center" },
-        { name: "progress", label: "Progress", align: "center" },
+        { name: "text", label: "Task Name", tree: true, width: '*' },  // Enable tree view for TIM groups and tasks
+        { name: "start_date", label: "Start Date", align: "center", width: 80, template: function(task) {
+            return task.start_date || ''; // Show empty if no start_date (for TIM rows)
+        }},
+        { name: "duration", label: "Duration", align: "center", width: 60, template: function(task) {
+            return task.duration || ''; // Show empty if no duration (for TIM rows)
+        }},
+        { name: "progress", label: "Progress", align: "center", width: 60, template: function(task) {
+            return task.progress ? (task.progress * 100).toFixed(2) + '%' : ''; // Show empty if no progress
+        }},
         { name: "add", label: "" }
     ];
 
@@ -54,20 +60,27 @@ document.addEventListener('DOMContentLoaded', function() {
     // });
     
     
-    gantt.attachEvent("onTaskClick", function(id) {
-        gantt.showLightbox(id);
+    gantt.attachEvent("onAfterTaskUpdate", function(id, item){
+        gantt.message("Task has been updated!");
+        gantt.hideLightbox();
         return true;
     });
     
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
     
     
 
     // Handle filtering based on TIM
     document.getElementById('tim-filter').addEventListener('change', function() {
-        let tim = this.value;
-        gantt.clearAll();
-        gantt.load("/admin/calendar/gantt-chart?tim=" + tim); // Load filtered data
+        let tim = this.value || ''; // Default to an empty string if no value is selected
+        gantt.clearAll(); // Clear the existing data
+        gantt.load("/admin/calendar/gantt-chart?tim=" + tim); // Load filtered data with TIM
     });
+
 
     // Optional: Configure tooltip for better UX
     gantt.templates.tooltip_text = function(start, end, task) {

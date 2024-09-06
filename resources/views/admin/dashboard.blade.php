@@ -3,6 +3,8 @@
 @section('title', 'Admin Dashboard')
 
 @section('content')
+
+
 <div class="container">
     <h2 class="my-4">Admin Dashboard</h2>
 
@@ -73,7 +75,7 @@
 
     <!-- Add more sections or widgets as needed -->
 
-    <div class="container">
+    {{-- <div class="container">
         <h1>Dashboard</h1>
     
         <!-- TIM Filter -->
@@ -91,7 +93,7 @@
         </div>
     
         <div id="calendar"></div>
-    </div>
+    </div> --}}
 
 </div>
 

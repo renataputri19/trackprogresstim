@@ -20,14 +20,12 @@
         @csrf
         @method('PUT')
         <div class="form-group">
-            <label for="tim">TIM</label>
-            <select class="form-control" id="tim" name="tim" required>
-                <option value="SUBBAGIAN UMUM" {{ $task->tim == 'SUBBAGIAN UMUM' ? 'selected' : '' }}>SUBBAGIAN UMUM</option>
-                <option value="TIM SOSIAL" {{ $task->tim == 'TIM SOSIAL' ? 'selected' : '' }}>TIM SOSIAL</option>
-                <option value="TIM PRODUKSI" {{ $task->tim == 'TIM PRODUKSI' ? 'selected' : '' }}>TIM PRODUKSI</option>
-                <option value="TIM DISTRIBUSI" {{ $task->tim == 'TIM DISTRIBUSI' ? 'selected' : '' }}>TIM DISTRIBUSI</option>
-                <option value="TIM NERWILIS" {{ $task->tim == 'TIM NERWILIS' ? 'selected' : '' }}>TIM NERWILIS</option>
-                <option value="TIM PENGOLAHAN DAN IT" {{ $task->tim == 'TIM PENGOLAHAN DAN IT' ? 'selected' : '' }}>TIM PENGOLAHAN DAN IT</option>
+            <label for="tim_id">TIM</label>
+            <select class="form-control" id="tim_id" name="tim_id" required>
+                <option value="" disabled>Select TIM</option>
+                @foreach($tims as $tim)
+                    <option value="{{ $tim->id }}" {{ $task->tim_id == $tim->id ? 'selected' : '' }}>{{ $tim->name }}</option>
+                @endforeach
             </select>
         </div>
         <div class="form-group">

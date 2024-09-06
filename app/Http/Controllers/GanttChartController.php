@@ -27,9 +27,21 @@ class GanttChartController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    // Store a new task
     public function store(Request $request)
     {
-        //
+        $task = new TasksAssignment();
+
+        $task->name = $request->text;
+        $task->start_date = $request->start_date;
+        $task->end_date = Carbon::parse($request->start_date)->addDays($request->duration - 1)->format('Y-m-d'); // Adjusting end date
+        $task->progress_total = $request->has('progress') ? $request->progress * $task->target : 0;
+        $task->save();
+
+        return response()->json([
+            "action" => "inserted",
+            "tid" => $task->id
+        ]);
     }
 
     /**
@@ -51,29 +63,36 @@ class GanttChartController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, TasksAssignment $tasksAssignment)
+    // Update an existing task
+    public function update($id, Request $request)
     {
+        $task = TasksAssignment::find($id);
 
-        if ($tasksAssignment) {
-            $tasksAssignment->name = $request->text;
-            $tasksAssignment->start_date = $request->start_date;
-            $tasksAssignment->end_date = Carbon::parse($request->start_date)->addDays($request->duration)->format('Y-m-d');
-            $tasksAssignment->progress_total = $request->progress * $tasksAssignment->target; // Update total progress
-            $tasksAssignment->save();
-    
-            return response()->json([
-                "action"=> "updated"
-            ]);
-        } else {
-            return response()->json(['status' => 'error', 'message' => 'Task not found']);
-        }
+        $task->name = $request->text;
+        $task->start_date = $request->start_date;
+        $task->end_date = Carbon::parse($request->start_date)->addDays($request->duration - 1)->format('Y-m-d'); // Adjusting end date
+        $task->progress_total = $request->has('progress') ? $request->progress * $task->target : 0;
+        $task->save();
+
+        return response()->json([
+            "action" => "updated"
+        ]);
     }
+    
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(TasksAssignment $tasksAssignment)
+    // Delete a task
+    public function destroy($id)
     {
-        //
+        $task = TasksAssignment::find($id);
+        $task->delete();
+
+        return response()->json([
+            "action" => "deleted"
+        ]);
     }
+
+    
 }

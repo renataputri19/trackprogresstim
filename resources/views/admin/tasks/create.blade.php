@@ -18,7 +18,7 @@
 
     <form id="taskForm" action="{{ route('admin.tasks.store') }}" method="POST">
         @csrf
-        <div class="form-group">
+        {{-- <div class="form-group">
             <label for="tim">TIM</label>
             <select class="form-control" id="tim" name="tim" required>
                 <option value="" disabled selected>Select TIM</option>
@@ -29,7 +29,21 @@
                 <option value="TIM NERWILIS">TIM NERWILIS</option>
                 <option value="TIM PENGOLAHAN DAN IT">TIM PENGOLAHAN DAN IT</option>
             </select>
+        </div> --}}
+
+        <!-- TIM Dropdown populated from the database -->
+        <div class="form-group">
+            <label for="tim_id">TIM</label>
+            <select class="form-control" id="tim_id" name="tim_id" required>
+                <option value="" disabled selected>Select TIM</option>
+                @foreach($tims as $tim)
+                    <option value="{{ $tim->id }}">{{ $tim->name }}</option>
+                @endforeach
+            </select>
         </div>
+        
+
+
         <div class="form-group">
             <label for="leader_name">Leader Name</label>
             <input type="text" class="form-control" id="leader_name" name="leader_name" value="{{ $user->name }}" readonly>
