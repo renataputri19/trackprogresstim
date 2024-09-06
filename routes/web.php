@@ -8,6 +8,7 @@ use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\UserTaskController;
 use App\Http\Controllers\AdminTaskController;
 use App\Http\Controllers\UserTasksController;
+use App\Http\Controllers\GanttChartController;
 use App\Http\Controllers\TaskAssignmentController;
 use App\Http\Controllers\UserAssignmentController;
 use App\Http\Controllers\AdminTasksAssignmentController;
@@ -80,8 +81,14 @@ Route::middleware(['auth'])->group(function () {
 
         // Calendar Events for Gantt chart
         Route::get('calendar/gantt-chart', [AdminTasksAssignmentController::class, 'ganttChartEvents'])->name('calendar.gantt_chart');
-        Route::post('/admin/calendar/gantt-chart/update', [AdminTasksAssignmentController::class, 'updateGantt'])->name('gantt.update');
+        // Route::post('/admin/calendar/gantt-chart/update', [AdminTasksAssignmentController::class, 'updateGantt'])->name('gantt.update');
+        // Route::get('/admin/calendar/gantt-chart', [GanttChartController::class, 'getTasks'])->name('gantt.chart');
 
+            // Explicit routes for task management
+        Route::post('gantt-tasks', [GanttChartController::class, 'store'])->name('gantt.store');
+        Route::put('gantt-tasks/{id}', [GanttChartController::class, 'update'])->name('gantt.update');
+        Route::delete('gantt-tasks/{id}', [GanttChartController::class, 'destroy'])->name('gantt.destroy');
+        
     });
 
     Route::prefix('user')->name('user.')->group(function () {

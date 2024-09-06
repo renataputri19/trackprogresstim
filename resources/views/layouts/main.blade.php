@@ -124,7 +124,6 @@
     </footer>
 
 
-    <input type="hidden" value="{{ route('admin.gantt.update') }}" id="routing-gantt-update">
 
     @vite('resources/js/app.js')
     @vite('resources/js/homepage.js')

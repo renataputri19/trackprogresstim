@@ -15,11 +15,11 @@
             <form method="GET" action="{{ route('admin.tasks.assigned') }}">
                 <div class="form-row align-items-end">
                     <div class="col">
-                        <label for="tim">Filter by TIM</label>
-                        <select name="tim" id="tim" class="form-control">
+                        <label for="tim_id">Filter by TIM</label>
+                        <select name="tim_id" id="tim_id" class="form-control">
                             <option value="">All TIM</option>
                             @foreach($tims as $tim)
-                                <option value="{{ $tim->tim }}" {{ request('tim') == $tim->tim ? 'selected' : '' }}>{{ $tim->tim }}</option>
+                                <option value="{{ $tim->id }}" {{ request('tim_id') == $tim->id ? 'selected' : '' }}>{{ $tim->name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -54,7 +54,7 @@
         <tbody>
             @foreach($assignments as $assignment)
                 <tr>
-                    <td>{{ $assignment->task->tim }}</td>
+                    <td>{{ $assignment->task->tim->name }}</td> <!-- Use related TIM name -->
                     <td>{{ $assignment->task->name }}</td>
                     <td class="extra-columns">{{ $assignment->task->leader->name }}</td>
                     <td class="extra-columns">{{ $assignment->task->start_date }}</td>

@@ -10,7 +10,7 @@ class TasksAssignment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'leader_id', 'name', 'start_date', 'end_date', 'target', 'progress_total', 'tim'
+        'leader_id', 'name', 'start_date', 'end_date', 'target', 'progress_total', 'tim_id'
     ];
 
     public function leader()
@@ -22,6 +22,12 @@ class TasksAssignment extends Model
     {
         return $this->hasMany(UserAssignment::class, 'task_id');
     }
+
+    public function tim()
+    {
+        return $this->belongsTo(Tim::class, 'tim_id');
+    }
+       
 }
 
 

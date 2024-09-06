@@ -10,7 +10,7 @@ class UserAssignment extends Model
     use HasFactory;
 
     // UserAssignment.php
-    protected $fillable = ['task_id', 'user_id', 'target', 'progress', 'tim'];
+    protected $fillable = ['task_id', 'user_id', 'target', 'progress', 'tim_id'];
 
     public function task()
     {
@@ -21,4 +21,10 @@ class UserAssignment extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function tim()
+    {
+        return $this->belongsTo(Tim::class, 'tim_id');
+    }
+        
 }
