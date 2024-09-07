@@ -6,7 +6,7 @@
     "build": "vite build",
     "serve": "vite preview",
     "prod": "vite build"
-},
+  },
   "devDependencies": {
     "@popperjs/core": "^2.11.6",
     "axios": "^1.6.4",
@@ -30,6 +30,7 @@
     "@fullcalendar/daygrid": "^6.1.14",
     "@fullcalendar/interaction": "^6.1.14",
     "@fullcalendar/list": "^6.1.14",
-    "@fullcalendar/timegrid": "^6.1.14"
+    "@fullcalendar/timegrid": "^6.1.14",
+    "openai": "^4.58.1"
   }
 }

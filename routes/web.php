@@ -10,6 +10,7 @@ use App\Http\Controllers\AdminTaskController;
 use App\Http\Controllers\UserTasksController;
 use App\Http\Controllers\GanttChartController;
 use App\Http\Controllers\TaskAssignmentController;
+use App\Http\Controllers\TextGenerationController;
 use App\Http\Controllers\UserAssignmentController;
 use App\Http\Controllers\AdminTasksAssignmentController;
 use App\Http\Controllers\SuperAdminTasksAssignmentController;
@@ -79,8 +80,7 @@ Route::middleware(['auth'])->group(function () {
         // Fetch Calendar Events
         Route::get('calendar/events', [AdminTasksAssignmentController::class, 'calendarEvents'])->name('calendar.events');
 
-        // Calendar Events for Gantt chart
-        Route::get('calendar/gantt-chart', [AdminTasksAssignmentController::class, 'ganttChartEvents'])->name('calendar.gantt_chart');
+        
         // Route::get('tasks/gantt-chart', [AdminTasksAssignmentController::class, 'showGanttChart'])->name('tasks.gantt_chart');
         // Route::post('/admin/calendar/gantt-chart/update', [AdminTasksAssignmentController::class, 'updateGantt'])->name('gantt.update');
         // Route::get('/admin/calendar/gantt-chart', [GanttChartController::class, 'getTasks'])->name('gantt.chart');
@@ -98,6 +98,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('tasks/{task}/edit', [UserTasksController::class, 'edit'])->name('tasks.edit');
         Route::put('tasks/{task}', [UserTasksController::class, 'update'])->name('tasks.update');
         Route::delete('tasks/{task}', [UserTasksController::class, 'destroy'])->name('tasks.destroy');
+        
     });
 
     // General Dashboard Route (Accessible by all authenticated users)
@@ -107,6 +108,12 @@ Route::middleware(['auth'])->group(function () {
 
     // Admin dashboard view accessible by all authenticated users
     Route::get('/admin/dashboard', [AdminTasksAssignmentController::class, 'dashboard'])->name('admin.dashboard');
+
+    // Calendar Events for Gantt chart
+    Route::get('/admin/calendar/gantt-chart', [AdminTasksAssignmentController::class, 'ganttChartEvents'])->name('admin.calendar.gantt_chart');
+
+    Route::get('/generate-text', [TextGenerationController::class, 'showForm'])->name('generate.form');
+    Route::post('/generate-text', [TextGenerationController::class, 'generate'])->name('generate.text');
 });
 
 

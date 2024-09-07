@@ -260,15 +260,16 @@ class AdminTasksAssignmentController extends Controller
         foreach ($tasks as $timId => $timTasks) {
             $tim = Tim::find($timId); // Get the TIM by its id
     
-            // Add TIM group as a parent row with empty date, duration, and progress fields
+            // Add TIM group as a parent row with null values for start_date, duration, and progress
             $ganttTasks[] = [
                 'id' => 'tim_' . $timId, // Unique id for each TIM group
                 'text' => $tim->name, // TIM name
-                'start_date' => '', // Empty values for parent row
-                'duration' => '', // Empty values for parent row
-                'progress' => '', // Empty values for parent row
+                'start_date' => null, // Set to null for TIM row
+                'duration' => null, // Set to null for TIM row
+                'progress' => null, // Set to null for TIM row
                 'parent' => 0, // Parent is 0 for the top-level group (TIM)
-                'open' => true // Keep the TIM group expanded
+                'open' => true, // Keep the TIM group expanded
+                'ignore' => true // Tell the Gantt chart library to treat this as a group, not a task
             ];
     
             // Add tasks under the TIM group
@@ -292,6 +293,7 @@ class AdminTasksAssignmentController extends Controller
     
         return response()->json(['data' => $ganttTasks]);
     }
+    
     
     
     
