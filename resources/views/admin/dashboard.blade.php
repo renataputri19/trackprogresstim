@@ -59,12 +59,9 @@
             <label for="tim-filter">Filter by TIM</label>
             <select class="form-control" id="tim-filter">
                 <option value="">All TIM</option>
-                <option value="SUBBAGIAN UMUM">SUBBAGIAN UMUM</option>
-                <option value="TIM SOSIAL">TIM SOSIAL</option>
-                <option value="TIM PRODUKSI">TIM PRODUKSI</option>
-                <option value="TIM DISTRIBUSI">TIM DISTRIBUSI</option>
-                <option value="TIM NERWILIS">TIM NERWILIS</option>
-                <option value="TIM PENGOLAHAN DAN IT">TIM PENGOLAHAN DAN IT</option>
+                @foreach($tims as $tim)
+                    <option value="{{ $tim->id }}">{{ $tim->name }}</option>
+                @endforeach
             </select>
         </div>
     
@@ -120,6 +117,13 @@
                 }
             }
         }
+    });
+
+    document.getElementById('tim-filter').addEventListener('change', function () {
+        let timId = this.value;
+        let ganttUrl = '{{ route('admin.calendar.gantt_chart') }}' + '?tim_id=' + timId;
+        gantt.clearAll(); // Clear previous tasks
+        gantt.load(ganttUrl); // Load new tasks with filtered TIM
     });
 </script>
 

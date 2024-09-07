@@ -19,15 +19,12 @@
     <form id="taskForm" action="{{ route('admin.superadmin.tasks.store') }}" method="POST">
         @csrf
         <div class="form-group">
-            <label for="tim">TIM</label>
-            <select class="form-control" id="tim" name="tim" required>
-                <option value="">Select TIM</option>
-                <option value="SUBBAGIAN UMUM">SUBBAGIAN UMUM</option>
-                <option value="TIM SOSIAL">TIM SOSIAL</option>
-                <option value="TIM PRODUKSI">TIM PRODUKSI</option>
-                <option value="TIM DISTRIBUSI">TIM DISTRIBUSI</option>
-                <option value="TIM NERWILIS">TIM NERWILIS</option>
-                <option value="TIM PENGOLAHAN DAN IT">TIM PENGOLAHAN DAN IT</option>
+            <label for="tim_id">TIM</label>
+            <select class="form-control" id="tim_id" name="tim_id" required>
+                <option value="" disabled selected>Select TIM</option>
+                @foreach($tims as $tim)
+                    <option value="{{ $tim->id }}">{{ $tim->name }}</option>
+                @endforeach
             </select>
         </div>
         <div class="form-group">
