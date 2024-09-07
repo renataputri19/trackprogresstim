@@ -19,7 +19,7 @@
         <button id="toggle-columns" class="btn btn-info">Show All Columns</button>
     </div>
 
-    <form method="GET" action="{{ route('admin.tasks.index') }}" class="mb-3">
+    <form method="GET" action="{{ route('admin.tasks.index') }}" class="mb-3" id="filterForm">
         <div class="form-row align-items-end">
             <div class="col">
                 <label for="tim">Filter by TIM</label>
@@ -34,11 +34,10 @@
                 <label for="task_name">Filter by Task Name</label>
                 <input type="text" name="task_name" id="task_name" class="form-control" value="{{ request('task_name') }}" placeholder="Search by Task Name">
             </div>
-            <div class="col">
-                <button type="submit" class="btn btn-primary">Filter</button>
-            </div>
         </div>
     </form>
+
+    
     
 
     <table class="table table-striped">
@@ -88,8 +87,21 @@
 </div>
 
 <script>
-    $(document).ready(function() {
-        $('.select2').select2();
+    // Trigger the form submit when the TIM dropdown changes
+    document.getElementById('tim').addEventListener('change', function() {
+        document.getElementById('filterForm').submit();
+    });
+
+    // Trigger the form submit when typing in the Task Name field (after a short delay)
+    let typingTimer;
+    const doneTypingInterval = 500; // Time in ms (0.5 seconds)
+
+    document.getElementById('task_name').addEventListener('keyup', function() {
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(function() {
+            document.getElementById('filterForm').submit();
+        }, doneTypingInterval);
     });
 </script>
+
 @endsection

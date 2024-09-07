@@ -246,10 +246,10 @@ class AdminTasksAssignmentController extends Controller
     
     public function ganttChartEvents(Request $request)
     {
-        // Get tasks, grouped by TIM
+        // Get tasks, optionally filtering by TIM
         $tasks = TasksAssignment::with('userAssignments')
-            ->when($request->filled('tim_id'), function($query) use ($request) {
-                $query->where('tim_id', $request->tim_id);
+            ->when($request->filled('tim_id'), function ($query) use ($request) {
+                $query->where('tim_id', $request->tim_id); // Filter tasks by TIM if selected
             })
             ->get()
             ->groupBy('tim_id'); // Group tasks by TIM id
@@ -295,6 +295,16 @@ class AdminTasksAssignmentController extends Controller
     
     
     
+    // public function showGanttChart()
+    // {
+    //     $tims = Tim::all(); // Fetch all TIMs from the database
+    //     // dd($tims);
+    
+    //     return view('admin.dashboard', compact('tims'));
+    // }
+    
+    
+    
     
     
     // public function updateGantt(Request $request)
@@ -320,8 +330,10 @@ class AdminTasksAssignmentController extends Controller
     
     public function dashboard()
     {
-        return view('admin.dashboard');
+        $tims = Tim::all(); // Fetch all TIMs from the database
+        return view('admin.dashboard', compact('tims'));
     }
+    
     
     
 

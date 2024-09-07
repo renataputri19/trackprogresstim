@@ -75,17 +75,20 @@ document.addEventListener('DOMContentLoaded', function() {
     
 
     // Handle filtering based on TIM
-    document.getElementById('tim-filter').addEventListener('change', function() {
-        let tim = this.value || ''; // Default to an empty string if no value is selected
-        gantt.clearAll(); // Clear the existing data
-        gantt.load("/admin/calendar/gantt-chart?tim=" + tim); // Load filtered data with TIM
-    });
+    // document.getElementById('tim-filter').addEventListener('change', function() {
+    //     let tim_id = this.value || ''; // Default to an empty string if no value is selected
+    //     gantt.clearAll(); // Clear the existing data
+    //     gantt.load("/admin/calendar/gantt-chart?tim_id=" + tim_id); // Load filtered data with tim_id
+    // });
+
 
 
     // Optional: Configure tooltip for better UX
     gantt.templates.tooltip_text = function(start, end, task) {
         return `<b>Task:</b> ${task.text}<br/><b>Start date:</b> ${task.start_date}<br/><b>Progress:</b> ${(task.progress * 100).toFixed(2)}%`;
     };
+
+    
 
     
 });

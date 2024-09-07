@@ -3,31 +3,79 @@
 namespace App\Http\Controllers;
 
 use App\Models\TasksAssignment;
+use App\Models\Tim; // Import Tim model
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class GanttChartController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display the Gantt Chart Dashboard with TIM filter.
      */
     public function index()
     {
-        //
+        // // Fetch all TIMs from the 'tims' table
+        // $tims = Tim::all();
+
+        // // Pass the TIMs to the view
+        // return view('admin.dashboard', compact('tims'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Handle the Gantt chart tasks and filtering by TIM.
      */
-    public function create()
+    public function ganttChartEvents(Request $request)
     {
-        //
+        // Get tasks, grouped by TIM
+        $tasks = TasksAssignment::with('userAssignments')
+            ->when($request->filled('tim_id'), function ($query) use ($request) {
+                $query->where('tim_id', $request->tim_id);
+            })
+            ->get()
+            ->groupBy('tim_id'); // Group tasks by TIM id
+
+        $ganttTasks = [];
+
+        // Create parent rows for each TIM
+        foreach ($tasks as $timId => $timTasks) {
+            $tim = Tim::find($timId); // Get the TIM by its id
+
+            // Add TIM group as a parent row with empty date, duration, and progress fields
+            $ganttTasks[] = [
+                'id' => 'tim_' . $timId, // Unique id for each TIM group
+                'text' => $tim->name, // TIM name
+                'start_date' => '', // Empty values for parent row
+                'duration' => '', // Empty values for parent row
+                'progress' => '', // Empty values for parent row
+                'parent' => 0, // Parent is 0 for the top-level group (TIM)
+                'open' => true // Keep the TIM group expanded
+            ];
+
+            // Add tasks under the TIM group
+            foreach ($timTasks as $task) {
+                $start = Carbon::parse($task->start_date);
+                $end = Carbon::parse($task->end_date);
+                $duration = $start->diffInDays($end) + 1; // Ensure duration is calculated correctly
+
+                $progressPercentage = ($task->progress_total / $task->target) * 100;
+
+                $ganttTasks[] = [
+                    'id' => $task->id, // Unique identifier for the task
+                    'text' => $task->name, // Task name
+                    'start_date' => $start->format('Y-m-d H:i'), // Ensure the format is 'YYYY-MM-DD HH:mm'
+                    'duration' => $duration, // Duration in days
+                    'progress' => $progressPercentage / 100, // Progress as a decimal
+                    'parent' => 'tim_' . $timId // The task belongs to the TIM parent row
+                ];
+            }
+        }
+
+        return response()->json(['data' => $ganttTasks]);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created task.
      */
-    // Store a new task
     public function store(Request $request)
     {
         $task = new TasksAssignment();
@@ -45,25 +93,8 @@ class GanttChartController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Update an existing task.
      */
-    public function show(TasksAssignment $tasksAssignment)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(TasksAssignment $tasksAssignment)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    // Update an existing task
     public function update($id, Request $request)
     {
         $task = TasksAssignment::find($id);
@@ -78,12 +109,10 @@ class GanttChartController extends Controller
             "action" => "updated"
         ]);
     }
-    
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified task from storage.
      */
-    // Delete a task
     public function destroy($id)
     {
         $task = TasksAssignment::find($id);
@@ -93,6 +122,5 @@ class GanttChartController extends Controller
             "action" => "deleted"
         ]);
     }
-
-    
 }
+

@@ -81,6 +81,7 @@ Route::middleware(['auth'])->group(function () {
 
         // Calendar Events for Gantt chart
         Route::get('calendar/gantt-chart', [AdminTasksAssignmentController::class, 'ganttChartEvents'])->name('calendar.gantt_chart');
+        // Route::get('tasks/gantt-chart', [AdminTasksAssignmentController::class, 'showGanttChart'])->name('tasks.gantt_chart');
         // Route::post('/admin/calendar/gantt-chart/update', [AdminTasksAssignmentController::class, 'updateGantt'])->name('gantt.update');
         // Route::get('/admin/calendar/gantt-chart', [GanttChartController::class, 'getTasks'])->name('gantt.chart');
 

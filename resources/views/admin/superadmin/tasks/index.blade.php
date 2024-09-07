@@ -17,23 +17,20 @@
         <button id="toggle-columns" class="btn btn-info">Show All Columns</button>
     </div>
 
-    <form method="GET" action="{{ route('admin.superadmin.tasks.index') }}" class="mb-3">
+    <form method="GET" action="{{ route('admin.superadmin.tasks.index') }}" class="mb-3" id="superadminFilterForm">
         <div class="form-row align-items-end">
             <div class="col">
                 <label for="tim">Filter by TIM</label>
-                <select name="tim" id="tim" class="form-control">
+                <select name="tim_id" id="superadmin_tim" class="form-control">
                     <option value="">All TIM</option>
                     @foreach($tims as $tim)
-                        <option value="{{ $tim->tim }}" {{ request('tim') == $tim->tim ? 'selected' : '' }}>{{ $tim->tim }}</option>
+                        <option value="{{ $tim->id }}" {{ request('tim_id') == $tim->id ? 'selected' : '' }}>{{ $tim->name }}</option>
                     @endforeach
                 </select>
             </div>
             <div class="col">
                 <label for="task_name">Filter by Task Name</label>
-                <input type="text" name="task_name" id="task_name" class="form-control" value="{{ request('task_name') }}" placeholder="Search by Task Name">
-            </div>
-            <div class="col">
-                <button type="submit" class="btn btn-primary">Filter</button>
+                <input type="text" name="task_name" id="superadmin_task_name" class="form-control" value="{{ request('task_name') }}" placeholder="Search by Task Name">
             </div>
         </div>
     </form>
@@ -55,7 +52,7 @@
         <tbody>
             @foreach($tasks as $task)
                 <tr>
-                    <td>{{ $task->tim }}</td>
+                    <td>{{ $task->tim ? $task->tim->name : 'No TIM Assigned' }}</td>
                     <td>{{ $task->leader->name }}</td>
                     <td>{{ $task->name }}</td>
                     <td class="extra-columns">{{ $task->start_date }}</td>
@@ -85,8 +82,20 @@
 </div>
 
 <script>
-    $(document).ready(function() {
-        $('.select2').select2();
+    // Trigger the form submit when the TIM dropdown changes (Superadmin View)
+    document.getElementById('superadmin_tim').addEventListener('change', function() {
+        document.getElementById('superadminFilterForm').submit();
+    });
+
+    // Trigger the form submit when typing in the Task Name field (Superadmin View)
+    let superadminTypingTimer;
+    const superadminDoneTypingInterval = 500; // Time in ms (0.5 seconds)
+
+    document.getElementById('superadmin_task_name').addEventListener('keyup', function() {
+        clearTimeout(superadminTypingTimer);
+        superadminTypingTimer = setTimeout(function() {
+            document.getElementById('superadminFilterForm').submit();
+        }, superadminDoneTypingInterval);
     });
 </script>
 @endsection

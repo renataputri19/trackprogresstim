@@ -12,11 +12,11 @@
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div class="mb-3">
-            <form method="GET" action="{{ route('admin.tasks.assigned') }}">
+            <form method="GET" action="{{ route('admin.tasks.assigned') }}" id="assignedTasksFilterForm">
                 <div class="form-row align-items-end">
                     <div class="col">
                         <label for="tim_id">Filter by TIM</label>
-                        <select name="tim_id" id="tim_id" class="form-control">
+                        <select name="tim_id" id="tim" class="form-control">
                             <option value="">All TIM</option>
                             @foreach($tims as $tim)
                                 <option value="{{ $tim->id }}" {{ request('tim_id') == $tim->id ? 'selected' : '' }}>{{ $tim->name }}</option>
@@ -27,14 +27,13 @@
                         <label for="task_name">Filter by Task Name</label>
                         <input type="text" name="task_name" id="task_name" class="form-control" value="{{ request('task_name') }}" placeholder="Search by Task Name">
                     </div>
-                    <div class="col">
-                        <button type="submit" class="btn btn-primary">Filter</button>
-                    </div>
                 </div>
             </form>
         </div>
         <button id="toggle-columns" class="btn btn-info">Show All Columns</button>
     </div>
+    
+    
 
     <table class="table table-striped">
         <thead>
@@ -54,7 +53,7 @@
         <tbody>
             @foreach($assignments as $assignment)
                 <tr>
-                    <td>{{ $assignment->task->tim->name }}</td> <!-- Use related TIM name -->
+                    <td>{{ $assignment->task->tim->name ?? 'N/A' }}</td> <!-- Use related TIM name -->
                     <td>{{ $assignment->task->name }}</td>
                     <td class="extra-columns">{{ $assignment->task->leader->name }}</td>
                     <td class="extra-columns">{{ $assignment->task->start_date }}</td>
@@ -82,8 +81,20 @@
 </div>
 
 <script>
-    $(document).ready(function() {
-        $('.select2').select2();
+    // Trigger the form submit when the TIM dropdown changes
+    document.getElementById('tim').addEventListener('change', function() {
+        document.getElementById('assignedTasksFilterForm').submit();
+    });
+
+    // Trigger the form submit when typing in the Task Name field (after a short delay)
+    let typingTimer;
+    const doneTypingInterval = 500; // Time in ms (0.5 seconds)
+
+    document.getElementById('task_name').addEventListener('keyup', function() {
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(function() {
+            document.getElementById('assignedTasksFilterForm').submit();
+        }, doneTypingInterval);
     });
 </script>
 @endsection
