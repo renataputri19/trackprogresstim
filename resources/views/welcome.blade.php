@@ -91,6 +91,11 @@
                             <div class="app-icon"><i class="fas fa-balance-scale"></i></div>
                             <div class="app-title">Reformasi Birokrasi</div>
                         </a>
+                        <!-- New Link for Generate Text feature -->
+                        <a href="{{ route('generate.form') }}" class="app-item">
+                            <div class="app-icon"><i class="fas fa-file-alt"></i></div>
+                            <div class="app-title">Generate Text</div>
+                        </a>
                     </div>
                 </div>
             </div>
