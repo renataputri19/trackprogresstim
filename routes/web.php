@@ -114,6 +114,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/generate-text', [TextGenerationController::class, 'showForm'])->name('generate.form');
     Route::post('/generate-text', [TextGenerationController::class, 'generate'])->name('generate.text');
+    // Route::post('/generate-text', [TextGenerationController::class, 'scrapp'])->name('generate.text');
 });
 
 

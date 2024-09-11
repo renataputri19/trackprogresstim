@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Generate Text')
+@section('title', 'Generate Text from News')
 
 @section('content')
     <div class="container mt-5">
@@ -23,5 +23,4 @@
             <button type="submit" class="btn btn-primary mt-3">Generate Text</button>
         </form>
     </div>
-
 @endsection
