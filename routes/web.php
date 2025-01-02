@@ -14,6 +14,7 @@ use App\Http\Controllers\TextGenerationController;
 use App\Http\Controllers\UserAssignmentController;
 use App\Http\Controllers\AdminTasksAssignmentController;
 use App\Http\Controllers\SuperAdminTasksAssignmentController;
+use Filament\Facades\Filament;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,6 +45,13 @@ Route::get('/login', function () {
 })->name('login');
 
 Route::middleware(['auth'])->group(function () {
+
+    Filament::registerRoutes([
+        'panel' => 'padamunegri',
+        'middleware' => ['auth'],
+        'path' => '/padamunegri',
+    ]);
+
     Route::get('/welcome', [HomeController::class, 'welcome'])->name('welcome');
 
     Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
