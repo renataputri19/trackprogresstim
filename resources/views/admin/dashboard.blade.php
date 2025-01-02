@@ -6,7 +6,7 @@
 
 
 <div class="container">
-    <h2 class="my-4">Admin Dashboard</h2>
+    <h2 class="my-4">Dashboard</h2>
 
     <div class="row">
         <!-- Example of a Card for Overall Progress -->
@@ -52,7 +52,7 @@
 
 
     <div class="container">
-        <h1>Gantt Chart Dashboard</h1>
+        <h1>Gantt Chart</h1>
     
         <!-- TIM Filter -->
         <div class="form-group">
