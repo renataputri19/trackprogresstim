@@ -33,20 +33,15 @@ Route::get('/', function () {
 
 Auth::routes();
 
-// Route::get('/home', [HomeController::class, 'index'])->name('home');
-// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-
-
-// Route::get('register', function() {
-//     return redirect('/');
-// });
-
-// Auth::routes(['register' => false]);
-
-// Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-
+// Force redirect logged-in users from /login to /welcome
+Route::get('/login', function () {
+    if (Auth::check()) {
+        // User is already logged in, redirect to /welcome
+        return redirect()->route('welcome');
+    }
+    // Otherwise, show the login page
+    return view('auth.login');
+})->name('login');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/welcome', [HomeController::class, 'welcome'])->name('welcome');

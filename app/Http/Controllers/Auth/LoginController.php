@@ -40,13 +40,13 @@ class LoginController extends Controller
     }
 
    // Override redirectTo method to handle role-based redirection
-   protected function redirectTo()
-   {
-       $user = Auth::user();
-       if ($user->is_admin) {
-           return '/admin/dashboard';
-       } else {
-           return '/user/dashboard';
-       }
-   }
+//    protected function redirectTo()
+//    {
+//        $user = Auth::user();
+//        if ($user->is_admin) {
+//            return '/admin/dashboard';
+//        } else {
+//            return '/user/dashboard';
+//        }
+//    }
 }

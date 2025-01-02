@@ -87,7 +87,7 @@
                             <div class="app-icon"><i class="fas fa-tools"></i></div>
                             <div class="app-title">Statistik Sektoral</div>
                         </a>
-                        <a href="https://rb.bpsbatam.com/" class="app-item">
+                        {{-- <a href="https://rb.bpsbatam.com/" class="app-item">
                             <div class="app-icon"><i class="fas fa-balance-scale"></i></div>
                             <div class="app-title">Reformasi Birokrasi</div>
                         </a>
@@ -95,6 +95,11 @@
                         <a href="{{ route('generate.form') }}" class="app-item">
                             <div class="app-icon"><i class="fas fa-file-alt"></i></div>
                             <div class="app-title">Generate Text</div>
+                        </a> --}}
+                        <!-- New Link for Padamu Negri -->
+                        <a href="{{ url('/padamunegri') }}" class="app-item">
+                            <div class="app-icon"><i class="fas fa-university"></i></div>
+                            <div class="app-title">RB Padamu Negri</div>
                         </a>
                     </div>
                 </div>
