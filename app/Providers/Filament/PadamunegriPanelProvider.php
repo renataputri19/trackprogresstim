@@ -27,6 +27,7 @@ class PadamunegriPanelProvider extends PanelProvider
             ->id('padamunegri')
             ->path('padamunegri')
             ->brandName('PADAMU NEGRI') // Set the panel name here
+            ->authGuard('web')  // Add this line to use default web guard
             ->colors([
                 'primary' => Color::Amber,
             ])
