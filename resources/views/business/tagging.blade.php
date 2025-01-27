@@ -400,14 +400,14 @@
             const formData = new FormData(this);
 
             // Show loading state
-            Swal.fire({
-                title: 'Menyimpan Data',
-                html: 'Mohon tunggu sebentar...',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
+            // Swal.fire({
+            //     title: 'Menyimpan Data',
+            //     html: 'Mohon tunggu sebentar...',
+            //     allowOutsideClick: false,
+            //     didOpen: () => {
+            //         Swal.showLoading();
+            //     }
+            // });
 
             fetch(this.action, {
                     method: 'POST',
