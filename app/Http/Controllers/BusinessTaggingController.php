@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Business;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
 
 class BusinessTaggingController extends Controller
 {
@@ -34,9 +33,18 @@ class BusinessTaggingController extends Controller
 
     public function list()
     {
-        $businesses = Business::latest()->get();
+        // Get all businesses for the map
+        $allBusinesses = Business::all();
         
-        // Additional statistics could be added here if needed
-        return view('business.list', compact('businesses'));
+        // Get paginated businesses for the list
+        $businesses = Business::latest()->paginate(10);
+        
+        $stats = [
+            'total' => Business::count(),
+            'weekly' => Business::where('created_at', '>=', now()->subDays(7))->count(),
+            'daily' => Business::where('created_at', '>=', now()->subDay())->count()
+        ];
+        
+        return view('business.list', compact('businesses', 'allBusinesses', 'stats'));
     }
 }
