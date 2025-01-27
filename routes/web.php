@@ -30,7 +30,7 @@ use App\Http\Controllers\SuperAdminTasksAssignmentController;
 // Add these routes outside of any middleware group
 Route::get('/tagging', [BusinessTaggingController::class, 'index'])->name('business.tagging');
 Route::post('/business', [BusinessTaggingController::class, 'store'])->name('business.store');
-Route::get('/business/list', [BusinessTaggingController::class, 'list'])->name('business.list');
+Route::get('/tagging/data', [BusinessTaggingController::class, 'list'])->name('business.list');
 
 // Default route
 Route::get('/', function () {
