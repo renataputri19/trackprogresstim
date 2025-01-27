@@ -12,6 +12,7 @@ use App\Http\Controllers\GanttChartController;
 use App\Http\Controllers\TaskAssignmentController;
 use App\Http\Controllers\TextGenerationController;
 use App\Http\Controllers\UserAssignmentController;
+use App\Http\Controllers\BusinessTaggingController;
 use App\Http\Controllers\AdminTasksAssignmentController;
 use App\Http\Controllers\SuperAdminTasksAssignmentController;
 
@@ -25,6 +26,11 @@ use App\Http\Controllers\SuperAdminTasksAssignmentController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+// Add these routes outside of any middleware group
+Route::get('/tagging', [BusinessTaggingController::class, 'index'])->name('business.tagging');
+Route::post('/business', [BusinessTaggingController::class, 'store'])->name('business.store');
+Route::get('/business/list', [BusinessTaggingController::class, 'list'])->name('business.list');
 
 // Default route
 Route::get('/', function () {
