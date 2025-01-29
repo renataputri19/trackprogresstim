@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\KmsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\CalendarController;
@@ -50,8 +51,38 @@ Route::get('/login', function () {
 })->name('login');
 
 Route::middleware(['auth'])->group(function () {
-    
+
     Route::get('/welcome', [HomeController::class, 'welcome'])->name('welcome');
+
+    Route::prefix('kms')->name('kms.')->group(function () {
+        // Main index
+        Route::get('/', [KmsController::class, 'index'])->name('index');
+
+        // Division routes
+        Route::get('/divisions/create', [KmsController::class, 'createDivision'])->name('divisions.create');
+        Route::post('/divisions', [KmsController::class, 'storeDivision'])->name('divisions.store');
+        Route::get('/divisions/{division}', [KmsController::class, 'division'])->name('division');
+        Route::get('/divisions/{division}/edit', [KmsController::class, 'editDivision'])->name('divisions.edit');
+        Route::put('/divisions/{division}', [KmsController::class, 'updateDivision'])->name('divisions.update');
+        Route::delete('/divisions/{division}', [KmsController::class, 'destroyDivision'])->name('divisions.destroy');
+
+        // Activity routes
+        Route::get('/divisions/{division}/activities/create', [KmsController::class, 'createActivity'])->name('activities.create');
+        Route::post('/divisions/{division}/activities', [KmsController::class, 'storeActivity'])->name('activities.store');
+        Route::get('/divisions/{division}/activities/{activity}', [KmsController::class, 'activity'])->name('activity');
+        Route::get('/activities/{activity}/edit', [KmsController::class, 'editActivity'])->name('activities.edit');
+        Route::put('/activities/{activity}', [KmsController::class, 'updateActivity'])->name('activities.update');
+        Route::delete('/activities/{activity}', [KmsController::class, 'destroyActivity'])->name('activities.destroy');
+
+        // Document routes
+        Route::get('/activities/{activity}/documents/create', [KmsController::class, 'createDocument'])->name('documents.create');
+        Route::post('/activities/{activity}/documents', [KmsController::class, 'storeDocument'])->name('documents.store');
+
+        // Document routes
+        Route::get('/documents/{document}/edit', [KmsController::class, 'editDocument'])->name('documents.edit');
+        Route::put('/documents/{document}', [KmsController::class, 'updateDocument'])->name('documents.update');
+        Route::delete('/documents/{document}', [KmsController::class, 'destroyDocument'])->name('documents.destroy');
+    });
 
     Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('tasks', [AdminTasksAssignmentController::class, 'index'])->name('tasks.index');
@@ -65,7 +96,7 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('assignments/{assignment}', [UserAssignmentController::class, 'destroy'])->name('assignments.destroy');
         Route::get('assignments/{assignment}/edit', [UserAssignmentController::class, 'edit'])->name('assignments.edit');
         Route::put('assignments/{assignment}', [UserAssignmentController::class, 'update'])->name('assignments.update');
-    
+
         // Superadmin specific routes
         Route::get('/superadmin/tasks', [AdminTasksAssignmentController::class, 'superadminIndex'])->name('superadmin.tasks.index');
         Route::get('/superadmin/tasks/create', [AdminTasksAssignmentController::class, 'superadminCreate'])->name('superadmin.tasks.create');
@@ -73,25 +104,24 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/superadmin/tasks/{task}/edit', [AdminTasksAssignmentController::class, 'superadminEdit'])->name('superadmin.tasks.edit');
         Route::put('/superadmin/tasks/{task}', [AdminTasksAssignmentController::class, 'superadminUpdate'])->name('superadmin.tasks.update');
         Route::delete('/superadmin/tasks/{task}', [AdminTasksAssignmentController::class, 'destroy'])->name('superadmin.tasks.destroy');
-    
-    
-    
+
+
+
         // Admin View Assigned Tasks (same as user view)
         Route::get('assigned-tasks', [AdminTasksAssignmentController::class, 'assignedTasks'])->name('tasks.assigned');
-        
+
         // Fetch Calendar Events
         Route::get('calendar/events', [AdminTasksAssignmentController::class, 'calendarEvents'])->name('calendar.events');
 
-        
+
         // Route::get('tasks/gantt-chart', [AdminTasksAssignmentController::class, 'showGanttChart'])->name('tasks.gantt_chart');
         // Route::post('/admin/calendar/gantt-chart/update', [AdminTasksAssignmentController::class, 'updateGantt'])->name('gantt.update');
         // Route::get('/admin/calendar/gantt-chart', [GanttChartController::class, 'getTasks'])->name('gantt.chart');
 
-            // Explicit routes for task management
+        // Explicit routes for task management
         Route::post('gantt-tasks', [GanttChartController::class, 'store'])->name('gantt.store');
         Route::put('gantt-tasks/{id}', [GanttChartController::class, 'update'])->name('gantt.update');
         Route::delete('gantt-tasks/{id}', [GanttChartController::class, 'destroy'])->name('gantt.destroy');
-        
     });
 
     Route::prefix('user')->name('user.')->group(function () {
@@ -100,7 +130,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('tasks/{task}/edit', [UserTasksController::class, 'edit'])->name('tasks.edit');
         Route::put('tasks/{task}', [UserTasksController::class, 'update'])->name('tasks.update');
         Route::delete('tasks/{task}', [UserTasksController::class, 'destroy'])->name('tasks.destroy');
-        
     });
 
     // General Dashboard Route (Accessible by all authenticated users)
