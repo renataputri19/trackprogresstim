@@ -1,0 +1,182 @@
+#calendar {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 10px;
+}
+
+.fc-event {
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.fc-event .fc-event-title {
+    position: absolute;
+    width: 100%;
+    text-align: left;
+    z-index: 2;
+    color: black;
+    padding: 0 5px;
+}
+
+.fc-event .progress-bar-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.fc-event .progress-bar {
+    height: 100%;
+    background-color: #28a745;
+    z-index: 1;
+}
+
+.fc-event .progress-bar-container {
+    width: 100%;
+    height: 100%;
+    background-color: #e9ecef;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+.footer-content {
+    background-color: #343a40;
+    color: white;
+    padding: 40px 0;
+}
+
+.footer-content h5 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    color: #ffffff;
+}
+
+.footer-content a {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.footer-content a:hover {
+    text-decoration: underline;
+}
+
+.footer-content ul {
+    padding-left: 0;
+    list-style: none;
+}
+
+.footer-content ul li {
+    margin-bottom: 0.5rem;
+}
+
+.footer-content ul li a {
+    display: flex;
+    align-items: center;
+}
+
+.footer-content ul li a i {
+    margin-right: 0.5rem;
+}
+
+.footer-bottom {
+    background-color: #000000;
+    color: white;
+    padding: 20px 0;
+}
+
+.footer-bottom p {
+    margin: 0;
+    color: #ffffff;
+}
+
+.footer-bottom a {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.footer-bottom a:hover {
+    text-decoration: underline;
+}
+
+.nav-link {
+    color: black;
+    text-decoration: none;
+    font-weight: normal;
+}
+
+.nav-link.active {
+    font-weight: bold;
+    border-bottom: 2px solid blue; /* Or any other indication of active state */
+    color: blue; /* Changes color for the active state */
+}
+
+.nav-link:hover {
+    text-decoration: none;
+    color: darkblue;
+}
+
+a.h4 {
+    font-weight: bold;
+    color: black !important;
+}
+
+nav a {
+    color: #007bff;
+    font-weight: 500;
+}
+
+nav a.active {
+    color: #0056b3;
+    font-weight: bold;
+    border-bottom: 2px solid #0056b3;
+}
+
+.dropdown-toggle::after {
+    margin-left: .255em;
+    vertical-align: .255em;
+    content: "";
+    border-top: .3em solid;
+    border-right: .3em solid transparent;
+    border-left: .3em solid transparent;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0; /* Aligns the dropdown menu to the left */
+    z-index: 1000;
+    display: none;
+    float: left;
+    min-width: 10rem;
+    padding: .5rem 0;
+    margin: .125rem 0 0;
+    font-size: 1rem;
+    color: #212529;
+    text-align: left;
+    list-style: none;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: .25rem;
+}
+
+.dropdown-menu.show {
+    display: block;
+    left: 0; /* Ensures the menu stays left-aligned when displayed */
+}
+
+
+
+
+
+
+
+
+

@@ -7,8 +7,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>@yield('title', 'Rentak')</title>
-    @vite('resources/css/app.css')
-    @vite('resources/css/homepage.css')
+    {{-- @vite('resources/css/app.css') --}}
+    {{-- @vite('resources/css/homepage.css') --}}
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- FullCalendar CSS from CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.css">
@@ -17,6 +17,8 @@
     <link rel="stylesheet" href="https://cdn.dhtmlx.com/gantt/edge/dhtmlxgantt.css">
     {{-- <link href="{{ asset('css/login.css') }}" rel="stylesheet"> --}}
     <link href="{{ asset('css/kms.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/homepage.css') }}" rel="stylesheet">
 </head>
 
 <body>
