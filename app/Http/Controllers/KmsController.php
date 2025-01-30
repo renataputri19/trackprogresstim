@@ -8,15 +8,35 @@ use App\Models\Activity;
 use App\Models\ActivityDocument;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class KmsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $divisions = Division::with('activities')->get();
-        return view('kms.index', compact('divisions'));
+        
+        // Build the query for documents
+        $documentsQuery = ActivityDocument::with(['activity.division'])
+            ->orderBy('document_date', 'desc');
+        
+        // Apply date filters if provided
+        if ($request->filled('month') || $request->filled('year')) {
+            $documentsQuery->where(function($query) use ($request) {
+                if ($request->filled('month')) {
+                    $query->whereMonth('document_date', $request->month);
+                }
+                if ($request->filled('year')) {
+                    $query->whereYear('document_date', $request->year);
+                }
+            });
+        }
+        
+        // Get the filtered or recent documents
+        $recentDocuments = $documentsQuery->take(10)->get();
+        
+        return view('kms.index', compact('divisions', 'recentDocuments'));
     }
-
     public function division($slug)
     {
         $division = Division::where('slug', $slug)
