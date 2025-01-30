@@ -38,7 +38,7 @@
                         @enderror
                     </div>
                     <div class="mb-3">
-                        <label for="onedrive_link" class="form-label">OneDrive Link</label>
+                        <label for="onedrive_link" class="form-label">Link</label>
                         <input type="url" class="form-control @error('onedrive_link') is-invalid @enderror"
                             id="onedrive_link" name="onedrive_link" value="{{ old('onedrive_link') }}" required>
                         @error('onedrive_link')

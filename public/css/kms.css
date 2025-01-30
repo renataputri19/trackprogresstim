@@ -1,0 +1,188 @@
+.div-kms-container {
+    --primary: #4a90e2;
+    --secondary: #f5f6fa;
+    --border: #e9ecef;
+    --text: #2c3e50;
+    --card-bg: #ffffff;
+    padding: 1rem 1.5rem;
+    background: #f8f9fa;
+  }
+  
+  /* Header - Moved up and more prominent */
+  .div-kms-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: -1rem -1.5rem 1.5rem -1.5rem;
+    padding: 1.25rem 1.5rem;
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .div-kms-title {
+    font-size: 1.5rem;
+    color: var(--text);
+    margin: 0;
+    font-weight: 600;
+  }
+  
+  /* Filter Section - More distinct */
+  .div-kms-filters {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: var(--card-bg);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border: 1px solid var(--border);
+  }
+  
+  /* Form Controls */
+  .div-kms-form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  
+  .div-kms-form-control {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.875rem;
+    background: white;
+  }
+  
+  /* Buttons */
+  .div-kms-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .div-kms-btn-primary {
+    background: var(--primary);
+    color: white;
+  }
+  
+  .div-kms-btn-primary:hover {
+    opacity: 0.9;
+  }
+  
+  .div-kms-btn-secondary {
+    background: var(--secondary);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  
+  /* Documents Section - More visible */
+  .div-kms-documents {
+    background: var(--card-bg);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border);
+  }
+  
+  .div-kms-doc-header {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+    font-weight: 600;
+    background: var(--secondary);
+  }
+  
+  .div-kms-doc-item {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+  }
+  
+  .div-kms-doc-item:hover {
+    background: var(--secondary);
+  }
+  
+  /* Division Cards - Enhanced visibility */
+  .div-kms-divisions {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+  
+  .div-kms-division-card {
+    background: var(--card-bg);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .div-kms-division-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  
+  .div-kms-division-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--primary);
+    opacity: 0.7;
+  }
+  
+  .div-kms-division-body {
+    padding: 1rem;
+  }
+  
+  .div-kms-division-title {
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+  
+  .div-kms-division-desc {
+    font-size: 0.875rem;
+    color: #666;
+    margin-bottom: 1rem;
+  }
+  
+  .div-kms-division-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  /* Badges */
+  .div-kms-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    margin-right: 0.5rem;
+    font-weight: 500;
+  }
+  
+  .div-kms-badge-blue {
+    background: #e3f2fd;
+    color: #1976d2;
+  }
+  
+  .div-kms-badge-gray {
+    background: #f5f5f5;
+    color: #616161;
+    border: 1px solid #e0e0e0;
+  }
