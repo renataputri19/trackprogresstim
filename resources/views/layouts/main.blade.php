@@ -118,9 +118,14 @@
                     <div class="col-md-3">
                         <h5>Quick Links</h5>
                         <ul class="list-unstyled">
-                            <li><a href="https://harian2171.bpskepri.com">Laporan Harian</a></li>
-                            <li><a href="https://s.id/link_bps">Link All Aplikasi BPS</a></li>
-                            <li><a href="https://s.id/monumen">MONUMEN 2171</a></li>
+                            <li><a href="https://www.bps.go.id"
+                                    class="text-gray-400 hover:text-white transition-colors">BPS
+                                    RI</a></li>
+                            <li><a href="https://kepri.bps.go.id"
+                                    class="text-gray-400 hover:text-white transition-colors">BPS
+                                    Provinsi Kepri</a></li>
+                            <li><a href="https://batamkota.bps.go.id"
+                                    class="text-gray-400 hover:text-white transition-colors">BPS Kota Batam</a></li>
                         </ul>
                     </div>
                     <div class="col-md-3">
