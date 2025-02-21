@@ -37,6 +37,16 @@ class KmsController extends Controller
         
         return view('kms.index', compact('divisions', 'recentDocuments'));
     }
+
+
+    public function divisions()
+    {
+        $divisions = Division::with('activities')->get();
+        return view('kms.divisions.index', compact('divisions'));
+    }
+
+
+
     public function division($slug)
     {
         $division = Division::where('slug', $slug)

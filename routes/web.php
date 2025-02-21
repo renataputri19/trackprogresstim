@@ -155,6 +155,7 @@ Route::fallback(function () {
     return redirect('/');
 });
 
+Route::get('/divisions', [KMSController::class, 'divisions'])->name('kms.divisions.index');
 
 
 
