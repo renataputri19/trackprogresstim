@@ -73,11 +73,9 @@
 <!-- URL Bukti Dukung -->
 <div class="mb-4">
     <label class="block text-sm font-medium text-gray-800 dark:text-gray-200">URL Bukti Dukung</label>
-    <input type="text" 
-           name="url_bukti_dukung" 
-           value="{{ $criterion['url_bukti_dukung'] ?? '' }}" 
-           class="block w-full border border-gray-300 dark:border-gray-600 rounded-md p-2 bg-gray-200 dark:bg-gray-900 text-blue-600 dark:text-blue-400 underline"
-           style="word-wrap: break-word; word-break: break-word; overflow-wrap: anywhere;">
+    <input type="text" value="{{ $criterion['url_bukti_dukung'] }}"
+        class="block w-full border border-gray-300 dark:border-gray-600 rounded-md p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200"
+        wire:change="updateRow({{ $criterion['id'] }}, 'url_bukti_dukung', $event.target.value)">
 </div>
 
 
