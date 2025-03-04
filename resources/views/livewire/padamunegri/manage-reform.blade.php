@@ -114,22 +114,16 @@
                         </div>
                     @endif
 
-                    <!-- URL Bukti Dukung -->
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-800 dark:text-gray-200">URL Bukti Dukung</label>
-                        @if (!empty($criterion['url_bukti_dukung']))
-                            <a href="{{ $criterion['url_bukti_dukung'] }}" 
-                            class="block w-full border border-gray-300 dark:border-gray-600 rounded-md p-2 bg-gray-200 dark:bg-gray-900 text-blue-600 dark:text-blue-400 underline truncate"
-                            target="_blank"
-                            style="word-wrap: break-word; word-break: break-word; overflow-wrap: anywhere;">
-                            {{ $criterion['url_bukti_dukung'] }}
-                            </a>
-                        @else
-                            <span class="block w-full border border-gray-300 dark:border-gray-600 rounded-md p-2 bg-gray-200 dark:bg-gray-900 text-gray-500 dark:text-gray-400">
-                            No URL provided
-                            </span>
-                        @endif
-                    </div>
+<!-- URL Bukti Dukung -->
+<div class="mb-4">
+    <label class="block text-sm font-medium text-gray-800 dark:text-gray-200">URL Bukti Dukung</label>
+    <input type="text" 
+           name="url_bukti_dukung" 
+           value="{{ $criterion['url_bukti_dukung'] ?? '' }}" 
+           class="block w-full border border-gray-300 dark:border-gray-600 rounded-md p-2 bg-gray-200 dark:bg-gray-900 text-blue-600 dark:text-blue-400 underline"
+           style="word-wrap: break-word; word-break: break-word; overflow-wrap: anywhere;">
+</div>
+
 
 
 
