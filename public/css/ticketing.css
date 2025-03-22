@@ -1,0 +1,187 @@
+/* Scoped ticketing styles */
+.ticketing {
+    /* Base container styles if needed */
+}
+
+/* Ticket container */
+.ticketing .ticket-container {
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* Ticket header */
+.ticketing .ticket-header {
+    background: linear-gradient(90deg, #1976d2, #4caf50);
+    color: #fff;
+    padding: 15px;
+    border-radius: 10px 10px 0 0;
+    text-align: center;
+}
+
+/* Ticket body */
+.ticketing .ticket-body {
+    padding: 15px;
+}
+
+/* Ticket card */
+.ticketing .ticket-card {
+    background-color: #f9fafb; /* Very light grey background for subtle contrast */
+    border: 1px solid #e0e0e0; /* Subtle border for definition */
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Slightly stronger shadow for depth */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ticketing .ticket-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Stronger shadow on hover for emphasis */
+}
+
+/* Status badges */
+.ticketing .status-pending {
+    background-color: #ffca28;
+    color: #333;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+.ticketing .status-in_progress {
+    background-color: #ff9800;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+.ticketing .status-completed {
+    background-color: #4caf50;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+/* Base button style */
+.ticketing .ticketing-btn {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.ticketing .ticketing-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Primary button (professional blue) */
+.ticketing .ticketing-btn-primary {
+    background-color: #1976d2;
+    color: #fff;
+}
+
+.ticketing .ticketing-btn-primary:hover {
+    background-color: #1565c0;
+}
+
+/* Secondary button (light grey with dark text) */
+.ticketing .ticketing-btn-secondary {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+.ticketing .ticketing-btn-secondary:hover {
+    background-color: #d5d5d5;
+}
+
+/* Success button (softer green) */
+.ticketing .ticketing-btn-success {
+    background-color: #4caf50;
+    color: #fff;
+}
+
+.ticketing .ticketing-btn-success:hover {
+    background-color: #43a047;
+}
+
+/* Danger button (muted orange) */
+.ticketing .ticketing-btn-danger {
+    background-color: #f57c00;
+    color: #fff;
+}
+
+.ticketing .ticketing-btn-danger:hover {
+    background-color: #e65100;
+}
+
+/* Small button size */
+.ticketing .ticketing-btn-sm {
+    font-size: 12px;
+    padding: 6px 12px;
+}
+
+/* Large button size */
+.ticketing .ticketing-btn-lg {
+    font-size: 16px;
+    padding: 12px 24px;
+}
+
+/* Form group labels */
+.ticketing .form-group label {
+    font-weight: bold;
+    color: #555;
+}
+
+/* Images */
+.ticketing img.img-fluid {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+/* Filter section */
+.ticketing .filter-section {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Pagination */
+.ticketing .pagination {
+    justify-content: center;
+}
+
+/* Ticket code */
+.ticketing .ticket-code {
+    font-weight: bold;
+    color: #1976d2;
+    margin-bottom: 10px;
+}
+
+/* Modal content */
+.ticketing .modal-content {
+    border-radius: 10px;
+}
+
+/* Modal image */
+.ticketing .modal-img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+/* Checkbox styling */
+.ticketing .form-check {
+    margin-bottom: 10px;
+}
+
+.ticketing .form-check-label {
+    margin-left: 5px;
+}
