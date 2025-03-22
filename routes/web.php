@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request; // Use the correct Request class
 use App\Http\Controllers\KmsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TaskController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\UserAssignmentController;
 use App\Http\Controllers\BusinessTaggingController;
 use App\Http\Controllers\AdminTasksAssignmentController;
 use App\Http\Controllers\SuperAdminTasksAssignmentController;
+use App\Http\Controllers\TicketController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,9 +43,13 @@ Route::get('/', function () {
 Auth::routes();
 
 // Force redirect logged-in users from /login to /welcome
-Route::get('/login', function () {
+Route::get('/login', function (Request $request) {
     if (Auth::check()) {
-        // User is already logged in, redirect to /welcome
+        // If the user is already logged in, check for a redirect parameter
+        if ($request->has('redirect')) {
+            return redirect($request->input('redirect'));
+        }
+        // Otherwise, redirect to /welcome
         return redirect()->route('welcome');
     }
     // Otherwise, show the login page
@@ -150,10 +156,7 @@ Route::middleware(['auth'])->group(function () {
 
 
 
-// This route should be placed at the end of your route definitions
-Route::fallback(function () {
-    return redirect('/');
-});
+
 
 Route::get('/divisions', [KMSController::class, 'divisions'])->name('kms.divisions.index');
 
@@ -208,3 +211,26 @@ Route::get('/divisions', [KMSController::class, 'divisions'])->name('kms.divisio
 //     Route::get('/welcome', [HomeController::class, 'welcome'])->name('welcome');
 //     Route::get('dashboard', [AdminTasksAssignmentController::class, 'dashboard'])->name('dashboard');
 // });
+
+
+
+// Public route
+Route::get('/haloIPDS', [TicketController::class, 'index'])->name('tickets.index');
+
+// Authenticated routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/tickets/create', [TicketController::class, 'create'])->name('tickets.create');
+    Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');
+    Route::middleware('it_staff')->group(function () {
+        Route::get('/tickets/manage', [TicketController::class, 'manage'])->name('tickets.manage');
+        Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show'); // New route for viewing ticket
+        Route::put('/tickets/{ticket}', [TicketController::class, 'update'])->name('tickets.update');
+    });
+});
+
+
+
+// This route should be placed at the end of your route definitions
+Route::fallback(function () {
+    return redirect('/');
+});

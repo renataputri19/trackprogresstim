@@ -78,6 +78,7 @@
                             <div class="link-icon"><i class="fas fa-monument"></i></div>
                             <div class="link-title">MONUMEN 2171</div>
                         </a>
+
                     </div>
                 </div>
 
@@ -106,6 +107,11 @@
                         <a href="{{ route('kms.index') }}" class="app-item">
                             <div class="app-icon"><i class="fas fa-book-reader"></i></div>
                             <div class="app-title">Knowledge Management</div>
+                        </a>
+                        <!-- Inside the "Our Apps" div -->
+                        <a href="{{ url('/haloIPDS') }}" class="app-item">
+                            <div class="app-icon"><i class="fas fa-ticket-alt"></i></div>
+                            <div class="app-title">Halo IPDS - IT Tickets</div>
                         </a>
                     </div>
                 </div>

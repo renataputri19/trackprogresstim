@@ -13,5 +13,15 @@ class Tim extends Model
     {
         return $this->hasMany(TasksAssignment::class, 'tim_id');
     }
+
+    public function users()
+    {
+        return $this->hasMany(User::class, 'division_id');
+    }
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class, 'division_id');
+    }
     
 }

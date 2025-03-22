@@ -18,4 +18,9 @@ class Division extends Model
     {
         return 'slug';
     }
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
 }

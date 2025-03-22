@@ -23,6 +23,7 @@ class User extends Authenticatable implements FilamentUser
         'email',
         'password',
         'is_admin',
+        'is_it_staff',
     ];
 
     /**
@@ -52,6 +53,16 @@ class User extends Authenticatable implements FilamentUser
     public function canAccessPanel(Panel $panel): bool
     {
         return true;
+    }
+
+    public function ticketsRequested()
+    {
+        return $this->hasMany(Ticket::class, 'user_id');
+    }
+
+    public function ticketsAssigned()
+    {
+        return $this->hasMany(Ticket::class, 'it_staff_id');
     }
 }
 

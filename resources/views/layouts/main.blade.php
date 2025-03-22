@@ -15,10 +15,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.dhtmlx.com/gantt/edge/dhtmlxgantt.css">
+    <!-- Inside layouts/main.blade.php, before </body> -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     {{-- <link href="{{ asset('css/login.css') }}" rel="stylesheet"> --}}
     <link href="{{ asset('css/kms.css') }}" rel="stylesheet">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/homepage.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/ticketing.css') }}" rel="stylesheet">
 </head>
 
 <body>
@@ -157,6 +161,8 @@
     <script src="{{ asset('js/columns-toggle.js') }}"></script>
     <script src="{{ asset('js/gantt_initialization.js') }}"></script>
     <script src="{{ asset('js/kms.js') }}"></script>
+    <script src="{{ asset('js/ticketing.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
         $(document).ready(function() {
