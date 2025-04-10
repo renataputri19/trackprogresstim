@@ -18,6 +18,7 @@ use App\Http\Controllers\BusinessTaggingController;
 use App\Http\Controllers\AdminTasksAssignmentController;
 use App\Http\Controllers\SuperAdminTasksAssignmentController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\VhtsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -228,7 +229,8 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
-
+Route::get('/vhts', [VhtsController::class, 'index'])->name('vhts.index');
+Route::post('/vhts/validate', [VhtsController::class, 'processValidation'])->name('vhts.validate');
 
 // This route should be placed at the end of your route definitions
 Route::fallback(function () {
