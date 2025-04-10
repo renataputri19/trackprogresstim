@@ -24,26 +24,36 @@ class VhtsController extends Controller
         }
 
         // Parse data menjadi array
-        $rows = array_filter(explode("\n", $data));
+        $rows = array_filter(explode("\n", trim($data)));
         $parsedData = [];
         foreach ($rows as $row) {
-            $cols = array_map('trim', explode("\t", $row));
+            // Membersihkan data: ganti spasi berulang dengan satu spasi, lalu split menggunakan tab atau spasi berulang
+            $cols = preg_split('/\t|\s+/', trim($row), -1, PREG_SPLIT_NO_EMPTY);
             if (count($cols) < 12) continue; // Pastikan ada 12 kolom
 
+            // Parse kolom menjadi integer
             $parsedData[] = [
-                'tanggal' => (int)$cols[0],
-                'jumlah_kamar_tersedia' => (int)$cols[1],
-                'jumlah_tempat_tidur_tersedia' => (int)$cols[2],
-                'kamar_digunakan_kemarin' => (int)$cols[3], // Akan dihitung ulang
-                'kamar_baru_dimasuki' => (int)$cols[4],
-                'kamar_ditinggalkan' => (int)$cols[5],
-                'tamu_kemarin_asing' => (int)$cols[6], // Akan dihitung ulang
-                'tamu_kemarin_indonesia' => (int)$cols[7], // Akan dihitung ulang
-                'tamu_baru_datang_asing' => (int)$cols[8],
-                'tamu_baru_datang_indonesia' => (int)$cols[9],
-                'tamu_berangkat_asing' => (int)$cols[10],
-                'tamu_berangkat_indonesia' => (int)$cols[11],
+                'tanggal' => (int)($cols[0] ?? 0),
+                'jumlah_kamar_tersedia' => (int)($cols[1] ?? 0),
+                'jumlah_tempat_tidur_tersedia' => (int)($cols[2] ?? 0),
+                'kamar_digunakan_kemarin' => (int)($cols[3] ?? 0),
+                'kamar_baru_dimasuki' => (int)($cols[4] ?? 0),
+                'kamar_ditinggalkan' => (int)($cols[5] ?? 0),
+                'tamu_kemarin_asing' => (int)($cols[6] ?? 0),
+                'tamu_kemarin_indonesia' => (int)($cols[7] ?? 0),
+                'tamu_baru_datang_asing' => (int)($cols[8] ?? 0),
+                'tamu_baru_datang_indonesia' => (int)($cols[9] ?? 0),
+                'tamu_berangkat_asing' => (int)($cols[10] ?? 0),
+                'tamu_berangkat_indonesia' => (int)($cols[11] ?? 0),
             ];
+        }
+
+        // Jika tidak ada data yang valid, kembalikan error
+        if (empty($parsedData)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak ada data valid yang dapat diproses.',
+            ], 400);
         }
 
         // Simpan data asli sebelum perhitungan otomatis untuk perbandingan
@@ -164,7 +174,7 @@ class VhtsController extends Controller
             'message' => $finalMessage,
             'data' => $validatedData,
             'fixed' => $isValidationFixed,
-            'changes' => $changes, // Informasi tentang perubahan
+            'changes' => $changes,
         ]);
     }
 

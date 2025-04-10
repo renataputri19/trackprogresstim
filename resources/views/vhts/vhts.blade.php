@@ -115,14 +115,23 @@
                 return;
             }
 
-            // Parse data dari textarea (dipisahkan oleh tab)
-            const rows = pasteData.trim().split('\n');
+            // Parse data dari textarea
+            // Bersihkan data: ganti semua tab, spasi berulang, dan newline yang tidak diperlukan
+            const cleanedData = pasteData.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim();
+            const rows = cleanedData.split('\n');
             const parsedData = [];
-            rows.forEach(row => {
-                const cols = row.split('\t');
-                if (cols.length < 12) return; // Pastikan ada 12 kolom
+            let skippedRows = [];
 
-                parsedData.push({
+            rows.forEach((row, index) => {
+                // Membersihkan data: ganti spasi berulang dengan satu spasi, lalu split menggunakan tab atau spasi berulang
+                const cols = row.trim().split(/\t|\s+/).filter(col => col !== '');
+                if (cols.length < 12) {
+                    skippedRows.push({ row: index + 1, reason: `Jumlah kolom kurang (${cols.length} dari 12)` });
+                    return; // Lewati baris jika kolom kurang dari 12
+                }
+
+                // Parse kolom menjadi integer dan periksa NaN
+                const parsedRow = {
                     tanggal: parseInt(cols[0]),
                     jumlah_kamar_tersedia: parseInt(cols[1]),
                     jumlah_tempat_tidur_tersedia: parseInt(cols[2]),
@@ -135,8 +144,38 @@
                     tamu_baru_datang_indonesia: parseInt(cols[9]),
                     tamu_berangkat_asing: parseInt(cols[10]),
                     tamu_berangkat_indonesia: parseInt(cols[11]),
+                };
+
+                // Periksa apakah ada NaN di kolom yang diparse
+                const nanColumns = [];
+                Object.entries(parsedRow).forEach(([key, val], colIndex) => {
+                    if (isNaN(val)) {
+                        nanColumns.push(`${key} (kolom ${colIndex + 1})`);
+                    }
                 });
+
+                if (nanColumns.length > 0) {
+                    skippedRows.push({ row: index + 1, reason: `Data tidak valid di kolom: ${nanColumns.join(', ')}` });
+                    return; // Lewati baris jika ada NaN
+                }
+
+                parsedData.push(parsedRow);
             });
+
+            // Tampilkan pesan jika ada baris yang dilewati
+            const messageDiv = document.getElementById('validationMessage');
+            if (skippedRows.length > 0) {
+                const skipMessages = skippedRows.map(item => `Baris ${item.row}: ${item.reason}`).join('<br>');
+                messageDiv.innerHTML = `<div class="alert alert-warning">${skipMessages}</div>`;
+            } else {
+                messageDiv.innerHTML = '';
+            }
+
+            // Jika tidak ada data yang valid, beri peringatan
+            if (parsedData.length === 0) {
+                alert('Tidak ada data valid yang dapat ditampilkan. Pastikan data yang dipaste lengkap dan berisi angka.');
+                return;
+            }
 
             // Simpan data awal untuk perbandingan
             originalData = parsedData;
