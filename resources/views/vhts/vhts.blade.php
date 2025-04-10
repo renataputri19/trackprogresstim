@@ -50,12 +50,15 @@
 
     <!-- JavaScript untuk menangani paste data dan mengisi tabel -->
     <script>
+        // Simpan data awal untuk perbandingan
+        let originalData = [];
+
         // Fungsi untuk mengisi tabel dengan data
-        function fillTable(data) {
+        function fillTable(data, changes = {}) {
             const tbody = document.getElementById('vhtsTableBody');
             tbody.innerHTML = ''; // Kosongkan tabel sebelumnya
 
-            data.forEach(row => {
+            data.forEach((row, rowIndex) => {
                 const tr = document.createElement('tr');
                 const cols = [
                     row.tanggal,
@@ -72,9 +75,32 @@
                     row.tamu_berangkat_indonesia,
                 ];
 
-                cols.forEach(col => {
+                const colKeys = [
+                    'tanggal',
+                    'jumlah_kamar_tersedia',
+                    'jumlah_tempat_tidur_tersedia',
+                    'kamar_digunakan_kemarin',
+                    'kamar_baru_dimasuki',
+                    'kamar_ditinggalkan',
+                    'tamu_kemarin_asing',
+                    'tamu_kemarin_indonesia',
+                    'tamu_baru_datang_asing',
+                    'tamu_baru_datang_indonesia',
+                    'tamu_berangkat_asing',
+                    'tamu_berangkat_indonesia',
+                ];
+
+                cols.forEach((col, colIndex) => {
                     const td = document.createElement('td');
-                    td.textContent = col;
+                    const key = colKeys[colIndex];
+
+                    // Periksa apakah sel ini berubah
+                    if (changes[rowIndex] && changes[rowIndex][key]) {
+                        td.innerHTML = `<span style="color: red;">${col}</span>`;
+                    } else {
+                        td.textContent = col;
+                    }
+
                     tr.appendChild(td);
                 });
                 tbody.appendChild(tr);
@@ -112,6 +138,9 @@
                 });
             });
 
+            // Simpan data awal untuk perbandingan
+            originalData = parsedData;
+
             // Isi tabel dengan data awal
             fillTable(parsedData);
 
@@ -139,7 +168,7 @@
                     messageDiv.innerHTML = '<div class="alert alert-success">' + result.message + '</div>';
                     // Hanya perbarui tabel jika ada perbaikan
                     if (result.fixed) {
-                        fillTable(result.data);
+                        fillTable(result.data, result.changes);
                     }
                 } else {
                     messageDiv.innerHTML = '<div class="alert alert-danger">Validasi gagal: ' + result.message + '</div>';

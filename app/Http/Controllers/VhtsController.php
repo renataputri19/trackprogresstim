@@ -46,13 +46,13 @@ class VhtsController extends Controller
             ];
         }
 
+        // Simpan data asli sebelum perhitungan otomatis untuk perbandingan
+        $originalData = $parsedData;
+
         // Hitung ulang kolom yang otomatis dan lakukan validasi
         $validatedData = $parsedData;
         $isValidationFixed = false;
         $validationMessage = '';
-
-        // Simpan data asli sebelum perhitungan otomatis untuk perbandingan
-        $originalData = $parsedData;
 
         // Hitung ulang kolom otomatis untuk semua baris
         for ($i = 0; $i < count($validatedData); $i++) {
@@ -120,6 +120,27 @@ class VhtsController extends Controller
             }
         }
 
+        // Bandingkan data asli dengan data setelah validasi untuk menandai perubahan
+        $changes = [];
+        for ($i = 0; $i < count($validatedData); $i++) {
+            $originalRow = $originalData[$i];
+            $validatedRow = $validatedData[$i];
+            $rowChanges = [];
+
+            foreach ($validatedRow as $key => $value) {
+                if ($originalRow[$key] != $value) {
+                    $rowChanges[$key] = [
+                        'original' => $originalRow[$key],
+                        'new' => $value,
+                    ];
+                }
+            }
+
+            if (!empty($rowChanges)) {
+                $changes[$i] = $rowChanges;
+            }
+        }
+
         // Tambahkan informasi tentang perhitungan otomatis dalam pesan
         $autoCalcMessage = '';
         for ($i = 0; $i < count($validatedData); $i++) {
@@ -143,6 +164,7 @@ class VhtsController extends Controller
             'message' => $finalMessage,
             'data' => $validatedData,
             'fixed' => $isValidationFixed,
+            'changes' => $changes, // Informasi tentang perubahan
         ]);
     }
 
