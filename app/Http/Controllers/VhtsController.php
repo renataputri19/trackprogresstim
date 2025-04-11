@@ -59,12 +59,8 @@ class VhtsController extends Controller
         // Simpan data asli sebelum perhitungan otomatis untuk perbandingan
         $originalData = $parsedData;
 
-        // Hitung ulang kolom yang otomatis dan lakukan validasi
-        $validatedData = $parsedData;
-        $isValidationFixed = false;
-        $validationMessage = '';
-
         // Hitung ulang kolom otomatis untuk semua baris
+        $validatedData = $parsedData;
         for ($i = 0; $i < count($validatedData); $i++) {
             $row = $validatedData[$i];
 
@@ -95,19 +91,21 @@ class VhtsController extends Controller
             $validatedData[$i] = $row;
         }
 
-        // Validasi aturan untuk setiap baris, tetapi hanya perbaiki satu pelanggaran
+        // Validasi aturan untuk setiap baris
+        $isValidationFixed = false;
+        $validationMessages = []; // Kumpulkan semua pesan validasi
         for ($i = 0; $i < count($validatedData); $i++) {
             $row = $validatedData[$i];
 
             // Validasi aturan untuk baris ini
-            $result = $this->validateRow($row, $i + 1); // Kirim tanggal untuk pesan error
+            $result = $this->validateRow($row, $i + 1, $i == 0);
             $row = $result['row'];
             $validatedData[$i] = $row;
 
-            // Jika ada pelanggaran yang diperbaiki, simpan pesan dan hentikan validasi
+            // Jika ada perbaikan, tambahkan pesan ke daftar
             if ($result['fixed']) {
                 $isValidationFixed = true;
-                $validationMessage = $result['message'];
+                $validationMessages[] = $result['message'];
 
                 // Setelah perbaikan, hitung ulang kolom otomatis untuk baris berikutnya (jika ada)
                 for ($j = $i + 1; $j < count($validatedData); $j++) {
@@ -125,8 +123,6 @@ class VhtsController extends Controller
 
                     $validatedData[$j] = $nextRow;
                 }
-
-                break; // Hentikan loop setelah satu pelanggaran diperbaiki
             }
         }
 
@@ -163,8 +159,8 @@ class VhtsController extends Controller
             }
         }
 
-        // Kembalikan data yang sudah divalidasi ke frontend
-        $finalMessage = $isValidationFixed ? $validationMessage : 'Tidak ada pelanggaran aturan ditemukan.';
+        // Gabungkan semua pesan validasi
+        $finalMessage = $isValidationFixed ? implode("\n", $validationMessages) : 'Tidak ada pelanggaran aturan ditemukan.';
         if ($autoCalcMessage) {
             $finalMessage .= "\n\nPerhitungan Otomatis:\n" . $autoCalcMessage;
         }
@@ -178,83 +174,126 @@ class VhtsController extends Controller
         ]);
     }
 
-    private function validateRow($row, $tanggal)
+    private function validateRow($row, $tanggal, $isFirstRow)
     {
         $fixed = false;
-        $message = '';
+        $messages = []; // Kumpulkan semua pesan validasi untuk baris ini
 
-        // Aturan Validasi:
-        // 1. Jumlah kamar tersedia (kolom 2) >= Kamar digunakan kemarin (kolom 4)
+        // Aturan Validasi 1: Jumlah kamar tersedia (kolom 2) >= Kamar digunakan kemarin (kolom 4)
         if ($row['jumlah_kamar_tersedia'] < $row['kamar_digunakan_kemarin']) {
-            $diff = $row['kamar_digunakan_kemarin'] - $row['jumlah_kamar_tersedia'];
-            $row['tamu_kemarin_asing'] = max(0, $row['tamu_kemarin_asing'] - $diff);
-            $row['tamu_kemarin_indonesia'] = max(0, $row['tamu_kemarin_indonesia'] - $diff);
-            $row['kamar_digunakan_kemarin'] = $row['jumlah_kamar_tersedia'];
+            if ($isFirstRow) {
+                // Baris pertama: Ubah kolom 4 (Kamar Digunakan Kemarin)
+                $row['kamar_digunakan_kemarin'] = $row['jumlah_kamar_tersedia'];
+                $messages[] = "Tanggal $tanggal: Jumlah kamar tersedia ({$row['jumlah_kamar_tersedia']}) kurang dari kamar digunakan kemarin. Diperbaiki dengan mengurangi kamar digunakan kemarin.";
+            } else {
+                // Baris berikutnya: Ubah kolom 6 (Kamar Ditinggalkan)
+                $row['kamar_ditinggalkan'] = $row['kamar_digunakan_kemarin'];
+                $messages[] = "Tanggal $tanggal: Jumlah kamar tersedia ({$row['jumlah_kamar_tersedia']}) kurang dari kamar digunakan kemarin. Diperbaiki dengan mengurangi kamar ditinggalkan.";
+            }
             $fixed = true;
-            $message = "Tanggal $tanggal: Jumlah kamar tersedia ({$row['jumlah_kamar_tersedia']}) kurang dari kamar digunakan kemarin. Diperbaiki dengan mengurangi tamu kemarin.";
-            return ['row' => $row, 'fixed' => $fixed, 'message' => $message];
         }
 
-        // 2. Kamar digunakan kemarin (kolom 4) >= Kamar ditinggalkan hari ini (kolom 6)
+        // Aturan Validasi 2: Kamar digunakan kemarin (kolom 4) >= Kamar ditinggalkan hari ini (kolom 6)
         if ($row['kamar_digunakan_kemarin'] < $row['kamar_ditinggalkan']) {
-            $diff = $row['kamar_ditinggalkan'] - $row['kamar_digunakan_kemarin'];
-            $row['tamu_berangkat_asing'] = max(0, $row['tamu_berangkat_asing'] - $diff);
-            $row['tamu_berangkat_indonesia'] = max(0, $row['tamu_berangkat_indonesia'] - $diff);
-            $row['kamar_ditinggalkan'] = $row['kamar_digunakan_kemarin'];
+            if ($isFirstRow) {
+                // Baris pertama: Ubah kolom 4 (Kamar Digunakan Kemarin)
+                $row['kamar_digunakan_kemarin'] = $row['kamar_ditinggalkan'];
+                $messages[] = "Tanggal $tanggal: Kamar digunakan kemarin ({$row['kamar_digunakan_kemarin']}) kurang dari kamar ditinggalkan. Diperbaiki dengan menambah kamar digunakan kemarin.";
+            } else {
+                // Baris berikutnya: Ubah kolom 6 (Kamar Ditinggalkan)
+                $row['kamar_ditinggalkan'] = $row['kamar_digunakan_kemarin'];
+                $messages[] = "Tanggal $tanggal: Kamar digunakan kemarin ({$row['kamar_digunakan_kemarin']}) kurang dari kamar ditinggalkan. Diperbaiki dengan mengurangi kamar ditinggalkan.";
+            }
             $fixed = true;
-            $message = "Tanggal $tanggal: Kamar digunakan kemarin ({$row['kamar_digunakan_kemarin']}) kurang dari kamar ditinggalkan. Diperbaiki dengan mengurangi tamu berangkat.";
-            return ['row' => $row, 'fixed' => $fixed, 'message' => $message];
         }
 
-        // 3. Tamu asing kemarin (kolom 7) >= Tamu asing check-out (kolom 11)
+        // Aturan Validasi 3: Tamu asing kemarin (kolom 7) >= Tamu asing check-out (kolom 11)
         if ($row['tamu_kemarin_asing'] < $row['tamu_berangkat_asing']) {
-            $row['tamu_berangkat_asing'] = $row['tamu_kemarin_asing'];
+            if ($isFirstRow) {
+                // Baris pertama: Ubah kolom 7 (Tamu Kemarin Asing)
+                $row['tamu_kemarin_asing'] = $row['tamu_berangkat_asing'];
+                $messages[] = "Tanggal $tanggal: Tamu asing kemarin ({$row['tamu_kemarin_asing']}) kurang dari tamu asing check-out. Diperbaiki dengan menambah tamu asing kemarin.";
+            } else {
+                // Baris berikutnya: Ubah kolom 11 (Tamu Berangkat Asing)
+                $row['tamu_berangkat_asing'] = $row['tamu_kemarin_asing'];
+                $messages[] = "Tanggal $tanggal: Tamu asing kemarin ({$row['tamu_kemarin_asing']}) kurang dari tamu asing check-out. Diperbaiki dengan mengurangi tamu asing check-out.";
+            }
             $fixed = true;
-            $message = "Tanggal $tanggal: Tamu asing kemarin ({$row['tamu_kemarin_asing']}) kurang dari tamu asing check-out. Diperbaiki dengan mengurangi tamu asing check-out.";
-            return ['row' => $row, 'fixed' => $fixed, 'message' => $message];
         }
 
-        // 4. Tamu Indonesia kemarin (kolom 8) >= Tamu Indonesia check-out (kolom 12)
+        // Aturan Validasi 4: Tamu Indonesia kemarin (kolom 8) >= Tamu Indonesia check-out (kolom 12)
         if ($row['tamu_kemarin_indonesia'] < $row['tamu_berangkat_indonesia']) {
-            $row['tamu_berangkat_indonesia'] = $row['tamu_kemarin_indonesia'];
+            if ($isFirstRow) {
+                // Baris pertama: Ubah kolom 8 (Tamu Kemarin Indonesia)
+                $row['tamu_kemarin_indonesia'] = $row['tamu_berangkat_indonesia'];
+                $messages[] = "Tanggal $tanggal: Tamu Indonesia kemarin ({$row['tamu_kemarin_indonesia']}) kurang dari tamu Indonesia check-out. Diperbaiki dengan menambah tamu Indonesia kemarin.";
+            } else {
+                // Baris berikutnya: Ubah kolom 12 (Tamu Berangkat Indonesia)
+                $row['tamu_berangkat_indonesia'] = $row['tamu_kemarin_indonesia'];
+                $messages[] = "Tanggal $tanggal: Tamu Indonesia kemarin ({$row['tamu_kemarin_indonesia']}) kurang dari tamu Indonesia check-out. Diperbaiki dengan mengurangi tamu Indonesia check-out.";
+            }
             $fixed = true;
-            $message = "Tanggal $tanggal: Tamu Indonesia kemarin ({$row['tamu_kemarin_indonesia']}) kurang dari tamu Indonesia check-out. Diperbaiki dengan mengurangi tamu Indonesia check-out.";
-            return ['row' => $row, 'fixed' => $fixed, 'message' => $message];
         }
 
-        // 5. Tamu kemarin (kolom 7 + kolom 8) >= Kamar digunakan kemarin (kolom 4)
+        // Aturan Validasi 5: Tamu kemarin (kolom 7 + kolom 8) >= Kamar digunakan kemarin (kolom 4)
         $totalTamuKemarin = $row['tamu_kemarin_asing'] + $row['tamu_kemarin_indonesia'];
         if ($totalTamuKemarin < $row['kamar_digunakan_kemarin']) {
             $diff = $row['kamar_digunakan_kemarin'] - $totalTamuKemarin;
-            $row['tamu_kemarin_asing'] += ceil($diff / 2);
-            $row['tamu_kemarin_indonesia'] += floor($diff / 2);
+            if ($isFirstRow) {
+                // Baris pertama: Ubah kolom 7 dan 8 (Tamu Kemarin Asing dan Indonesia)
+                $row['tamu_kemarin_asing'] += ceil($diff / 2);
+                $row['tamu_kemarin_indonesia'] += floor($diff / 2);
+                $messages[] = "Tanggal $tanggal: Total tamu kemarin ($totalTamuKemarin) kurang dari kamar digunakan kemarin. Diperbaiki dengan menambah tamu kemarin.";
+            } else {
+                // Baris berikutnya: Ubah kolom 11 dan 12 (Tamu Berangkat Asing dan Indonesia)
+                $row['tamu_berangkat_asing'] = max(0, $row['tamu_berangkat_asing'] - ceil($diff / 2));
+                $row['tamu_berangkat_indonesia'] = max(0, $row['tamu_berangkat_indonesia'] - floor($diff / 2));
+                $messages[] = "Tanggal $tanggal: Total tamu kemarin ($totalTamuKemarin) kurang dari kamar digunakan kemarin. Diperbaiki dengan mengurangi tamu berangkat.";
+            }
             $fixed = true;
-            $message = "Tanggal $tanggal: Total tamu kemarin ($totalTamuKemarin) kurang dari kamar digunakan kemarin. Diperbaiki dengan menambah tamu kemarin.";
-            return ['row' => $row, 'fixed' => $fixed, 'message' => $message];
         }
 
-        // 6. Tamu baru datang hari ini (kolom 9 + kolom 10) >= Kamar baru dimasuki (kolom 5)
+        // Aturan Validasi 6: Tamu baru datang hari ini (kolom 9 + kolom 10) >= Kamar baru dimasuki (kolom 5)
         $totalTamuBaru = $row['tamu_baru_datang_asing'] + $row['tamu_baru_datang_indonesia'];
         if ($totalTamuBaru < $row['kamar_baru_dimasuki']) {
-            $diff = $row['kamar_baru_dimasuki'] - $totalTamuBaru;
-            $row['tamu_baru_datang_asing'] += ceil($diff / 2);
-            $row['tamu_baru_datang_indonesia'] += floor($diff / 2);
+            // Tidak diizinkan mengubah kolom 9 dan 10 (Tamu Baru Datang), jadi kita ubah kolom lain
+            if ($isFirstRow) {
+                // Baris pertama: Ubah kolom 7 dan 8 (Tamu Kemarin Asing dan Indonesia)
+                $diff = $row['kamar_baru_dimasuki'] - $totalTamuBaru;
+                $row['tamu_kemarin_asing'] += ceil($diff / 2);
+                $row['tamu_kemarin_indonesia'] += floor($diff / 2);
+                $messages[] = "Tanggal $tanggal: Total tamu baru datang ($totalTamuBaru) kurang dari kamar baru dimasuki. Diperbaiki dengan menambah tamu kemarin.";
+            } else {
+                // Baris berikutnya: Ubah kolom 11 dan 12 (Tamu Berangkat Asing dan Indonesia)
+                $diff = $row['kamar_baru_dimasuki'] - $totalTamuBaru;
+                $row['tamu_berangkat_asing'] = max(0, $row['tamu_berangkat_asing'] - ceil($diff / 2));
+                $row['tamu_berangkat_indonesia'] = max(0, $row['tamu_berangkat_indonesia'] - floor($diff / 2));
+                $messages[] = "Tanggal $tanggal: Total tamu baru datang ($totalTamuBaru) kurang dari kamar baru dimasuki. Diperbaiki dengan mengurangi tamu berangkat.";
+            }
             $fixed = true;
-            $message = "Tanggal $tanggal: Total tamu baru datang ($totalTamuBaru) kurang dari kamar baru dimasuki. Diperbaiki dengan menambah tamu baru datang.";
-            return ['row' => $row, 'fixed' => $fixed, 'message' => $message];
         }
 
-        // 7. Tamu berangkat hari ini (kolom 11 + kolom 12) >= Kamar ditinggalkan (kolom 6)
+        // Aturan Validasi 7: Tamu berangkat hari ini (kolom 11 + kolom 12) >= Kamar ditinggalkan (kolom 6)
         $totalTamuBerangkat = $row['tamu_berangkat_asing'] + $row['tamu_berangkat_indonesia'];
         if ($totalTamuBerangkat < $row['kamar_ditinggalkan']) {
-            $diff = $row['kamar_ditinggalkan'] - $totalTamuBerangkat;
-            $row['tamu_berangkat_asing'] += ceil($diff / 2);
-            $row['tamu_berangkat_indonesia'] += floor($diff / 2);
+            if ($isFirstRow) {
+                // Baris pertama: Ubah kolom 7 dan 8 (Tamu Kemarin Asing dan Indonesia)
+                $diff = $row['kamar_ditinggalkan'] - $totalTamuBerangkat;
+                $row['tamu_kemarin_asing'] += ceil($diff / 2);
+                $row['tamu_kemarin_indonesia'] += floor($diff / 2);
+                $messages[] = "Tanggal $tanggal: Total tamu berangkat ($totalTamuBerangkat) kurang dari kamar ditinggalkan. Diperbaiki dengan menambah tamu kemarin.";
+            } else {
+                // Baris berikutnya: Ubah kolom 11 dan 12 (Tamu Berangkat Asing dan Indonesia)
+                $diff = $row['kamar_ditinggalkan'] - $totalTamuBerangkat;
+                $row['tamu_berangkat_asing'] += ceil($diff / 2);
+                $row['tamu_berangkat_indonesia'] += floor($diff / 2);
+                $messages[] = "Tanggal $tanggal: Total tamu berangkat ($totalTamuBerangkat) kurang dari kamar ditinggalkan. Diperbaiki dengan menambah tamu berangkat.";
+            }
             $fixed = true;
-            $message = "Tanggal $tanggal: Total tamu berangkat ($totalTamuBerangkat) kurang dari kamar ditinggalkan. Diperbaiki dengan menambah tamu berangkat.";
-            return ['row' => $row, 'fixed' => $fixed, 'message' => $message];
         }
 
+        // Gabungkan semua pesan menjadi satu string
+        $message = implode("\n", $messages);
         return ['row' => $row, 'fixed' => $fixed, 'message' => $message];
     }
 }
