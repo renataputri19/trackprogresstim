@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Arr; // Import the Arr helper
+use Illuminate\Support\Arr;
 
 class TicketController extends Controller
 {
@@ -23,7 +23,6 @@ class TicketController extends Controller
             $query->where('it_staff_id', $itStaff);
         }
 
-        // Ensure $statuses is always an array
         $statuses = Arr::wrap($request->input('status', []));
         if (!empty($statuses)) {
             $query->whereIn('status', $statuses);
@@ -52,9 +51,9 @@ class TicketController extends Controller
             'requestor_photo' => 'required|image|max:2048',
             'ruangan' => 'required|in:Ruang Mencaras,Ruang Ranoh,Ruang Nirup,Ruang Abang,Ruang Galang,Ruang Kepala,Ruang PPID & PST',
         ]);
-    
+
         $photoPath = $request->file('requestor_photo')->store('tickets/requestors', 'public');
-    
+
         Ticket::create([
             'ticket_code' => Ticket::generateTicketCode(),
             'user_id' => Auth::id(),
@@ -63,8 +62,8 @@ class TicketController extends Controller
             'description' => $request->description,
             'requestor_photo' => $photoPath,
         ]);
-    
-        return redirect('/haloIPDS')->with('success', 'Tiket berhasil diajukan!');
+
+        return redirect('/haloIPDS?ticket_success=true')->with('success', 'Tiket berhasil diajukan!');
     }
 
     public function manage(Request $request)
@@ -114,5 +113,36 @@ class TicketController extends Controller
 
         $ticket->update($data);
         return redirect()->route('tickets.manage')->with('success', 'Tiket berhasil diperbarui!');
+    }
+
+    public function pendingCount(Request $request)
+    {
+        if (!Auth::user()->is_it_staff) {
+            abort(403, 'Unauthorized');
+        }
+        $pendingCount = Ticket::where('status', 'pending')->count();
+        return response()->json(['pendingCount' => $pendingCount]);
+    }
+
+    public function getTickets(Request $request)
+    {
+        $query = Ticket::with(['requestor', 'itStaff']);
+
+        if ($month = $request->input('month')) {
+            $query->whereMonth('created_at', $month);
+        }
+
+        if ($itStaff = $request->input('it_staff')) {
+            $query->where('it_staff_id', $itStaff);
+        }
+
+        $statuses = Arr::wrap($request->input('status', []));
+        if (!empty($statuses)) {
+            $query->whereIn('status', $statuses);
+        }
+
+        $tickets = $query->latest()->get();
+
+        return response()->json($tickets);
     }
 }

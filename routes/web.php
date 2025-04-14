@@ -19,6 +19,7 @@ use App\Http\Controllers\AdminTasksAssignmentController;
 use App\Http\Controllers\SuperAdminTasksAssignmentController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\VhtsController;
+use App\Http\Controllers\VhtsControllerv2;
 
 /*
 |--------------------------------------------------------------------------
@@ -193,11 +194,11 @@ Route::get('/divisions', [KMSController::class, 'divisions'])->name('kms.divisio
 
 //     // Admin View Assigned Tasks (same as user view)
 //     Route::get('assigned-tasks', [AdminTasksAssignmentController::class, 'assignedTasks'])->name('tasks.assigned');
-    
+
 //     // Fetch Calendar Events
 //     Route::get('calendar/events', [AdminTasksAssignmentController::class, 'calendarEvents'])->name('calendar.events');
-    
-    
+
+
 // });
 
 // // User Task Routes
@@ -224,13 +225,19 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');
     Route::middleware('it_staff')->group(function () {
         Route::get('/tickets/manage', [TicketController::class, 'manage'])->name('tickets.manage');
-        Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show'); // New route for viewing ticket
+        Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
         Route::put('/tickets/{ticket}', [TicketController::class, 'update'])->name('tickets.update');
+        Route::get('/api/tickets/pending-count', [TicketController::class, 'pendingCount'])->name('tickets.pendingCount');
+        Route::get('/api/tickets', [TicketController::class, 'getTickets'])->name('tickets.get');
     });
 });
 
 Route::get('/vhts', [VhtsController::class, 'index'])->name('vhts.index');
 Route::post('/vhts/validate', [VhtsController::class, 'processValidation'])->name('vhts.validate');
+
+// VHTSv2 Routes
+Route::get('/vhtsv2', [VhtsControllerv2::class, 'index'])->name('vhtsv2.index');
+Route::post('/vhtsv2/validate', [VhtsControllerv2::class, 'processValidation'])->name('vhtsv2.validate');
 
 // This route should be placed at the end of your route definitions
 Route::fallback(function () {

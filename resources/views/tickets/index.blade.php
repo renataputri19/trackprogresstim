@@ -2,6 +2,11 @@
 @section('title', 'Halo IPDS - Sistem Tiket IT')
 @section('content')
     <div class="container mt-5 ticketing">
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
         <div class="ticket-header">
             <h2>Halo IPDS - Sistem Tiket IT</h2>
         </div>
@@ -107,9 +112,9 @@
                                 </span>
                             </p>
                             <p><strong>Staf IT:</strong> {{ $ticket->itStaff->name ?? 'Belum Ditugaskan' }}</p>
-                            <p><strong>Diajukan:</strong> {{ $ticket->created_at->translatedFormat('Y-m-d') }}</p>
+                            <p><strong>Diajukan:</strong> {{ $ticket->created_at->locale('id')->isoFormat('D MMMM Y') }}</p>
                             @if ($ticket->done_at)
-                                <p><strong>Selesai:</strong> {{ $ticket->done_at->translatedFormat('Y-m-d') }}</p>
+                                <p><strong>Selesai:</strong> {{ $ticket->done_at->locale('id')->isoFormat('D MMMM Y') }}</p>
                             @endif
                             <div class="d-flex gap-2">
                                 @if ($ticket->requestor_photo)
