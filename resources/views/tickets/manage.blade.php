@@ -81,9 +81,9 @@
                                     {{ $ticket->status == 'pending' ? 'Menunggu' : ($ticket->status == 'in_progress' ? 'Sedang Diproses' : 'Selesai') }}
                                 </span>
                             </p>
-                            <p><strong>Diajukan:</strong> {{ $ticket->created_at->translatedFormat('Y-m-d') }}</p>
+                            <p><strong>Diajukan:</strong> {{ $ticket->created_at->locale('id')->isoFormat('D MMMM Y') }}</p>
                             @if ($ticket->done_at)
-                                <p><strong>Selesai:</strong> {{ $ticket->done_at->translatedFormat('Y-m-d') }}</p>
+                                <p><strong>Selesai:</strong> {{ $ticket->done_at->locale('id')->isoFormat('D MMMM Y') }}</p>
                             @endif
                             <div class="d-flex gap-2">
                                 @if ($ticket->requestor_photo)
