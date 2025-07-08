@@ -49,6 +49,7 @@ $users = [
             ['name' => 'Sri Fahrina, A.Md.Stat', 'email' => 'sri.fahrina@bps.go.id', 'password' => Hash::make('340060430'), 'is_admin' => 1],
             ['name' => 'Florentz Magdalena', 'email' => 'fmagdalena@bps.go.id', 'password' => Hash::make('340056837'), 'is_admin' => 1],
             ['name' => 'Maulidya Fan Ghul Udzan Utami', 'email' => 'maulidfan.ghul@bps.go.id', 'password' => Hash::make('340063310'), 'is_admin' => 1],
+            ['name' => 'Test User', 'email' => 'testuser@bps.go.id', 'password' => Hash::make('password'), 'is_admin' => 0],
         ];
 
         DB::table('users')->insert($users);
