@@ -119,6 +119,38 @@
     background-color: #e65100;
 }
 
+/* Info button (professional teal for map requests) */
+.ticketing .ticketing-btn-info {
+    background-color: #00acc1;
+    color: #fff;
+}
+
+.ticketing .ticketing-btn-info:hover {
+    background-color: #0097a7;
+}
+
+/* Warning button (amber for map management) */
+.ticketing .ticketing-btn-warning {
+    background-color: #ff8f00;
+    color: #fff;
+}
+
+.ticketing .ticketing-btn-warning:hover {
+    background-color: #ff6f00;
+}
+
+/* Outline button styles for public links */
+.ticketing .ticketing-btn-outline-primary {
+    background-color: transparent;
+    color: #1976d2;
+    border: 2px solid #1976d2;
+}
+
+.ticketing .ticketing-btn-outline-primary:hover {
+    background-color: #1976d2;
+    color: #fff;
+}
+
 /* Small button size */
 .ticketing .ticketing-btn-sm {
     font-size: 12px;

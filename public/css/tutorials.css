@@ -1,0 +1,19 @@
+/* Active category button styles */
+.category-button.active {
+    background-color: #14b8a6;
+    color: white;
+    border-color: #14b8a6;
+}
+
+/* Hover effect for tutorial cards */
+.tutorial-card:hover {
+    transform: translateY(-4px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .category-button {
+        font-size: 0.75rem;
+        padding: 0.5rem 1rem;
+    }
+}

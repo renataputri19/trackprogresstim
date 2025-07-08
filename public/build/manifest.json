@@ -3,6 +3,17 @@
     "file": "assets/index-CBQq8RrD.js",
     "name": "index"
   },
+  "public/css/new-homepage/homepage.css": {
+    "file": "assets/homepage-D98I6RwJ.css",
+    "src": "public/css/new-homepage/homepage.css",
+    "isEntry": true
+  },
+  "public/js/new-homepage/homepage.js": {
+    "file": "assets/homepage-C6zI5j9R.js",
+    "name": "homepage",
+    "src": "public/js/new-homepage/homepage.js",
+    "isEntry": true
+  },
   "resources/css/app.css": {
     "file": "assets/app-vXn9Orte.css",
     "src": "resources/css/app.css",

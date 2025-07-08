@@ -13,7 +13,7 @@ class TicketController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Ticket::with(['requestor', 'itStaff']);
+        $query = Ticket::with(['requestor', 'itStaff'])->where('service_type', 'ticket');
 
         if ($month = $request->input('month')) {
             $query->whereMonth('created_at', $month);
@@ -28,10 +28,10 @@ class TicketController extends Controller
             $query->whereIn('status', $statuses);
         }
 
-        $tickets = $query->latest()->paginate(9);
+        $tickets = $query->latest()->paginate(10);
         $itStaffList = User::where('is_it_staff', true)->get();
 
-        return view('tickets.index', compact('tickets', 'itStaffList'));
+        return view('haloip.tickets.index', compact('tickets', 'itStaffList'));
     }
 
     public function create()
@@ -40,7 +40,7 @@ class TicketController extends Controller
             'Ruang Mencaras', 'Ruang Ranoh', 'Ruang Nirup', 'Ruang Abang',
             'Ruang Galang', 'Ruang Kepala', 'Ruang PPID & PST',
         ];
-        return view('tickets.create', compact('ruanganList'));
+        return view('haloip.tickets.create', compact('ruanganList'));
     }
 
     public function store(Request $request)
@@ -55,20 +55,22 @@ class TicketController extends Controller
         $photoPath = $request->file('requestor_photo')->store('tickets/requestors', 'public');
 
         Ticket::create([
-            'ticket_code' => Ticket::generateTicketCode(),
+            'ticket_code' => Ticket::generateTicketCode('ticket'),
             'user_id' => Auth::id(),
             'ruangan' => $request->ruangan,
             'title' => $request->title,
             'description' => $request->description,
             'requestor_photo' => $photoPath,
+            'service_type' => 'ticket',
+            'public_token' => Ticket::generatePublicToken(),
         ]);
 
-        return redirect('/haloIPDS?ticket_success=true')->with('success', 'Tiket berhasil diajukan!');
+        return redirect('/haloIP/ticket?ticket_success=true')->with('success', 'Tiket berhasil diajukan!');
     }
 
     public function manage(Request $request)
     {
-        $query = Ticket::where('it_staff_id', auth()->id());
+        $query = Ticket::where('it_staff_id', auth()->id())->where('service_type', 'ticket');
 
         if ($month = $request->input('month')) {
             $query->whereMonth('created_at', $month);
@@ -78,13 +80,17 @@ class TicketController extends Controller
             $query->whereIn('status', $statuses);
         }
 
-        $tickets = $query->latest()->paginate(6);
+        $tickets = $query->latest()->paginate(10);
 
         return view('tickets.manage', compact('tickets'));
     }
 
     public function show(Ticket $ticket)
     {
+        if ($ticket->service_type !== 'ticket') {
+            abort(404, 'Ticket not found.');
+        }
+
         if ($ticket->it_staff_id !== Auth::id() && $ticket->it_staff_id !== null) {
             abort(403, 'Unauthorized access to this ticket.');
         }
@@ -120,13 +126,13 @@ class TicketController extends Controller
         if (!Auth::user()->is_it_staff) {
             abort(403, 'Unauthorized');
         }
-        $pendingCount = Ticket::where('status', 'pending')->count();
+        $pendingCount = Ticket::where('status', 'pending')->where('service_type', 'ticket')->count();
         return response()->json(['pendingCount' => $pendingCount]);
     }
 
     public function getTickets(Request $request)
     {
-        $query = Ticket::with(['requestor', 'itStaff']);
+        $query = Ticket::with(['requestor', 'itStaff'])->where('service_type', 'ticket');
 
         if ($month = $request->input('month')) {
             $query->whereMonth('created_at', $month);

@@ -15,19 +15,37 @@ class DivisionSeeder extends Seeder
     public function run()
     {
         $divisions = [
-            'Humas',
-            'Pengolahan',
-            'Publikasi',
-            'Statistik Distribusi',
-            // Add other divisions as needed
+            [
+                'name' => 'Humas',
+                'description' => 'Divisi Hubungan Masyarakat bertanggung jawab atas komunikasi eksternal, publikasi, dan hubungan dengan media serta masyarakat umum.'
+            ],
+            [
+                'name' => 'Pengolahan',
+                'description' => 'Divisi Pengolahan Data menangani proses pengumpulan, validasi, dan pengolahan data statistik dari berbagai sumber.'
+            ],
+            [
+                'name' => 'Publikasi',
+                'description' => 'Divisi Publikasi bertugas menyusun, mengedit, dan menerbitkan laporan statistik serta dokumen resmi lainnya.'
+            ],
+            [
+                'name' => 'Statistik Distribusi',
+                'description' => 'Divisi Statistik Distribusi fokus pada analisis dan penyajian data distribusi perdagangan dan ekonomi regional.'
+            ],
+            [
+                'name' => 'Teknologi Informasi',
+                'description' => 'Divisi Teknologi Informasi mengelola infrastruktur IT, pengembangan sistem, dan dukungan teknis untuk seluruh organisasi.'
+            ]
         ];
 
-        foreach ($divisions as $division) {
-            Division::create([
-                'name' => $division,
-                'slug' => Str::slug($division),
-                'description' => 'Description for ' . $division . ' division'
-            ]);
+        foreach ($divisions as $divisionData) {
+            Division::updateOrCreate(
+                ['slug' => Str::slug($divisionData['name'])],
+                [
+                    'name' => $divisionData['name'],
+                    'slug' => Str::slug($divisionData['name']),
+                    'description' => $divisionData['description']
+                ]
+            );
         }
     }
 }

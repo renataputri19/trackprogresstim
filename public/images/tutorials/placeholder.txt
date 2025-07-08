@@ -1,0 +1,11 @@
+This is a placeholder file. In a real application, you would have actual thumbnail images for each tutorial.
+
+The following image files would be needed:
+- getting-started.jpg
+- performance-tracking.jpg
+- knowledge-management.jpg
+- halo-ipds.jpg
+- padamu-negeri.jpg
+- vhts-validation.jpg
+- data-kita.jpg
+- iak-financial.jpg

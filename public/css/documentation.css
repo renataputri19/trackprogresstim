@@ -1,0 +1,23 @@
+/* Sidebar styles */
+.sticky {
+    position: sticky;
+    top: 6rem;
+}
+
+/* Active category styles */
+.category-section:target {
+    scroll-margin-top: 6rem;
+}
+
+/* Document card hover effect */
+.doc-card:hover {
+    transform: translateY(-4px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .sticky {
+        position: relative;
+        top: 0;
+    }
+}
