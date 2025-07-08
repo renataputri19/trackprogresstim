@@ -20,6 +20,10 @@ return new class extends Migration
             $table->string('it_photo')->nullable(); // Optional proof of completion photo
             $table->enum('status', ['pending', 'in_progress', 'completed'])->default('pending');
             $table->timestamp('done_at')->nullable(); // When the ticket was completed
+            $table->string('public_token')->unique()->nullable(); // For public viewing links
+            $table->enum('service_type', ['ticket', 'map_request'])->default('ticket'); // Service type
+            $table->string('map_type')->nullable(); // For map requests: kecamatan, kelurahan
+            $table->string('zone')->nullable(); // For map requests: WA, WB, WS
             $table->timestamps();
         });
     }

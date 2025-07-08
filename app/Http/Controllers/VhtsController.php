@@ -6,6 +6,12 @@ use Illuminate\Http\Request;
 
 class VhtsController extends Controller
 {
+    // Method untuk menampilkan halaman utama VHTS (version selector)
+    public function main()
+    {
+        return view('vhts.main');
+    }
+
     // Method untuk menampilkan halaman VHTS
     public function index()
     {

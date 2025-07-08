@@ -1,0 +1,352 @@
+/* Super App Carousel-Card Component v2 - Independent CSS */
+/* Multi-card carousel with smooth sliding transitions */
+
+/* ===== CAROUSEL CONTAINER ===== */
+.superapp-carousel-cards-v2 {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto 3rem auto;
+  padding: 0 60px; /* Space for navigation buttons */
+}
+
+.superapp-cards-container-v2 {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, #ffffff 0%, #f0fdfa 100%);
+  box-shadow: 0 10px 25px rgba(13, 148, 136, 0.15);
+  border: 1px solid rgba(20, 184, 166, 0.1);
+  padding: 1.5rem;
+}
+
+.superapp-cards-wrapper-v2 {
+  display: flex;
+  gap: 1.5rem;
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+}
+
+/* ===== CARD DESIGN V2 ===== */
+.superapp-card-v2 {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: none;
+  border-radius: 1rem;
+  padding: 2.5rem;
+  min-height: 450px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  flex: 0 0 calc(50% - 0.75rem);
+  min-width: calc(50% - 0.75rem);
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.1);
+  transition: all 0.3s ease;
+}
+
+.superapp-card-v2:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 25px rgba(13, 148, 136, 0.2);
+}
+
+.superapp-card-v2::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #0d9488, #10b981, #0d9488);
+}
+
+.superapp-card-v2::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(20, 184, 166, 0.03) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ===== CARD HEADER ===== */
+.superapp-card-v2-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+.superapp-card-v2-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #14b8a6, #10b981);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
+  flex-shrink: 0;
+}
+
+.superapp-card-v2-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #0f766e;
+  margin: 0;
+  line-height: 1.2;
+}
+
+/* ===== CARD BODY ===== */
+.superapp-card-v2-body {
+  flex: 1;
+  position: relative;
+  z-index: 2;
+}
+
+.superapp-card-v2-description {
+  font-size: 1.1rem;
+  color: #4b5563;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.superapp-benefits-v2 {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.superapp-benefit-v2 {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: rgba(20, 184, 166, 0.05);
+  border-radius: 0.5rem;
+  border-left: 3px solid #14b8a6;
+  transition: all 0.3s ease;
+}
+
+.superapp-benefit-v2:hover {
+  background: rgba(20, 184, 166, 0.1);
+  transform: translateX(5px);
+}
+
+.superapp-benefit-v2-icon {
+  color: #14b8a6;
+  flex-shrink: 0;
+}
+
+.superapp-benefit-v2-text {
+  color: #374151;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+/* ===== CARD FOOTER ===== */
+.superapp-card-v2-footer {
+  margin-top: 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.superapp-btn-v2 {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.5rem;
+  background: linear-gradient(135deg, #14b8a6, #10b981);
+  color: white;
+  text-decoration: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(20, 184, 166, 0.25);
+}
+
+.superapp-btn-v2:hover {
+  background: linear-gradient(135deg, #0d9488, #059669);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(20, 184, 166, 0.35);
+  color: white;
+  text-decoration: none;
+}
+
+/* ===== CAROUSEL NAVIGATION ===== */
+.superapp-carousel-navigation-v2 {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.superapp-nav-btn-v2 {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(20, 184, 166, 0.2);
+  color: #14b8a6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  pointer-events: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.superapp-nav-btn-v2:hover {
+  background: #14b8a6;
+  color: white;
+  border-color: #14b8a6;
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(20, 184, 166, 0.3);
+}
+
+.superapp-nav-btn-v2:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.superapp-nav-btn-v2:disabled:hover {
+  background: rgba(255, 255, 255, 0.95);
+  color: #14b8a6;
+  border-color: rgba(20, 184, 166, 0.2);
+}
+
+/* ===== CAROUSEL INDICATORS ===== */
+.superapp-carousel-indicators-v2 {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 2rem;
+}
+
+.superapp-indicator-v2 {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: rgba(20, 184, 166, 0.3);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.superapp-indicator-v2.active {
+  background-color: #14b8a6;
+  transform: scale(1.3);
+}
+
+.superapp-indicator-v2:hover {
+  background-color: #14b8a6;
+  transform: scale(1.1);
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+  .superapp-carousel-cards-v2 {
+    max-width: 100%;
+    margin: 0 1rem 3rem 1rem;
+    padding: 0 40px;
+  }
+
+  .superapp-cards-container-v2 {
+    padding: 1rem;
+  }
+
+  .superapp-card-v2 {
+    flex: 0 0 100%;
+    min-width: 100%;
+    padding: 2rem;
+    min-height: 400px;
+  }
+
+  .superapp-card-v2-title {
+    font-size: 1.5rem;
+  }
+
+  .superapp-card-v2-description {
+    font-size: 1rem;
+  }
+
+  .superapp-nav-btn-v2 {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .superapp-carousel-cards-v2 {
+    margin: 0 0.5rem 3rem 0.5rem;
+    padding: 0 30px;
+  }
+
+  .superapp-cards-container-v2 {
+    padding: 0.75rem;
+  }
+
+  .superapp-card-v2 {
+    padding: 1.25rem;
+    min-height: 350px;
+  }
+
+  .superapp-card-v2-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.75rem;
+  }
+
+  .superapp-card-v2-icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .superapp-card-v2-title {
+    font-size: 1.25rem;
+  }
+
+  .superapp-nav-btn-v2 {
+    width: 35px;
+    height: 35px;
+  }
+}
+
+/* ===== SMOOTH ANIMATIONS ===== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.superapp-carousel-item.active .superapp-card-v2 {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* ===== ACCESSIBILITY ===== */
+.superapp-carousel-v2:focus-within {
+  outline: 2px solid #14b8a6;
+  outline-offset: 2px;
+}
+
+.superapp-btn-v2:focus {
+  outline: 2px solid #14b8a6;
+  outline-offset: 2px;
+}

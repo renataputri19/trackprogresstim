@@ -1,45 +1,120 @@
-@extends('layouts.main')
+@extends('kms.layouts.app')
+
+@section('title', 'Edit ' . $division->name . ' - KMS RENTAK')
 
 @section('content')
-    <div class="container">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('kms.index') }}">KMS</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('kms.division', $division->slug) }}">{{ $division->name }}</a>
-                </li>
-                <li class="breadcrumb-item active">Edit Division</li>
-            </ol>
-        </nav>
+    <div class="kms-container">
+        <div class="container mx-auto px-4 py-8">
+            <!-- Hero Section -->
+            <div class="kms-hero">
+                <div class="kms-hero-content">
+                    <h1 class="kms-title">Edit Divisi</h1>
+                    <p class="kms-subtitle">
+                        Perbarui informasi divisi {{ $division->name }}
+                    </p>
+                </div>
+            </div>
 
-        <div class="card">
-            <div class="card-header">Edit Division</div>
-            <div class="card-body">
-                <form action="{{ route('kms.divisions.update', $division->slug) }}" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Division Name</label>
-                        <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
-                            name="name" value="{{ old('name', $division->name) }}" required>
-                        @error('name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="mb-3">
-                        <label for="description" class="form-label">Description</label>
-                        <textarea class="form-control" id="description" name="description" rows="3">{{ old('description', $division->description) }}</textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Update Division</button>
-                </form>
+            <!-- Navigation -->
+            <div class="kms-nav">
+                <a href="{{ route('kms.index') }}" class="kms-nav-link">KMS</a>
+                <span class="kms-nav-separator">/</span>
+                <a href="{{ route('kms.divisions.index') }}" class="kms-nav-link">Divisi</a>
+                <span class="kms-nav-separator">/</span>
+                <a href="{{ route('kms.division', $division->slug) }}" class="kms-nav-link">{{ $division->name }}</a>
+                <span class="kms-nav-separator">/</span>
+                <span class="text-gray-500">Edit</span>
+            </div>
 
-                <form action="{{ route('kms.divisions.destroy', $division->slug) }}" method="POST" class="mt-3">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger"
-                        onclick="return confirm('Are you sure you want to delete this division?')">
-                        Delete Division
-                    </button>
-                </form>
+            <!-- Actions -->
+            <div class="kms-actions">
+                <a href="{{ route('kms.division', $division->slug) }}" class="kms-btn kms-btn-secondary kms-btn-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m12 19-7-7 7-7"></path>
+                        <path d="M19 12H5"></path>
+                    </svg>
+                    Kembali ke {{ $division->name }}
+                </a>
+            </div>
+
+            <!-- Form -->
+            <div class="kms-documents">
+                <div class="kms-documents-header">
+                    <h2 class="kms-documents-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline; margin-right: 0.5rem;">
+                            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path>
+                            <path d="m15 5 4 4"></path>
+                        </svg>
+                        Edit Informasi Divisi
+                    </h2>
+                </div>
+                <div class="kms-documents-content" style="padding: 2rem;">
+                    <form action="{{ route('kms.divisions.update', $division->slug) }}" method="POST" class="space-y-6">
+                        @csrf
+                        @method('PUT')
+                        <div class="kms-form-group">
+                            <label for="name" class="kms-form-label">Nama Divisi *</label>
+                            <input type="text"
+                                   class="kms-form-control @error('name') border-red-500 @enderror"
+                                   id="name"
+                                   name="name"
+                                   value="{{ old('name', $division->name) }}"
+                                   required
+                                   placeholder="Masukkan nama divisi">
+                            @error('name')
+                                <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="kms-form-group">
+                            <label for="description" class="kms-form-label">Deskripsi</label>
+                            <textarea class="kms-form-control"
+                                      id="description"
+                                      name="description"
+                                      rows="4"
+                                      placeholder="Masukkan deskripsi divisi (opsional)">{{ old('description', $division->description) }}</textarea>
+                        </div>
+
+                        <div class="flex gap-3 pt-4">
+                            <button type="submit" class="kms-btn kms-btn-primary kms-btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="20,6 9,17 4,12"></polyline>
+                                </svg>
+                                Perbarui Divisi
+                            </button>
+                            <a href="{{ route('kms.division', $division->slug) }}" class="kms-btn kms-btn-secondary kms-btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M18 6 6 18"></path>
+                                    <path d="M6 6l12 12"></path>
+                                </svg>
+                                Batal
+                            </a>
+                        </div>
+                    </form>
+
+                    <!-- Delete Section -->
+                    <div class="mt-8 pt-6 border-t border-gray-200">
+                        <h3 class="text-lg font-medium text-red-600 mb-4">Zona Bahaya</h3>
+                        <p class="text-sm text-gray-600 mb-4">
+                            Menghapus divisi akan menghapus semua aktivitas dan dokumen yang terkait. Tindakan ini tidak dapat dibatalkan.
+                        </p>
+                        <form action="{{ route('kms.divisions.destroy', $division->slug) }}" method="POST" class="inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                    class="kms-btn kms-btn-secondary kms-btn-sm"
+                                    style="background: #fee2e2; color: #dc2626; border-color: #fecaca;"
+                                    onclick="return confirm('Apakah Anda yakin ingin menghapus divisi ini? Semua aktivitas dan dokumen akan ikut terhapus.')">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M3 6h18"></path>
+                                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                                </svg>
+                                Hapus Divisi
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

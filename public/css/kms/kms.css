@@ -1,0 +1,634 @@
+/* KMS Modern Design - Integrated with Homepage Theme */
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap'); */
+
+/* Base KMS container with modern design */
+.kms-container {
+    font-family: 'Inter', sans-serif;
+    color: #111827;
+    background-color: transparent;
+}
+
+/* Hero Section for KMS */
+.kms-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 4rem 0 2rem 0;
+    background: linear-gradient(to bottom, #f0fdfa, #ffffff);
+}
+
+.kms-hero-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+}
+
+.kms-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #0d9488 0%, #10b981 50%, #0d9488 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.kms-subtitle {
+    font-size: 1.125rem;
+    color: #6b7280;
+    margin-bottom: 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Navigation breadcrumb */
+.kms-nav {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 1rem 0;
+}
+
+.kms-nav-link {
+    color: #0d9488;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.kms-nav-link:hover {
+    color: #0f766e;
+}
+
+.kms-nav-separator {
+    color: #9ca3af;
+}
+
+/* Filter Section */
+.kms-filters {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+}
+
+.kms-filters-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 1rem;
+}
+
+.kms-filter-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    align-items: end;
+}
+
+.kms-form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.kms-form-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.kms-form-control {
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    background: white;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.kms-form-control:focus {
+    outline: none;
+    border-color: #0d9488;
+    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
+}
+
+/* Buttons */
+.kms-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.kms-btn-sm {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.8125rem;
+    gap: 0.25rem;
+}
+
+.kms-btn-xs {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    gap: 0.25rem;
+}
+
+.kms-btn-primary {
+    background: linear-gradient(135deg, #0d9488 0%, #10b981 100%);
+    color: white;
+    box-shadow: 0 2px 4px rgba(13, 148, 136, 0.2);
+}
+
+.kms-btn-primary:hover {
+    background: linear-gradient(135deg, #0f766e 0%, #059669 100%);
+    box-shadow: 0 4px 8px rgba(13, 148, 136, 0.3);
+    transform: translateY(-1px);
+}
+
+.kms-btn-secondary {
+    background: white;
+    color: #374151;
+    border: 1px solid #d1d5db;
+}
+
+.kms-btn-secondary:hover {
+    background: #f9fafb;
+    border-color: #9ca3af;
+}
+
+.kms-btn-outline {
+    background: transparent;
+    color: #0d9488;
+    border: 1px solid #0d9488;
+}
+
+.kms-btn-outline:hover {
+    background: #f0fdfa;
+    color: #0f766e;
+}
+
+/* Action buttons container */
+.kms-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+/* Grid layouts */
+.kms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Card designs */
+.kms-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.kms-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.kms-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(135deg, #0d9488 0%, #10b981 100%);
+}
+
+.kms-card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 0.5rem;
+}
+
+.kms-card-description {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.kms-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
+
+.kms-card-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: auto;
+}
+
+/* Badges */
+.kms-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.kms-badge-primary {
+    background: #e6fffa;
+    color: #0d9488;
+}
+
+.kms-badge-secondary {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+.kms-badge-success {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+/* Documents section */
+.kms-documents {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    margin-bottom: 2rem;
+}
+
+.kms-documents-header {
+    background: linear-gradient(135deg, #f0fdfa 0%, #e6fffa 100%);
+    padding: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.kms-documents-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+.kms-documents-content {
+    padding: 0;
+}
+
+/* Empty state */
+.kms-empty {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    color: #6b7280;
+}
+
+.kms-empty-icon {
+    width: 4rem;
+    height: 4rem;
+    margin: 0 auto 1rem;
+    color: #d1d5db;
+}
+
+.kms-empty-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.kms-empty-description {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .kms-title {
+        font-size: 2rem;
+    }
+
+    .kms-filter-row {
+        grid-template-columns: 1fr;
+    }
+
+    .kms-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+    }
+
+    .kms-btn {
+        justify-content: center;
+        padding: 0.625rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    .kms-btn-sm {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8125rem;
+    }
+
+    .kms-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .kms-card-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .kms-card-actions .kms-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Accordion responsive */
+    .kms-accordion-header {
+        padding: 1.25rem 1rem;
+    }
+
+    .kms-accordion-body {
+        padding: 1rem 1rem 1.25rem 1rem;
+    }
+
+    .kms-accordion-title {
+        font-size: 1rem;
+    }
+
+    .kms-accordion-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .kms-accordion-actions .kms-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .kms-accordion-meta {
+        margin-right: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .kms-hero {
+        padding: 2rem 0 1rem 0;
+    }
+
+    .kms-title {
+        font-size: 1.75rem;
+    }
+
+    .kms-subtitle {
+        font-size: 1rem;
+    }
+
+    .kms-btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8125rem;
+        gap: 0.25rem;
+    }
+
+    .kms-nav {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    /* Accordion mobile optimization */
+    .kms-accordion-header {
+        padding: 1rem 0.75rem;
+    }
+
+    .kms-accordion-body {
+        padding: 0.75rem 0.75rem 1rem 0.75rem;
+    }
+
+    .kms-accordion-title {
+        font-size: 0.9375rem;
+    }
+
+    .kms-accordion-meta {
+        font-size: 0.8125rem;
+        margin-right: 0.25rem;
+    }
+
+    .kms-accordion-icon {
+        width: 1rem;
+        height: 1rem;
+    }
+
+    .kms-accordion-content.active {
+        max-height: 800px;
+    }
+
+    /* Touch-friendly accordion headers */
+    .kms-accordion-header {
+        min-height: 48px; /* Minimum touch target size */
+        -webkit-tap-highlight-color: rgba(13, 148, 136, 0.1);
+    }
+
+    .kms-accordion-header:active {
+        background: #e6fffa;
+    }
+}
+
+/* Accordion Design */
+.kms-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.kms-accordion-item {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.kms-accordion-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(135deg, #0d9488 0%, #10b981 100%);
+}
+
+.kms-accordion-item:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.kms-accordion-header {
+    padding: 1.75rem 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: white;
+    border: none;
+    width: 100%;
+    text-align: left;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.kms-accordion-header:hover {
+    background: #f9fafb;
+}
+
+.kms-accordion-header.active {
+    background: #f0fdfa;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.kms-accordion-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+    flex: 1;
+}
+
+.kms-accordion-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin-right: 1rem;
+}
+
+.kms-accordion-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: #0d9488;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+}
+
+.kms-accordion-header.active .kms-accordion-icon {
+    transform: rotate(180deg);
+}
+
+.kms-accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out, padding 0.4s ease-out;
+    background: white;
+}
+
+.kms-accordion-content.active {
+    max-height: 1000px;
+    transition: max-height 0.4s ease-in, padding 0.4s ease-in;
+}
+
+.kms-accordion-body {
+    padding: 1.25rem 1.5rem 1.75rem 1.5rem;
+}
+
+.kms-accordion-description {
+    color: #6b7280;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    margin-bottom: 1.75rem;
+    margin-top: 0.5rem;
+}
+
+.kms-accordion-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+/* Animation utilities */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.kms-fade-in {
+    /* animation: fadeInUp 0.6s ease-out; */
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@keyframes slideDown {
+    from {
+        max-height: 0;
+        opacity: 0;
+    }
+    to {
+        max-height: 500px;
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        max-height: 500px;
+        opacity: 1;
+    }
+    to {
+        max-height: 0;
+        opacity: 0;
+    }
+}
+
+/* Loading states */
+.kms-loading {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid #e5e7eb;
+    border-top: 2px solid #0d9488;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

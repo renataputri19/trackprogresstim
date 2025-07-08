@@ -1,0 +1,212 @@
+/* How to Use RENTAK Section Styles */
+.how-to-use-section {
+  padding: 5rem 0;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f0fdfa 0%, #ffffff 100%);
+}
+
+/* Add a subtle pattern overlay */
+.how-to-use-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2314b8a6' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  opacity: 0.5;
+  z-index: 0;
+}
+
+.how-to-use-container {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.how-to-use-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+.how-to-use-badge {
+  display: inline-block;
+  padding: 0.5rem 1.25rem;
+  background-color: rgba(20, 184, 166, 0.1);
+  color: #0d9488;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border-radius: 9999px;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(20, 184, 166, 0.2);
+  box-shadow: 0 2px 5px rgba(20, 184, 166, 0.1);
+}
+
+.how-to-use-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  background: linear-gradient(to right, #0d9488, #10b981);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  position: relative;
+  display: inline-block;
+}
+
+.how-to-use-title::after {
+  content: "";
+  position: absolute;
+  bottom: -0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(to right, #0d9488, #10b981);
+  border-radius: 3px;
+}
+
+.how-to-use-subtitle {
+  font-size: 1.125rem;
+  color: #4b5563;
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.how-to-use-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.how-to-use-card {
+  background-color: white;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 
+              0 8px 10px -6px rgba(0, 0, 0, 0.01);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  border: 1px solid rgba(20, 184, 166, 0.1);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.how-to-use-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 
+              0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.how-to-use-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(to right, #0d9488, #10b981);
+  z-index: 1;
+}
+
+.how-to-use-card-content {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.how-to-use-card-icon {
+  width: 60px;
+  height: 60px;
+  background-color: rgba(20, 184, 166, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  color: #0d9488;
+  transition: all 0.3s ease;
+}
+
+.how-to-use-card:hover .how-to-use-card-icon {
+  background-color: #0d9488;
+  color: white;
+  transform: scale(1.1);
+}
+
+.how-to-use-card-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #111827;
+}
+
+.how-to-use-card-description {
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+  flex: 1;
+}
+
+.how-to-use-card-link {
+  display: inline-flex;
+  align-items: center;
+  color: #0d9488;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  margin-top: auto;
+  padding: 0.5rem 0;
+  position: relative;
+}
+
+.how-to-use-card-link::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #0d9488;
+  transition: width 0.3s ease;
+}
+
+.how-to-use-card:hover .how-to-use-card-link::after {
+  width: 100%;
+}
+
+.how-to-use-card-link-icon {
+  margin-left: 0.5rem;
+  transition: transform 0.3s ease;
+}
+
+.how-to-use-card:hover .how-to-use-card-link-icon {
+  transform: translateX(5px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .how-to-use-section {
+    padding: 3rem 0;
+  }
+  
+  .how-to-use-title {
+    font-size: 2rem;
+  }
+  
+  .how-to-use-subtitle {
+    font-size: 1rem;
+  }
+  
+  .how-to-use-cards {
+    grid-template-columns: 1fr;
+  }
+}
