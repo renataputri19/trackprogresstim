@@ -56,10 +56,19 @@ class Ticket extends Model
         return $token;
     }
 
-    // Check if IT photo is required based on service type
-    public function isItPhotoRequired()
+    // Check if IT photo is required based on service type and status
+    public function isItPhotoRequired($status = null)
     {
-        return $this->service_type === 'map_request';
+        // Use provided status or current status
+        $checkStatus = $status ?? $this->status;
+
+        // For map requests, IT photo is required only when status is 'completed'
+        if ($this->service_type === 'map_request') {
+            return $checkStatus === 'completed';
+        }
+
+        // For regular tickets, IT photo is optional
+        return false;
     }
 
     // Get service type display name

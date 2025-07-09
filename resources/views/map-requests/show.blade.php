@@ -344,16 +344,21 @@
                                 <div class="form-group mb-4">
                                     <label for="it_photo" class="form-label fw-semibold">
                                         <i class="fas fa-camera me-2 text-primary"></i>Foto Bukti Penyelesaian
-                                        <span class="text-danger">*</span>
+                                        <span class="text-danger" id="photo-required-indicator" style="display: {{ $mapRequest->status === 'completed' ? 'inline' : 'none' }};">*</span>
                                     </label>
                                     <div class="upload-area">
                                         <input type="file" name="it_photo" id="it_photo"
                                                class="form-control @error('it_photo') is-invalid @enderror"
-                                               accept="image/*"
-                                               {{ $mapRequest->isItPhotoRequired() && !$mapRequest->it_photo ? 'required' : '' }}>
-                                        <small class="form-text text-muted mt-2">
+                                               accept="image/*">
+                                        <small class="form-text text-muted mt-2" id="photo-help-text">
                                             <i class="fas fa-info-circle me-1"></i>
-                                            <strong>WAJIB:</strong> Upload foto bukti penyelesaian peta (hasil cetak, proses printing, dll). Maksimal 2MB.
+                                            <span id="photo-requirement-text">
+                                                @if ($mapRequest->status === 'completed')
+                                                    <strong>WAJIB:</strong> Upload foto bukti penyelesaian peta (hasil cetak, proses printing, dll). Maksimal 2MB.
+                                                @else
+                                                    <strong>OPSIONAL:</strong> Upload foto bukti penyelesaian peta jika sudah tersedia. Maksimal 2MB.
+                                                @endif
+                                            </span>
                                             @if ($mapRequest->it_photo)
                                                 <br><em>Foto saat ini akan diganti jika Anda upload foto baru.</em>
                                             @endif
@@ -396,4 +401,37 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const statusSelect = document.getElementById('status');
+    const photoInput = document.getElementById('it_photo');
+    const photoRequiredIndicator = document.getElementById('photo-required-indicator');
+    const photoRequirementText = document.getElementById('photo-requirement-text');
+
+    function updatePhotoRequirement() {
+        const selectedStatus = statusSelect.value;
+        const isCompleted = selectedStatus === 'completed';
+
+        // Update required attribute
+        if (isCompleted) {
+            photoInput.setAttribute('required', 'required');
+            photoRequiredIndicator.style.display = 'inline';
+            photoRequirementText.innerHTML = '<strong>WAJIB:</strong> Upload foto bukti penyelesaian peta (hasil cetak, proses printing, dll). Maksimal 2MB.';
+        } else {
+            photoInput.removeAttribute('required');
+            photoRequiredIndicator.style.display = 'none';
+            photoRequirementText.innerHTML = '<strong>OPSIONAL:</strong> Upload foto bukti penyelesaian peta jika sudah tersedia. Maksimal 2MB.';
+        }
+    }
+
+    // Update on page load
+    updatePhotoRequirement();
+
+    // Update when status changes
+    statusSelect.addEventListener('change', updatePhotoRequirement);
+});
+</script>
 @endsection

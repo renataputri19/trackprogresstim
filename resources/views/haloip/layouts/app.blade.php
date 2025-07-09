@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="{{ asset('css/new-homepage/homepage-new.css') }}">
     <link rel="stylesheet" href="{{ asset('css/haloip/haloip.css') }}">
     @yield('styles')
+    @stack('head')
 </head>
 <body class="font-sans antialiased bg-white min-h-screen light">
     <header class="sticky top-0 z-50 w-full border-b bg-white shadow-sm">
