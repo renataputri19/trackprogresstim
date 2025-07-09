@@ -64,13 +64,16 @@ class MapRequestController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required',
-            'requestor_photo' => 'required|image|max:2048',
+            'requestor_photo' => 'nullable|image|max:2048',
             'map_type' => 'required|in:kecamatan,kelurahan',
             'kdkec' => 'required|string',
             'kddesa' => 'nullable|string',
         ]);
 
-        $photoPath = $request->file('requestor_photo')->store('map-requests/requestors', 'public');
+        $photoPath = null;
+        if ($request->hasFile('requestor_photo')) {
+            $photoPath = $request->file('requestor_photo')->store('map-requests/requestors', 'public');
+        }
 
         // Get district and village names
         $nmkec = LocationService::getDistrictName($request->kdkec);

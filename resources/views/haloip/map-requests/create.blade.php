@@ -173,11 +173,11 @@
                                         <div class="form-group upload-area">
                                             <label for="requestor_photo" class="form-label fw-semibold">
                                                 <i class="fas fa-camera text-success me-2"></i>Foto Pendukung
-                                                <span class="text-danger">*</span>
+                                                <span class="text-muted">(Opsional)</span>
                                             </label>
                                             <input type="file" name="requestor_photo" id="requestor_photo"
                                                 class="form-control @error('requestor_photo') is-invalid @enderror"
-                                                accept="image/*" required>
+                                                accept="image/*">
                                             <div class="form-text">
                                                 <i class="fas fa-info-circle me-1"></i>
                                                 Upload foto yang mendukung permintaan peta Anda (contoh: sketsa area, referensi lokasi, dll). Maksimal 2MB.

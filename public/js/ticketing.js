@@ -11,11 +11,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Check if user is IT staff
+    // Check if user is IT staff and not on public pages
     const isITStaff = document.querySelector('meta[name="is-it-staff"]')?.content === 'true';
+    const isPublicPage = window.location.pathname.includes('/haloIP/public/view/') || window.location.pathname.includes('/public/view/');
     console.log('Is IT staff:', isITStaff);
+    console.log('Is public page:', isPublicPage);
 
-    if (isITStaff) {
+    if (isITStaff && !isPublicPage) {
         console.log('Setting up notifications for IT staff');
 
         // Initialize the previous counts
@@ -235,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 </a>
                             ` : ''}
                             ${ticket.public_token ? `
-                                <a href="/public/view/${ticket.public_token}" target="_blank" class="haloip-table-btn haloip-table-btn-outline">
+                                <a href="/haloIP/public/view/${ticket.public_token}" target="_blank" class="haloip-table-btn haloip-table-btn-outline">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
                                         <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
@@ -305,7 +307,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <a href="${ticket.it_photo}" target="_blank" class="btn ticketing-btn ticketing-btn-secondary btn-sm">Lihat Foto IT</a>
                                 ` : ''}
                                 ${ticket.public_token ? `
-                                    <a href="/public/view/${ticket.public_token}" target="_blank" class="btn ticketing-btn ticketing-btn-outline-primary btn-sm">Link Publik</a>
+                                    <a href="/haloIP/public/view/${ticket.public_token}" target="_blank" class="btn ticketing-btn ticketing-btn-outline-primary btn-sm">Link Publik</a>
                                 ` : ''}
                                 <a href="/tickets/${ticket.id}" class="btn ticketing-btn ticketing-btn-primary btn-sm">Tangani Tiket</a>
                             </div>
@@ -469,7 +471,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 </a>
                             ` : ''}
                             ${mapRequest.public_token ? `
-                                <a href="/public/view/${mapRequest.public_token}" target="_blank" class="haloip-table-btn haloip-table-btn-outline">
+                                <a href="/haloIP/public/view/${mapRequest.public_token}" target="_blank" class="haloip-table-btn haloip-table-btn-outline">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
                                         <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
@@ -542,7 +544,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <a href="${mapRequest.it_photo}" target="_blank" class="btn ticketing-btn ticketing-btn-secondary btn-sm">Lihat Foto IT</a>
                                 ` : ''}
                                 ${mapRequest.public_token ? `
-                                    <a href="/public/view/${mapRequest.public_token}" target="_blank" class="btn ticketing-btn ticketing-btn-outline-primary btn-sm">Link Publik</a>
+                                    <a href="/haloIP/public/view/${mapRequest.public_token}" target="_blank" class="btn ticketing-btn ticketing-btn-outline-primary btn-sm">Link Publik</a>
                                 ` : ''}
                                 <a href="/map-requests/${mapRequest.id}" class="btn ticketing-btn ticketing-btn-primary btn-sm">Tangani Permintaan</a>
                             </div>
