@@ -11,10 +11,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Check if user is IT staff and not on public pages
+    // Check if user is IT staff
     const isITStaff = document.querySelector('meta[name="is-it-staff"]')?.content === 'true';
-    const isPublicPage = window.location.pathname.includes('/haloIP/public/view/') || window.location.pathname.includes('/public/view/');
     console.log('Is IT staff:', isITStaff);
+
+    // Check if we're on a public view page (disable notifications completely on public pages)
+    const isPublicPage = window.location.pathname.includes('/public/view/') ||
+                        window.location.pathname.includes('/haloIP/public/view/') ||
+                        document.querySelector('meta[name="is-public-page"]')?.content === 'true';
     console.log('Is public page:', isPublicPage);
 
     if (isITStaff && !isPublicPage) {
@@ -47,7 +51,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (currentPendingTicketCount > previousPendingTicketCount && currentPendingTicketCount > lastNotifiedTicketCount) {
                     console.log('New tickets detected! Playing notification...');
                     playNotificationSound();
-                    showBrowserNotification('Tiket IT Baru', 'Ada tiket IT baru yang menunggu untuk ditangani!');
+                    // Only show visual notification on console for debugging, no popup alerts
+                    console.log('New ticket notification: Ada tiket IT baru yang menunggu untuk ditangani!');
                     // Update the last notified count
                     sessionStorage.setItem('lastNotifiedTicketCount', currentPendingTicketCount);
                     // Fetch and update the ticket list dynamically if on tickets page
@@ -88,7 +93,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (currentPendingMapRequestCount > previousPendingMapRequestCount && currentPendingMapRequestCount > lastNotifiedMapRequestCount) {
                     console.log('New map requests detected! Playing notification...');
                     playNotificationSound();
-                    showBrowserNotification('Permintaan Peta Baru', 'Ada permintaan peta baru yang menunggu untuk ditangani!');
+                    // Only show visual notification on console for debugging, no popup alerts
+                    console.log('New map request notification: Ada permintaan peta baru yang menunggu untuk ditangani!');
                     // Update the last notified count
                     sessionStorage.setItem('lastNotifiedMapRequestCount', currentPendingMapRequestCount);
                     // Fetch and update the map request list dynamically if on map requests page
@@ -615,6 +621,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to play notification sound
     function playNotificationSound() {
+        // Double-check: Don't play sound on public pages
+        const isPublicPage = window.location.pathname.includes('/public/view/') ||
+                            window.location.pathname.includes('/haloIP/public/view/') ||
+                            document.querySelector('meta[name="is-public-page"]')?.content === 'true';
+        if (isPublicPage) {
+            console.log('Notification sound blocked: on public page');
+            return;
+        }
+
         console.log('Attempting to play notification sound...');
 
         const soundPath = '/sounds/notification.mp3';
@@ -659,67 +674,5 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Function to show browser notification
-    function showBrowserNotification(title, message) {
-        if (!('Notification' in window)) {
-            console.log('Browser does not support notifications');
-            alert(`${title}: ${message}`); // Fallback to alert
-            return;
-        }
 
-        console.log('Current notification permission:', Notification.permission);
-
-        if (Notification.permission === 'granted') {
-            console.log('Permission granted, creating notification...');
-            createNotification(title, message);
-        } else if (Notification.permission !== 'denied') {
-            console.log('Requesting notification permission...');
-            Notification.requestPermission().then(permission => {
-                console.log('Permission result:', permission);
-                if (permission === 'granted') {
-                    console.log('Permission granted after request, creating notification...');
-                    createNotification(title, message);
-                } else {
-                    console.log('Notification permission denied by user');
-                    alert(`${title}: ${message}`); // Fallback to alert
-                }
-            }).catch(error => {
-                console.error('Error requesting notification permission:', error);
-                alert(`${title}: ${message}`); // Fallback to alert
-            });
-        } else {
-            console.log('Notification permission is denied');
-            alert(`${title}: ${message}`); // Fallback to alert
-        }
-    }
-
-    // Helper function to create notification
-    function createNotification(title, message) {
-        try {
-            console.log('Creating notification with title:', title, 'and message:', message);
-            const notification = new Notification(title, {
-                body: message,
-                // icon: '/images/notification-icon.png' // Uncomment if you have an icon
-            });
-
-            console.log('Notification created successfully:', notification);
-
-            setTimeout(() => {
-                notification.close();
-                console.log('Notification closed after 5 seconds');
-            }, 5000);
-
-            notification.onclick = function() {
-                console.log('Notification clicked');
-                window.focus();
-                this.close();
-            };
-
-            notification.onerror = function(error) {
-                console.error('Notification error:', error);
-            };
-        } catch (error) {
-            console.error('Error creating notification:', error);
-        }
-    }
 });

@@ -139,7 +139,7 @@ class MapRequestController extends Controller
         }
 
         $request->validate([
-            'it_photo' => $mapRequest->isItPhotoRequired() ? 'required|image|max:2048' : 'nullable|image|max:2048',
+            'it_photo' => $mapRequest->isItPhotoRequired($request->status) ? 'required|image|max:2048' : 'nullable|image|max:2048',
             'status' => 'required|in:pending,in_progress,completed',
         ]);
 
