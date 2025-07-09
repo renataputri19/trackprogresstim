@@ -343,11 +343,31 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Function to update dropdown button text
+    function updateDropdownText() {
+        const checkedBoxes = Array.from(statusCheckboxes).filter(cb => cb.checked);
+        const dropdownText = statusDropdown.querySelector('span');
+
+        if (checkedBoxes.length === 0) {
+            dropdownText.textContent = 'Pilih Status';
+        } else if (checkedBoxes.length === 1) {
+            const statusLabels = {
+                'pending': 'Menunggu',
+                'in_progress': 'Sedang Diproses',
+                'completed': 'Selesai'
+            };
+            dropdownText.textContent = statusLabels[checkedBoxes[0].value] || checkedBoxes[0].value;
+        } else {
+            dropdownText.textContent = `${checkedBoxes.length} Status Dipilih`;
+        }
+    }
+
     // Select all functionality
     selectAllCheckbox.addEventListener('change', function() {
         statusCheckboxes.forEach(checkbox => {
             checkbox.checked = this.checked;
         });
+        updateDropdownText();
     });
 
     // Update select all when individual checkboxes change
@@ -358,8 +378,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
             selectAllCheckbox.checked = allChecked;
             selectAllCheckbox.indeterminate = !allChecked && !noneChecked;
+            updateDropdownText();
         });
     });
+
+    // Initialize dropdown text on page load
+    updateDropdownText();
 
     // Enhanced mobile table scrolling functionality
     const tableContainer = document.querySelector('.haloip-table-container');

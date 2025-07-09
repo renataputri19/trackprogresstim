@@ -286,6 +286,9 @@ Route::middleware(['auth'])->group(function () {
         return redirect('/haloip/map-requests/create');
     });
 
+    // Location API for dropdowns - Available to all authenticated users
+    Route::get('/api/villages/{districtCode}', [MapRequestController::class, 'getVillagesByDistrict'])->name('villages.by-district');
+
     Route::middleware('it_staff')->group(function () {
         // Ticket management - Updated to HaloIP structure
         Route::get('/haloIP/tickets/manage', [TicketController::class, 'manage'])->name('tickets.manage');
@@ -300,7 +303,6 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/haloIP/map-requests/{mapRequest}', [MapRequestController::class, 'update'])->name('map-requests.update');
         Route::get('/api/map-requests/pending-count', [MapRequestController::class, 'pendingCount'])->name('map-requests.pendingCount');
         Route::get('/api/map-requests', [MapRequestController::class, 'getMapRequests'])->name('map-requests.get');
-        Route::get('/api/villages/{districtCode}', [MapRequestController::class, 'getVillagesByDistrict'])->name('villages.by-district');
     });
 });
 

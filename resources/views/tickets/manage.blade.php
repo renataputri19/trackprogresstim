@@ -184,3 +184,61 @@
         {{ $tickets->links('pagination::bootstrap-5') }}
     </div>
 @endsection
+
+@section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Status dropdown functionality
+    const statusDropdown = document.getElementById('statusDropdown');
+    const selectAllCheckbox = document.getElementById('status_select_all');
+    const statusCheckboxes = document.querySelectorAll('.status-checkbox');
+
+    // Function to update dropdown button text
+    function updateDropdownText() {
+        const checkedBoxes = Array.from(statusCheckboxes).filter(cb => cb.checked);
+        const dropdownText = statusDropdown.querySelector('span') || statusDropdown;
+
+        if (checkedBoxes.length === 0) {
+            dropdownText.textContent = 'Pilih Status';
+        } else if (checkedBoxes.length === 1) {
+            const statusLabels = {
+                'pending': 'Menunggu',
+                'in_progress': 'Sedang Diproses',
+                'completed': 'Selesai'
+            };
+            dropdownText.textContent = statusLabels[checkedBoxes[0].value] || checkedBoxes[0].value;
+        } else {
+            dropdownText.textContent = `${checkedBoxes.length} Status Dipilih`;
+        }
+    }
+
+    // Select all functionality
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+            statusCheckboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+            updateDropdownText();
+        });
+    }
+
+    // Update select all when individual checkboxes change
+    statusCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const allChecked = Array.from(statusCheckboxes).every(cb => cb.checked);
+            const noneChecked = Array.from(statusCheckboxes).every(cb => !cb.checked);
+
+            if (selectAllCheckbox) {
+                selectAllCheckbox.checked = allChecked;
+                selectAllCheckbox.indeterminate = !allChecked && !noneChecked;
+            }
+            updateDropdownText();
+        });
+    });
+
+    // Initialize dropdown text on page load
+    updateDropdownText();
+});
+</script>
+@endsection
