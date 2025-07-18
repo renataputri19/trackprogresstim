@@ -23,7 +23,12 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('tickets', function (Blueprint $table) {
-            // Revert back to not nullable (but this might fail if there are NULL values)
+            // First, update any NULL values to a default value before making the column NOT NULL
+            \Illuminate\Support\Facades\DB::table('tickets')
+                ->whereNull('requestor_photo')
+                ->update(['requestor_photo' => 'default_photo.jpg']);
+            
+            // Now safely change the column back to NOT NULL
             $table->string('requestor_photo')->nullable(false)->change();
         });
     }
