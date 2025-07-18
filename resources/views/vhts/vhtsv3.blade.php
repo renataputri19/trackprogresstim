@@ -21,6 +21,95 @@
 
     <!-- Main Content -->
     <div class="container mx-auto px-4 py-12">
+        <!-- Important Notice Section -->
+        <div class="mb-8 overflow-hidden rounded-xl bg-amber-50 border-2 border-amber-200 shadow-lg">
+            <div class="bg-gradient-to-r from-amber-100 to-orange-100 px-6 py-4 border-b border-amber-200">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-600">
+                            <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
+                        </svg>
+                    </div>
+                    <h3 class="ml-3 text-lg font-semibold text-amber-900">⚠️ Penting: Informasi Penggunaan BAHTERA Version 3</h3>
+                </div>
+            </div>
+            <div class="px-6 py-4">
+                <div class="space-y-4 text-sm text-amber-800">
+                    <div class="bg-white rounded-lg p-4 border border-amber-200">
+                        <h4 class="font-semibold text-amber-900 mb-2">🎯 Tujuan Khusus Version 3:</h4>
+                        <p>Version 3 <strong>BUKAN</strong> versi yang "lebih baik" dari V1 atau V2. V3 memiliki fungsi khusus untuk <strong>normalisasi indikator</strong> (RLMA, RLMNus, dan GPR) guna meningkatkan kualitas data secara keseluruhan.</p>
+                        
+                        <div class="mt-3 bg-gray-50 rounded-lg p-3">
+                            <h5 class="font-medium text-gray-800 mb-2">📊 Contoh Normalisasi:</h5>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                                <div>
+                                    <p class="font-medium text-red-700 mb-1">Sebelum (Data Abnormal):</p>
+                                    <ul class="space-y-1 text-gray-700">
+                                        <li>TPK: 528,38%</li>
+                                        <li>RLMA: 4,68 hari</li>
+                                        <li>RLMNus: 9,30 hari</li>
+                                        <li>GPR: 1,02 orang/kamar</li>
+                                        <li>TPTT: 339,34%</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-green-700 mb-1">Sesudah (Ternormalisasi):</p>
+                                    <ul class="space-y-1 text-gray-700">
+                                        <li>TPK: 91,89%</li>
+                                        <li>RLMA: 2,67 hari</li>
+                                        <li>RLMNus: 2,83 hari</li>
+                                        <li>GPR: 1,28 orang/kamar</li>
+                                        <li>TPTT: 74,57%</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg p-4 border border-amber-200">
+                         <h4 class="font-semibold text-amber-900 mb-2">⚠️ Keterbatasan Penting:</h4>
+                         <p>V3 <strong>TIDAK</strong> melakukan validasi data harian individual. V3 hanya menormalisasi indikator, sementara data harian yang mendasarinya mungkin masih mengandung pelanggaran aturan.</p>
+                         
+                         <div class="mt-3 bg-yellow-50 rounded-lg p-3 border border-yellow-200">
+                             <h5 class="font-medium text-yellow-800 mb-2">🔧 Logika Normalisasi V3:</h5>
+                             <ul class="text-xs text-yellow-700 space-y-1">
+                                 <li>• <strong>RLMA, RLMNus, dan GPR</strong> ditekan ke rentang <strong>1-3</strong></li>
+                                 <li>• Jika ada nilai <strong>0</strong>, sistem akan menambah data (toleransi untuk kasus tidak ada tamu)</li>
+                                 <li>• Biasanya terjadi pada <strong>tamu asing</strong> yang tidak ada check-in/check-out</li>
+                                 <li>• Penvalidasi harus mentoleransi ini karena sistem dibuat untuk kasus non-zero</li>
+                             </ul>
+                         </div>
+                     </div>
+                    
+                    <div class="bg-white rounded-lg p-4 border border-amber-200">
+                        <h4 class="font-semibold text-amber-900 mb-2">📋 Rekomendasi Alur Kerja:</h4>
+                        <p>Setelah menggunakan V3 untuk normalisasi indikator, <strong>gunakan V2 atau V1</strong> untuk validasi data harian yang komprehensif guna memastikan semua aturan validasi diterapkan dengan benar.</p>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg p-4 border border-amber-200">
+                        <h4 class="font-semibold text-amber-900 mb-2">🔄 Kasus Penggunaan Optimal:</h4>
+                        <p>V3 paling baik digunakan sebagai <strong>langkah preprocessing</strong> sebelum menerapkan validasi yang lebih ketat dengan versi lain.</p>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-blue-50 to-teal-50 rounded-lg p-4 border border-blue-200">
+                         <h4 class="font-semibold text-blue-900 mb-2">💡 Ringkasan Penggunaan:</h4>
+                         <ul class="list-disc list-inside space-y-1 text-blue-800">
+                             <li><strong>V1:</strong> Validasi standar untuk data harian</li>
+                             <li><strong>V2:</strong> Validasi mendalam dengan parameter tambahan</li>
+                             <li><strong>V3:</strong> Normalisasi indikator (gunakan sebelum V1/V2)</li>
+                         </ul>
+                         
+                         <div class="mt-3 bg-green-50 rounded-lg p-3 border border-green-200">
+                             <h5 class="font-medium text-green-800 mb-1">✅ Rekomendasi Penting:</h5>
+                             <p class="text-xs text-green-700">
+                                 <strong>Jika data sudah normal dari awal</strong>, direkomendasikan langsung menggunakan <strong>Version 1 atau Version 2</strong> yang lebih stabil untuk validasi.
+                             </p>
+                         </div>
+                     </div>
+                </div>
+            </div>
+        </div>
+
         <div class="overflow-hidden rounded-xl bg-white shadow-lg ring-1 ring-gray-200/50">
             <div class="border-b border-gray-200 bg-gradient-to-r from-teal-50 to-emerald-50 px-6 py-4">
                 <h2 class="text-2xl font-bold text-gray-900">Sistem Validasi BAHTERA Versi 3</h2>
