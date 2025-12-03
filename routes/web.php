@@ -333,12 +333,14 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/haloip/{ticket}/assign', [HaloIPController::class, 'storeAssignment'])->name('haloip.storeAssignment');
 
         // Status update routes - only accessible to assigned IT staff
+        // Using match(['put', 'post']) to support servers that block PUT requests
         Route::get('/haloip/{ticket}/update-status', [HaloIPController::class, 'editStatus'])->name('haloip.editStatus');
-        Route::put('/haloip/{ticket}/update-status', [HaloIPController::class, 'updateStatus'])->name('haloip.updateStatus');
+        Route::match(['put', 'post'], '/haloip/{ticket}/update-status', [HaloIPController::class, 'updateStatus'])->name('haloip.updateStatus');
 
         // Legacy routes - kept for backward compatibility
+        // Using match(['put', 'post']) to support servers that block PUT requests
         Route::get('/haloip/{ticket}', [HaloIPController::class, 'show'])->name('haloip.show');
-        Route::put('/haloip/{ticket}', [HaloIPController::class, 'update'])->name('haloip.update');
+        Route::match(['put', 'post'], '/haloip/{ticket}', [HaloIPController::class, 'update'])->name('haloip.update');
         Route::delete('/haloip/{ticket}', [HaloIPController::class, 'destroy'])->name('haloip.destroy');
 
         Route::get('/api/haloip/pending-count', [HaloIPController::class, 'pendingCount'])->name('haloip.pendingCount');
@@ -360,10 +362,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/haloIP/map-requests/{mapRequest}', function($mapRequest) {
             return redirect()->route('haloip.show', ['ticket' => $mapRequest]);
         })->name('map-requests.show');
-        Route::put('/haloIP/tickets/{ticket}', function($ticket) {
+        Route::match(['put', 'post'], '/haloIP/tickets/{ticket}', function($ticket) {
             return redirect()->route('haloip.update', ['ticket' => $ticket]);
         })->name('tickets.update');
-        Route::put('/haloIP/map-requests/{mapRequest}', function($mapRequest) {
+        Route::match(['put', 'post'], '/haloIP/map-requests/{mapRequest}', function($mapRequest) {
             return redirect()->route('haloip.update', ['ticket' => $mapRequest]);
         })->name('map-requests.update');
         Route::get('/api/tickets/pending-count', function() {
@@ -383,7 +385,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/haloIP/{ticket}/update-status', function($ticket) {
             return redirect()->route('haloip.editStatus', ['ticket' => $ticket]);
         });
-        Route::put('/haloIP/{ticket}/update-status', function($ticket) {
+        Route::match(['put', 'post'], '/haloIP/{ticket}/update-status', function($ticket) {
             return redirect()->route('haloip.updateStatus', ['ticket' => $ticket]);
         });
 
