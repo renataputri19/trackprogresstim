@@ -24,57 +24,122 @@ document.addEventListener('DOMContentLoaded', function() {
     if (isITStaff && !isPublicPage) {
         console.log('Setting up notifications for IT staff');
 
-        // Initialize the previous counts
-        let previousPendingTicketCount = parseInt(sessionStorage.getItem('previousPendingTicketCount')) || 0;
-        let previousPendingMapRequestCount = parseInt(sessionStorage.getItem('previousPendingMapRequestCount')) || 0;
+        // Notification timing configuration (overridable via window.NotificationConfig or localStorage)
+        const NotificationConfig = Object.assign({
+            // Minimum 1s cooldown between plays; overridable but enforced >= 1000ms
+            cooldownMs: Math.max(parseInt(localStorage.getItem('notifCooldownMs')) || 1000, 1000),
+            // Debounce duplicate triggers for the same ticket within this window
+            debounceMs: parseInt(localStorage.getItem('notifDebounceMs')) || 1000,
+            // Additional delay applied after each successful playback
+            deltaMs: parseInt(localStorage.getItem('notifDeltaMs')) || 0,
+            // Polling interval for detecting new tickets
+            pollMs: parseInt(localStorage.getItem('notifPollMs')) || 5000,
+        }, window.NotificationConfig || {});
+        window.NotificationConfig = NotificationConfig;
 
-        // Function to check for new tickets using AJAX
-        function checkForNewTickets() {
-            console.log('Checking for new tickets via AJAX...');
+        // Playback queue manager: guarantees single sound per ticket event with cooldown and debouncing
+        const SoundPlaybackManager = (function() {
+            let queue = [];
+            let processing = false;
+            let lastPlaybackAt = 0;
+            let lastTriggerMap = new Map(); // ticketId -> timestamp
+            let notifiedTickets = new Set(JSON.parse(sessionStorage.getItem('notifiedTickets') || '[]'));
+            let queueTicketIds = new Set(); // prevent duplicate enqueues for same ticket
 
-            fetch('/api/tickets/pending-count', {
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Accept': 'application/json'
+            function enqueue(ticketId, createdAt) {
+                const now = Date.now();
+                const lastTrigger = lastTriggerMap.get(ticketId) || 0;
+                if (now - lastTrigger < NotificationConfig.debounceMs) {
+                    console.debug('[SoundQueue] Debounced duplicate trigger for ticket', ticketId);
+                    return;
                 }
-            })
-            .then(response => response.json())
-            .then(data => {
-                const currentPendingTicketCount = data.pendingCount;
-                console.log('Current pending tickets:', currentPendingTicketCount);
-                console.log('Previous pending tickets:', previousPendingTicketCount);
+                if (queueTicketIds.has(ticketId)) {
+                    console.debug('[SoundQueue] Already queued; suppressing duplicate enqueue for ticket', ticketId);
+                    return;
+                }
+                if (notifiedTickets.has(ticketId)) {
+                    console.debug('[SoundQueue] Suppressed; ticket already notified', ticketId);
+                    return;
+                }
+                lastTriggerMap.set(ticketId, now);
+                queue.push({ ticketId, createdAt });
+                queueTicketIds.add(ticketId);
+                console.info('[SoundQueue] Enqueued ticket', ticketId, 'queue length =', queue.length);
+                processQueue();
+            }
 
-                // Check if we've already shown a notification for this count
-                const lastNotifiedTicketCount = parseInt(sessionStorage.getItem('lastNotifiedTicketCount')) || 0;
+            function processQueue() {
+                if (processing) return;
+                processing = true;
 
-                // If there are more pending tickets now than before, and we haven't notified for this count
-                if (currentPendingTicketCount > previousPendingTicketCount && currentPendingTicketCount > lastNotifiedTicketCount) {
-                    console.log('New tickets detected! Playing notification...');
-                    playNotificationSound();
-                    // Only show visual notification on console for debugging, no popup alerts
-                    console.log('New ticket notification: Ada tiket IT baru yang menunggu untuk ditangani!');
-                    // Update the last notified count
-                    sessionStorage.setItem('lastNotifiedTicketCount', currentPendingTicketCount);
-                    // Fetch and update the ticket list dynamically if on tickets page
-                    if (window.location.pathname.includes('/haloIP') || window.location.pathname.includes('/tickets')) {
-                        updateTicketList();
+                const runner = () => {
+                    if (queue.length === 0) {
+                        processing = false;
+                        return;
                     }
-                }
 
-                // Update the previous count
-                previousPendingTicketCount = currentPendingTicketCount;
-                sessionStorage.setItem('previousPendingTicketCount', currentPendingTicketCount);
-            })
-            .catch(error => {
-                console.error('Error checking for new tickets:', error);
-            });
-        }
+                    const now = Date.now();
+                    const elapsed = now - lastPlaybackAt;
+                    const waitNeeded = Math.max(NotificationConfig.cooldownMs, 1000) + (NotificationConfig.deltaMs || 0);
+                    if (lastPlaybackAt && elapsed < waitNeeded) {
+                        const waitFor = waitNeeded - elapsed;
+                        console.debug('[SoundQueue] Cooldown active, waiting', waitFor, 'ms');
+                        setTimeout(runner, waitFor);
+                        return;
+                    }
 
-        // Function to check for new map requests using AJAX
-        function checkForNewMapRequests() {
-            console.log('Checking for new map requests via AJAX...');
+                    const next = queue.shift();
+                    // Remove from queued set now that we're processing it
+                    queueTicketIds.delete(next.ticketId);
 
-            fetch('/api/map-requests/pending-count', {
+                    // Safety: skip if somehow already notified
+                    if (notifiedTickets.has(next.ticketId)) {
+                        console.debug('[SoundQueue] Skipping already-notified ticket', next.ticketId);
+                        runner();
+                        return;
+                    }
+                    console.info('[SoundQueue] Playing sound for ticket', next.ticketId);
+                    playNotificationSound()
+                        .then(() => {
+                            lastPlaybackAt = Date.now();
+                            notifiedTickets.add(next.ticketId);
+                            sessionStorage.setItem('notifiedTickets', JSON.stringify(Array.from(notifiedTickets)));
+                            const delta = NotificationConfig.deltaMs || 0;
+                            if (delta > 0) {
+                                console.debug('[SoundQueue] Applying delta delay', delta, 'ms');
+                                setTimeout(runner, delta);
+                            } else {
+                                // Immediately attempt next, cooldown will still be enforced
+                                runner();
+                            }
+                        })
+                        .catch((err) => {
+                            console.error('[SoundQueue] Audio play error; continuing with enforced cooldown:', err);
+                            lastPlaybackAt = Date.now();
+                            const delta = NotificationConfig.deltaMs || 0;
+                            setTimeout(runner, delta);
+                        });
+                };
+
+                runner();
+            }
+
+            return {
+                enqueue,
+                processQueue,
+                getQueueSize: () => queue.length,
+                getState: () => ({ queueLength: queue.length, lastPlaybackAt, cooldownMs: NotificationConfig.cooldownMs, deltaMs: NotificationConfig.deltaMs })
+            };
+        })();
+
+        // Unified pending count across all categories/service types
+        let previousPendingCountAll = parseInt(sessionStorage.getItem('previousPendingCountAll')) || 0;
+        let initializedPendingBaseline = sessionStorage.getItem('pendingBaselineInitialized') === 'true';
+
+        function checkPendingCountAndRefresh() {
+            console.log('Checking unified pending count via AJAX...');
+
+            fetch('/api/haloip/pending-count', {
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
                     'Accept': 'application/json'
@@ -82,35 +147,132 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(response => response.json())
             .then(data => {
-                const currentPendingMapRequestCount = data.pendingCount;
-                console.log('Current pending map requests:', currentPendingMapRequestCount);
-                console.log('Previous pending map requests:', previousPendingMapRequestCount);
+                const currentPendingCountAll = data.pendingCount;
+                console.log('Current pending (all categories):', currentPendingCountAll);
+                console.log('Previous pending (all categories):', previousPendingCountAll);
 
-                // Check if we've already shown a notification for this count
-                const lastNotifiedMapRequestCount = parseInt(sessionStorage.getItem('lastNotifiedMapRequestCount')) || 0;
+                // On first run, baseline the count without playing sound (non-intrusive)
+                if (!initializedPendingBaseline) {
+                    previousPendingCountAll = currentPendingCountAll;
+                    sessionStorage.setItem('previousPendingCountAll', currentPendingCountAll);
+                    sessionStorage.setItem('lastNotifiedPendingCountAll', currentPendingCountAll);
+                    sessionStorage.setItem('pendingBaselineInitialized', 'true');
+                    initializedPendingBaseline = true;
+                    console.log('Baseline initialized, no notification on initial load.');
+                    return;
+                }
 
-                // If there are more pending map requests now than before, and we haven't notified for this count
-                if (currentPendingMapRequestCount > previousPendingMapRequestCount && currentPendingMapRequestCount > lastNotifiedMapRequestCount) {
-                    console.log('New map requests detected! Playing notification...');
-                    playNotificationSound();
-                    // Only show visual notification on console for debugging, no popup alerts
-                    console.log('New map request notification: Ada permintaan peta baru yang menunggu untuk ditangani!');
-                    // Update the last notified count
-                    sessionStorage.setItem('lastNotifiedMapRequestCount', currentPendingMapRequestCount);
-                    // Fetch and update the map request list dynamically if on map requests page
+                const lastNotifiedPendingCountAll = parseInt(sessionStorage.getItem('lastNotifiedPendingCountAll')) || 0;
+
+                // When count increases, rely on per-ticket detection for sound playback.
+                if (currentPendingCountAll > previousPendingCountAll && currentPendingCountAll > lastNotifiedPendingCountAll) {
+                    console.debug('Pending count increased; delegating sound playback to per-ticket queue.');
+                    sessionStorage.setItem('lastNotifiedPendingCountAll', currentPendingCountAll);
+
+                    // Refresh lists once per detection only if the relevant UI exists
+                    const tableContainer = document.querySelector('.haloip-table-container');
+                    const tableBody = document.querySelector('.haloip-table tbody');
+                    const cardContainer = document.querySelector('.row.mt-4');
+                    if ((tableContainer && tableBody) || cardContainer) {
+                        updateTicketList();
+                    } else {
+                        console.debug('Ticket list UI not present; skipping updateTicketList');
+                    }
                     if (window.location.pathname.includes('/map-requests')) {
                         updateMapRequestList();
                     }
                 }
 
-                // Update the previous count
-                previousPendingMapRequestCount = currentPendingMapRequestCount;
-                sessionStorage.setItem('previousPendingMapRequestCount', currentPendingMapRequestCount);
+                // Update previous count for next comparison
+                previousPendingCountAll = currentPendingCountAll;
+                sessionStorage.setItem('previousPendingCountAll', currentPendingCountAll);
             })
             .catch(error => {
-                console.error('Error checking for new map requests:', error);
+                console.error('Error checking unified pending count:', error);
             });
         }
+
+        // Baseline and per-ticket detection: poll pending tickets and enqueue distinct ticket IDs
+        let ticketsBaselineInit = sessionStorage.getItem('ticketsBaselineInit') === 'true';
+        let lastSeenCreatedAt = parseInt(sessionStorage.getItem('lastSeenCreatedAt')) || 0;
+        let seenPendingTicketIds = new Set(JSON.parse(sessionStorage.getItem('seenPendingTicketIds') || '[]'));
+
+        function hasTicketListUI() {
+            const tableContainer = document.querySelector('.haloip-table-container');
+            const tableBody = document.querySelector('.haloip-table tbody');
+            const cardContainer = document.querySelector('.row.mt-4');
+            return (tableContainer && tableBody) || !!cardContainer;
+        }
+
+        function detectNewTickets() {
+            console.debug('Polling pending tickets for per-event detection...');
+            const qs = new URLSearchParams();
+            qs.append('status[]', 'pending');
+
+            fetch(`/api/tickets?${qs.toString()}`, {
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json'
+                }
+            })
+            .then(r => r.json())
+            .then(tickets => {
+                if (!Array.isArray(tickets)) {
+                    console.warn('Unexpected tickets response format', tickets);
+                    return;
+                }
+
+                if (!ticketsBaselineInit) {
+                    const ids = tickets.map(t => t.id);
+                    const maxTs = tickets.reduce((m, t) => Math.max(m, Date.parse(t.created_at) || 0), 0);
+                    seenPendingTicketIds = new Set(ids);
+                    lastSeenCreatedAt = maxTs;
+                    sessionStorage.setItem('seenPendingTicketIds', JSON.stringify(ids));
+                    sessionStorage.setItem('lastSeenCreatedAt', String(lastSeenCreatedAt));
+                    sessionStorage.setItem('ticketsBaselineInit', 'true');
+                    ticketsBaselineInit = true;
+                    console.debug('Tickets baseline initialized; suppressing initial sound playback.');
+                    return;
+                }
+
+                const newItems = [];
+                for (const t of tickets) {
+                    const ts = Date.parse(t.created_at) || 0;
+                    if (!seenPendingTicketIds.has(t.id) || ts > lastSeenCreatedAt) {
+                        newItems.push(t);
+                    }
+                }
+
+                if (newItems.length) {
+                    console.info(`Detected ${newItems.length} new ticket(s). Queueing sound playback.`);
+                    // Play in chronological order for natural cadence
+                    newItems.sort((a, b) => (Date.parse(a.created_at) || 0) - (Date.parse(b.created_at) || 0));
+                    for (const t of newItems) {
+                        SoundPlaybackManager.enqueue(t.id, t.created_at);
+                        seenPendingTicketIds.add(t.id);
+                        lastSeenCreatedAt = Math.max(lastSeenCreatedAt, Date.parse(t.created_at) || 0);
+                    }
+                    sessionStorage.setItem('seenPendingTicketIds', JSON.stringify(Array.from(seenPendingTicketIds)));
+                    sessionStorage.setItem('lastSeenCreatedAt', String(lastSeenCreatedAt));
+
+                    // Refresh ticket list when new tickets detected and UI exists
+                    if (hasTicketListUI()) {
+                        updateTicketList();
+                    } else {
+                        console.debug('Ticket list UI not present; skipping updateTicketList');
+                    }
+                } else {
+                    console.debug('No new tickets detected in this poll.');
+                }
+            })
+            .catch(err => console.error('Pending tickets poll failed', err));
+        }
+
+        // Initial checks and intervals
+        detectNewTickets();
+        checkPendingCountAndRefresh();
+        setInterval(detectNewTickets, window.NotificationConfig.pollMs);
+        setInterval(checkPendingCountAndRefresh, window.NotificationConfig.pollMs);
 
         // Function to fetch and update the ticket list dynamically
         function updateTicketList() {
@@ -268,7 +430,7 @@ document.addEventListener('DOMContentLoaded', function() {
         function updateTicketCards(tickets) {
             const ticketContainer = document.querySelector('.row.mt-4');
             if (!ticketContainer) {
-                console.error('Ticket container not found');
+                console.debug('Ticket container not found; skipping card update on this page');
                 return;
             }
 
@@ -502,7 +664,7 @@ document.addEventListener('DOMContentLoaded', function() {
         function updateMapRequestCards(mapRequests) {
             const mapRequestContainer = document.querySelector('.row.mt-4');
             if (!mapRequestContainer) {
-                console.error('Map request container not found');
+                console.debug('Map request container not found; skipping card update on this page');
                 return;
             }
 
@@ -561,15 +723,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
-        // Initial checks for new tickets and map requests
-        checkForNewTickets();
-        checkForNewMapRequests();
-
-        // Poll for new tickets and map requests every 5 seconds
-        setInterval(() => {
-            checkForNewTickets();
-            checkForNewMapRequests();
-        }, 5000);
+        // Intervals are scheduled above using NotificationConfig.pollMs
     }
 
     // Add smooth scroll for pagination
@@ -619,58 +773,64 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Function to play notification sound
+    // Function to play notification sound (returns a Promise)
     function playNotificationSound() {
-        // Double-check: Don't play sound on public pages
         const isPublicPage = window.location.pathname.includes('/public/view/') ||
                             window.location.pathname.includes('/haloIP/public/view/') ||
                             document.querySelector('meta[name="is-public-page"]')?.content === 'true';
         if (isPublicPage) {
-            console.log('Notification sound blocked: on public page');
-            return;
+            console.debug('Notification sound blocked: on public page');
+            return Promise.resolve();
         }
 
-        console.log('Attempting to play notification sound...');
+        // Global cooldown guard to prevent any duplicate playback within 1 second
+        const now = Date.now();
+        const minCooldown = Math.max((window.NotificationConfig?.cooldownMs) || 1000, 1000);
+        if (window.__lastAudioPlayAt && (now - window.__lastAudioPlayAt) < minCooldown) {
+            console.debug('Global guard: skipping audio due to cooldown. Elapsed =', (now - window.__lastAudioPlayAt), 'ms');
+            return Promise.resolve();
+        }
 
         const soundPath = '/sounds/notification.mp3';
-        console.log('Trying to play sound from path:', soundPath);
+        console.debug('Attempting to play notification sound from path:', soundPath);
 
         const audio = new Audio(soundPath);
 
         // Add event listeners to track loading and playing
         audio.addEventListener('canplaythrough', () => {
-            console.log('Audio can play through, attempting to play...');
+            console.debug('Audio can play through, attempting to play...');
         });
 
         audio.addEventListener('playing', () => {
-            console.log('Audio is playing successfully!');
+            console.info('Audio is playing successfully!');
         });
 
         audio.addEventListener('error', (e) => {
             console.error('Error loading audio:', e);
-            console.error('Error code:', e.code);
-            console.error('Error message:', e.message);
             // Fallback: vibrate on mobile devices
             try {
                 window.navigator.vibrate(200);
-                console.log('Vibration triggered as fallback');
+                console.debug('Vibration triggered as fallback for load error');
             } catch (vibrateError) {
-                console.log('Vibration not supported:', vibrateError);
+                console.warn('Vibration not supported:', vibrateError);
             }
         });
 
-        // Try to play the audio
-        audio.play().then(() => {
-            console.log('Audio playback started successfully!');
+        // Try to play the audio and propagate errors
+        return audio.play().then(() => {
+            window.__lastAudioPlayAt = Date.now();
+            console.info('Audio playback started successfully!');
         }).catch(error => {
             console.error('Error playing audio:', error);
             // Fallback: vibrate on mobile devices
             try {
                 window.navigator.vibrate(200);
-                console.log('Vibration triggered as fallback');
+                console.debug('Vibration triggered as fallback for play error');
             } catch (vibrateError) {
-                console.log('Vibration not supported:', vibrateError);
+                console.warn('Vibration not supported:', vibrateError);
             }
+            // Propagate error so the queue can log and continue while enforcing cooldown
+            throw error;
         });
     }
 

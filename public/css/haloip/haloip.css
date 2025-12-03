@@ -1,48 +1,1187 @@
-/* HaloIP Modern Design - Integrated with Homepage Theme */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+/* HaloIP Modern Design - Comprehensive Redesign */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-/* Base HaloIP container with modern design */
-.haloip-container {
+/* ===== MAIN WRAPPER ===== */
+.haloip-main-wrapper {
     font-family: 'Inter', sans-serif;
     color: #111827;
-    background-color: transparent;
-}
-
-/* Hero Section for HaloIP */
-.haloip-hero {
+    background: linear-gradient(135deg, #f0fdfa 0%, #ffffff 50%, #ecfdf5 100%);
+    min-height: 100vh;
     position: relative;
     overflow: hidden;
-    padding: 4rem 0 2rem 0;
-    background: linear-gradient(to bottom, #f0fdfa, #ffffff);
 }
 
-.haloip-hero-content {
+/* Decorative Background */
+.haloip-bg-decoration {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 600px;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(13, 148, 136, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ===== MODERN HERO SECTION ===== */
+.haloip-hero-modern {
     position: relative;
-    z-index: 10;
-    text-align: center;
+    z-index: 1;
+    padding: 3rem 0 2rem 0;
 }
 
-.haloip-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    line-height: 1.2;
+.haloip-hero-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-items: center;
+}
+
+@media (min-width: 1024px) {
+    .haloip-hero-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+    }
+}
+
+/* Hero Text Content */
+.haloip-hero-text {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.haloip-badge-new {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, rgba(13, 148, 136, 0.1), rgba(16, 185, 129, 0.1));
+    border: 1px solid rgba(13, 148, 136, 0.2);
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #0d9488;
+    margin-bottom: 1.5rem;
+}
+
+.haloip-badge-new svg {
+    color: #0d9488;
+}
+
+.haloip-hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1.1;
     margin-bottom: 1rem;
-    background: linear-gradient(to right, #0d9488, #10b981, #0d9488);
+    background: linear-gradient(135deg, #0d9488 0%, #10b981 50%, #06b6d4 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    letter-spacing: -0.02em;
 }
 
-.haloip-subtitle {
+.haloip-hero-subtitle {
     font-size: 1.125rem;
-    color: #4b5563;
+    line-height: 1.7;
+    color: #6b7280;
     margin-bottom: 2rem;
-    max-width: 42rem;
-    margin-left: auto;
-    margin-right: auto;
+    max-width: 600px;
 }
 
-/* Navigation tabs */
+/* Hero Action Buttons */
+.haloip-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.haloip-btn-hero {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.haloip-btn-hero-primary {
+    background: linear-gradient(135deg, #0d9488 0%, #10b981 100%);
+    color: #ffffff;
+}
+
+.haloip-btn-hero-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(13, 148, 136, 0.3), 0 4px 6px -2px rgba(13, 148, 136, 0.2);
+}
+
+.haloip-btn-hero-secondary {
+    background: #ffffff;
+    color: #0d9488;
+    border: 2px solid #0d9488;
+}
+
+.haloip-btn-hero-secondary:hover {
+    background: #f0fdfa;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(13, 148, 136, 0.2), 0 4px 6px -2px rgba(13, 148, 136, 0.1);
+}
+
+/* Hero Statistics Cards */
+.haloip-hero-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    animation: fadeInRight 0.8s ease-out 0.2s both;
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.haloip-stat-card-modern {
+    background: #ffffff;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(13, 148, 136, 0.1);
+    transition: all 0.3s ease;
+}
+
+.haloip-stat-card-modern:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 15px -3px rgba(13, 148, 136, 0.2), 0 4px 6px -2px rgba(13, 148, 136, 0.1);
+    border-color: rgba(13, 148, 136, 0.3);
+}
+
+.haloip-stat-icon-modern {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.haloip-stat-total {
+    background: linear-gradient(135deg, #0d9488, #10b981);
+    color: #ffffff;
+}
+
+.haloip-stat-pending {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    color: #ffffff;
+}
+
+.haloip-stat-progress {
+    background: linear-gradient(135deg, #fb923c, #ea580c);
+    color: #ffffff;
+}
+
+.haloip-stat-completed {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #ffffff;
+}
+
+.haloip-stat-info {
+    flex: 1;
+}
+
+.haloip-stat-value-modern {
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1;
+    color: #111827;
+    margin-bottom: 0.25rem;
+}
+
+.haloip-stat-label-modern {
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+/* ===== CONTENT WRAPPER ===== */
+.haloip-content-wrapper {
+    position: relative;
+    z-index: 1;
+    margin-top: 2rem;
+}
+
+/* ===== ALERT MESSAGES ===== */
+.haloip-alert {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    border-radius: 0.75rem;
+    margin-bottom: 1.5rem;
+    animation: slideInDown 0.5s ease-out;
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.haloip-alert-success {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    border: 1px solid #6ee7b7;
+    color: #065f46;
+}
+
+.haloip-alert svg {
+    flex-shrink: 0;
+}
+
+.haloip-alert span {
+    flex: 1;
+    font-weight: 500;
+}
+
+.haloip-alert-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 0.375rem;
+    transition: background-color 0.2s;
+    color: #065f46;
+}
+
+.haloip-alert-close:hover {
+    background-color: rgba(6, 95, 70, 0.1);
+}
+
+/* ===== TAB NAVIGATION ===== */
+.haloip-tabs-wrapper {
+    margin-bottom: 2rem;
+    animation: fadeInUp 0.6s ease-out 0.2s both;
+}
+
+.haloip-tabs-container {
+    display: flex;
+    gap: 1rem;
+    background: #ffffff;
+    border-radius: 1rem;
+    padding: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(13, 148, 136, 0.1);
+}
+
+.haloip-tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    border-radius: 0.75rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: #6b7280;
+    background: transparent;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    border: 2px solid transparent;
+}
+
+.haloip-tab svg {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.haloip-tab:hover {
+    color: #0d9488;
+    background: rgba(13, 148, 136, 0.05);
+}
+
+.haloip-tab-active {
+    background: linear-gradient(135deg, #0d9488 0%, #10b981 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
+}
+
+.haloip-tab-active:hover {
+    color: #ffffff;
+    background: linear-gradient(135deg, #0d9488 0%, #10b981 100%);
+}
+
+.haloip-tab-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.75rem;
+    height: 1.75rem;
+    padding: 0 0.5rem;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    background: rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.haloip-tab-active .haloip-tab-count {
+    background: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+}
+
+/* Mobile responsive tabs */
+@media (max-width: 640px) {
+    .haloip-tabs-container {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .haloip-tab {
+        padding: 0.875rem 1rem;
+        font-size: 0.875rem;
+    }
+}
+
+/* ===== MODERN FILTER SECTION ===== */
+.haloip-filter-modern {
+    background: #ffffff;
+    border-radius: 1.25rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(13, 148, 136, 0.1);
+    animation: fadeInUp 0.6s ease-out 0.3s both;
+    position: relative;
+    z-index: 10;
+    overflow: visible;
+}
+
+.haloip-filter-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f3f4f6;
+}
+
+.haloip-filter-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 0.5rem;
+}
+
+.haloip-filter-title svg {
+    color: #0d9488;
+}
+
+.haloip-filter-desc {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+.haloip-filter-form {
+    margin-top: 1.5rem;
+}
+
+.haloip-filter-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .haloip-filter-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .haloip-filter-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.haloip-filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    position: relative;
+}
+
+/* Ensure dropdown container has proper stacking context */
+.haloip-filter-group .dropdown {
+    position: relative;
+    z-index: 1;
+}
+
+/* Ensure dropdown menu appears above all other content */
+.haloip-filter-group .dropdown-menu {
+    z-index: 1050 !important;
+}
+
+/* When dropdown is open, increase parent z-index */
+.haloip-filter-group .dropdown.show {
+    z-index: 100;
+}
+
+.haloip-filter-submit {
+    display: flex;
+    align-items: flex-end;
+}
+
+.haloip-filter-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+.haloip-filter-label svg {
+    color: #0d9488;
+}
+
+.haloip-filter-select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    color: #111827;
+    background-color: #ffffff;
+    transition: all 0.2s;
+    cursor: pointer;
+    min-height: 44px; /* unify control height across filter row */
+}
+
+.haloip-filter-select:focus {
+    outline: none;
+    border-color: #0d9488;
+    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
+}
+
+.haloip-filter-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, #0d9488 0%, #10b981 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 6px -1px rgba(13, 148, 136, 0.3);
+    min-height: 44px; /* unify control height across filter row */
+}
+
+.haloip-filter-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(13, 148, 136, 0.4);
+}
+
+/* ===== MODERN TABLE WRAPPER ===== */
+.haloip-table-modern-wrapper {
+    background: #ffffff;
+    border-radius: 1.25rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(13, 148, 136, 0.1);
+    overflow: hidden;
+    animation: fadeInUp 0.6s ease-out 0.4s both;
+}
+
+.haloip-table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    background: linear-gradient(135deg, #f0fdfa 0%, #ecfdf5 100%);
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.haloip-table-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+}
+
+.haloip-table-title svg {
+    color: #0d9488;
+}
+
+.haloip-table-count {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.haloip-count-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.5rem;
+    height: 2.5rem;
+    padding: 0 0.75rem;
+    background: linear-gradient(135deg, #0d9488 0%, #10b981 100%);
+    color: #ffffff;
+    border-radius: 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+}
+
+.haloip-count-text {
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+/* Table Container */
+.haloip-table-container-modern {
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+}
+
+/* Custom scrollbar for modern table container */
+.haloip-table-container-modern::-webkit-scrollbar {
+    height: 8px;
+}
+
+.haloip-table-container-modern::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+.haloip-table-container-modern::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #0d9488 0%, #10b981 100%);
+    border-radius: 4px;
+    border: 1px solid #f1f5f9;
+}
+
+/* Firefox scrollbar styling */
+.haloip-table-container-modern {
+    scrollbar-width: thin;
+    scrollbar-color: #0d9488 #f1f5f9;
+}
+
+.haloip-table-modern {
+    width: 100%;
+    min-width: 1200px; /* Ensure table is wide enough to show all columns including Aksi */
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: auto;
+}
+
+/* Table Header */
+.haloip-table-modern thead {
+    background: #f9fafb;
+}
+
+.haloip-table-modern th {
+    padding: 1rem 1.5rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.75rem;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid #e5e7eb;
+    white-space: normal;
+    word-wrap: break-word;
+}
+
+.haloip-th-content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.haloip-th-content svg {
+    color: #9ca3af;
+}
+
+/* Table Body */
+.haloip-table-modern tbody tr {
+    border-bottom: 1px solid #f3f4f6;
+    transition: background-color 0.2s;
+}
+
+.haloip-table-modern tbody tr:last-child {
+    border-bottom: none;
+}
+
+.haloip-table-modern tbody tr:nth-child(even) {
+    background: #fafafa;
+}
+
+.haloip-table-modern tbody tr:hover {
+    background: #f0fdfa;
+}
+
+.haloip-table-modern td {
+    padding: 1.25rem 1.5rem;
+    font-size: 0.875rem;
+    color: #374151;
+    vertical-align: middle;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Ticket Code */
+.haloip-ticket-code-modern {
+    display: inline-block;
+    padding: 0.375rem 0.75rem;
+    background: linear-gradient(135deg, #f0fdfa 0%, #ecfdf5 100%);
+    border: 1px solid #a7f3d0;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #0d9488;
+    letter-spacing: 0.025em;
+    font-family: 'Courier New', monospace;
+}
+
+/* Category Badge */
+.haloip-category-badge {
+    display: inline-block;
+    padding: 0.375rem 0.875rem;
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    border: 1px solid #93c5fd;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #1e40af;
+}
+
+/* Ticket Title */
+.haloip-ticket-title-modern {
+    font-weight: 600;
+    color: #111827;
+    line-height: 1.5;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 300px;
+}
+
+/* User Info */
+.haloip-user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #374151;
+}
+
+.haloip-user-info svg {
+    color: #9ca3af;
+    flex-shrink: 0;
+}
+
+.haloip-unassigned {
+    color: #9ca3af;
+    font-style: italic;
+}
+
+/* Status Badge */
+.haloip-status-modern {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.haloip-status-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.haloip-status-modern-pending {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    color: #92400e;
+    border: 1px solid #fbbf24;
+}
+
+.haloip-status-modern-pending .haloip-status-dot {
+    background: #fbbf24;
+}
+
+.haloip-status-modern-progress {
+    background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%);
+    color: #9a3412;
+    border: 1px solid #fb923c;
+}
+
+.haloip-status-modern-progress .haloip-status-dot {
+    background: #fb923c;
+}
+
+.haloip-status-modern-completed {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    color: #065f46;
+    border: 1px solid #6ee7b7;
+}
+
+.haloip-status-modern-completed .haloip-status-dot {
+    background: #10b981;
+}
+
+/* Date Info */
+.haloip-date-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.haloip-date-info svg {
+    color: #9ca3af;
+    flex-shrink: 0;
+}
+
+/* Action Button */
+.haloip-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    background: linear-gradient(135deg, #0d9488 0%, #10b981 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 2px 4px rgba(13, 148, 136, 0.2);
+}
+
+/* Empty State */
+.haloip-empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.haloip-empty-state svg {
+    color: #d1d5db;
+    margin-bottom: 1.5rem;
+}
+
+.haloip-empty-state h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.haloip-empty-state p {
+    font-size: 0.875rem;
+    color: #6b7280;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+/* ===== MODERN PAGINATION DESIGN ===== */
+/* Wrapper for pagination */
+.haloip-pagination-wrapper {
+    padding: 1.5rem 2rem;
+    background: #f9fafb;
+    border-top: 1px solid #e5e7eb;
+}
+
+/* Modern pagination container */
+.haloip-pagination-modern {
+    width: 100%;
+}
+
+.haloip-pagination-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    max-width: 100%;
+}
+
+/* Pagination buttons (Previous/Next) */
+.haloip-pagination-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    background: #ffffff;
+    color: #374151;
+    font-weight: 500;
+    font-size: 0.875rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: none;
+    white-space: nowrap;
+}
+
+.haloip-pagination-btn svg {
+    flex-shrink: 0;
+}
+
+/* Active button (clickable) */
+.haloip-pagination-btn-active {
+    color: #0d9488;
+    border-color: #0d9488;
+}
+
+/* Disabled button */
+.haloip-pagination-btn-disabled {
+    color: #d1d5db;
+    background: #f9fafb;
+    border-color: #e5e7eb;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.haloip-pagination-btn-disabled svg {
+    stroke: #d1d5db;
+}
+
+/* Page information (center) */
+.haloip-pagination-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    text-align: center;
+    flex: 1;
+    min-width: 0;
+}
+
+.haloip-pagination-page-text {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #111827;
+    white-space: nowrap;
+}
+
+.haloip-pagination-current {
+    color: #0d9488;
+    font-weight: 700;
+}
+
+.haloip-pagination-total {
+    color: #6b7280;
+    font-weight: 600;
+}
+
+.haloip-pagination-items-text {
+    font-size: 0.8125rem;
+    color: #6b7280;
+    white-space: nowrap;
+}
+
+/* ===== LEGACY PAGINATION SUPPORT (for backward compatibility) ===== */
+.haloip-pagination-wrapper .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 0;
+}
+
+.haloip-pagination-wrapper .page-link {
+    padding: 0.625rem 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    color: #374151;
+    font-weight: 500;
+    text-decoration: none;
+    transition: none;
+}
+
+.haloip-pagination-wrapper .page-item.active .page-link {
+    background: linear-gradient(135deg, #0d9488 0%, #10b981 100%);
+    border-color: transparent;
+    color: #ffffff;
+}
+
+.haloip-pagination-wrapper .page-item.disabled .page-link {
+    color: #d1d5db;
+    background: #f9fafb;
+    cursor: not-allowed;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Hide mobile cards on desktop only */
+.haloip-mobile-cards {
+    display: none;
+}
+
+/* Laptop/Desktop: Enable horizontal scrolling for table */
+@media (min-width: 1024px) {
+    .haloip-table-container-modern {
+        overflow-x: auto;
+        overflow-y: visible;
+    }
+
+    .haloip-table-modern {
+        min-width: 1200px; /* Ensure all columns including Aksi are visible */
+    }
+
+    /* Show table, hide mobile cards */
+    .haloip-table-modern {
+        display: table;
+    }
+
+    .haloip-mobile-cards {
+        display: none;
+    }
+}
+
+@media (max-width: 767px) {
+    .haloip-hero-stats {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 1023px) {
+    .haloip-hero-title {
+        font-size: 2rem;
+    }
+
+    .haloip-hero-subtitle {
+        font-size: 1rem;
+    }
+
+    .haloip-btn-hero {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .haloip-filter-modern {
+        padding: 1.5rem;
+    }
+
+    .haloip-table-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1.25rem 1.5rem;
+    }
+
+    /* Hide table, show card layout on mobile and tablet */
+    .haloip-table-modern {
+        display: none;
+    }
+
+    /* Mobile Card Layout */
+    .haloip-mobile-cards {
+        display: block;
+        padding: 1rem;
+    }
+
+    .haloip-mobile-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .haloip-mobile-card:last-child {
+        margin-bottom: 0;
+    }
+
+    /* Ensure ticket code and status have proper spacing */
+    .haloip-mobile-card .haloip-ticket-code-modern {
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .haloip-mobile-card .haloip-status-modern {
+        display: inline-flex;
+    }
+
+    .haloip-mobile-card-header {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .haloip-mobile-card-body {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .haloip-mobile-card-row {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .haloip-mobile-card-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .haloip-mobile-card-value {
+        font-size: 0.875rem;
+        color: #374151;
+    }
+
+    .haloip-mobile-card-actions {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #f3f4f6;
+    }
+
+    .haloip-mobile-card-actions .haloip-action-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 0.875rem 1.5rem;
+    }
+
+    /* Override max-width for mobile card titles */
+    .haloip-mobile-card .haloip-ticket-title-modern {
+        max-width: none;
+    }
+}
+
+@media (max-width: 575px) {
+    .haloip-hero-title {
+        font-size: 1.75rem;
+    }
+
+    .haloip-stat-card-modern {
+        padding: 1rem;
+    }
+
+    .haloip-stat-icon-modern {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+
+    .haloip-stat-value-modern {
+        font-size: 1.5rem;
+    }
+
+    .haloip-filter-modern {
+        padding: 1rem;
+    }
+
+    .haloip-table-header {
+        padding: 1rem;
+    }
+
+    .haloip-pagination-wrapper {
+        padding: 1rem;
+    }
+
+    /* Modern pagination responsive */
+    .haloip-pagination-container {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .haloip-pagination-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 0.75rem 1rem;
+        min-height: 44px; /* Touch-friendly */
+    }
+
+    .haloip-pagination-info {
+        order: -1; /* Move info to top on mobile */
+    }
+
+    .haloip-pagination-page-text {
+        font-size: 0.875rem;
+    }
+
+    .haloip-pagination-items-text {
+        font-size: 0.75rem;
+    }
+
+    /* Hide button text on very small screens, keep icons */
+    @media (max-width: 480px) {
+        .haloip-pagination-btn-text {
+            display: none;
+        }
+
+        .haloip-pagination-btn {
+            padding: 0.75rem;
+            min-width: 44px;
+        }
+    }
+}
+
+/* ===== LEGACY SUPPORT - Keep for backward compatibility ===== */
+/* Navigation tabs (used in other pages) */
 .haloip-nav {
     display: flex;
     justify-content: center;
@@ -75,386 +1214,59 @@
     box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25);
 }
 
-/* Ultra-modern engaging card design */
-.haloip-card {
-    background: linear-gradient(145deg, #ffffff 0%, #f8fafc 50%, #f0f9ff 100%);
-    border: 1px solid rgba(13, 148, 136, 0.1);
-    border-radius: 2rem;
-    box-shadow:
-        0 8px 32px rgba(13, 148, 136, 0.12),
-        0 2px 8px rgba(0, 0, 0, 0.04),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8);
-    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    overflow: hidden;
-    position: relative;
-    backdrop-filter: blur(10px);
-}
-
-/* Animated gradient border */
-.haloip-card::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: linear-gradient(45deg, #0d9488, #10b981, #06b6d4, #8b5cf6, #ec4899, #0d9488);
-    background-size: 300% 300%;
-    border-radius: 2rem;
-    z-index: -1;
-    opacity: 0;
-    animation: gradientShift 3s ease infinite;
-    transition: opacity 0.3s ease;
-}
-
-.haloip-card:hover::before {
-    opacity: 1;
-}
-
-/* Floating particles effect */
-.haloip-card::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image:
-        radial-gradient(circle at 20% 20%, rgba(13, 148, 136, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 40% 60%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
-    opacity: 0;
-    transition: opacity 0.5s ease;
-    pointer-events: none;
-}
-
-.haloip-card:hover::after {
-    opacity: 1;
-}
-
-.haloip-card:hover {
-    transform: translateY(-12px) scale(1.03) rotateX(5deg);
-    box-shadow:
-        0 25px 50px rgba(13, 148, 136, 0.25),
-        0 10px 20px rgba(0, 0, 0, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.9);
-    background: linear-gradient(145deg, #ffffff 0%, #f0fdfa 50%, #ecfdf5 100%);
-    border-color: rgba(13, 148, 136, 0.3);
-}
-
-@keyframes gradientShift {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-}
-
-.haloip-card-body {
-    padding: 2.5rem;
-    position: relative;
-    z-index: 1;
-    background: linear-gradient(135deg,
-        rgba(255, 255, 255, 0.9) 0%,
-        rgba(248, 250, 252, 0.8) 50%,
-        rgba(240, 253, 250, 0.9) 100%);
-    backdrop-filter: blur(20px);
-    border-radius: 1.5rem;
-    margin: 1rem;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
-}
-
-.haloip-card:hover .haloip-card-body {
-    background: linear-gradient(135deg,
-        rgba(255, 255, 255, 0.95) 0%,
-        rgba(240, 253, 250, 0.9) 50%,
-        rgba(236, 253, 245, 0.95) 100%);
-    transform: translateY(-2px);
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.8),
-        0 8px 32px rgba(13, 148, 136, 0.1);
-}
-
-/* Card header with gradient background */
-.haloip-card-header {
-    background: linear-gradient(135deg, #0d9488 0%, #10b981 50%, #06b6d4 100%);
-    padding: 1.5rem 2rem 1rem 2rem;
-    margin: -2rem -2rem 1.5rem -2rem;
-    position: relative;
-    overflow: hidden;
-}
-
-.haloip-card-header::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
-    opacity: 0.3;
-}
-
-.haloip-card-header * {
-    position: relative;
-    z-index: 1;
-}
-
-/* Dynamic floating elements with morphing effects */
-.haloip-card-floating {
-    position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
-    width: 70px;
-    height: 70px;
-    background: linear-gradient(135deg, #0d9488, #10b981, #06b6d4);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(20px);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow:
-        0 8px 32px rgba(13, 148, 136, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
-    z-index: 10;
-}
-
-.haloip-card-floating::before {
-    content: '';
-    position: absolute;
-    top: -5px;
-    left: -5px;
-    right: -5px;
-    bottom: -5px;
-    background: linear-gradient(45deg, #0d9488, #10b981, #06b6d4, #8b5cf6);
-    border-radius: 50%;
-    z-index: -1;
-    opacity: 0;
-    animation: pulse 2s ease-in-out infinite;
-}
-
-.haloip-card:hover .haloip-card-floating {
-    transform: rotate(360deg) scale(1.2);
-    background: linear-gradient(135deg, #10b981, #06b6d4, #8b5cf6);
-    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-    animation: morph 2s ease-in-out infinite;
-}
-
-.haloip-card:hover .haloip-card-floating::before {
-    opacity: 1;
-}
-
-@keyframes morph {
-    0%, 100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
-    25% { border-radius: 58% 42% 75% 25% / 76% 46% 54% 24%; }
-    50% { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }
-    75% { border-radius: 33% 67% 58% 42% / 63% 68% 32% 37%; }
-}
-
-/* Ultra-modern ticket code with holographic effect */
+/* Legacy ticket code (used in other pages) */
 .haloip-ticket-code {
-    font-weight: 800;
-    color: #ffffff;
-    font-size: 0.8rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-bottom: 1.5rem;
-    padding: 0.75rem 1.5rem;
-    background: linear-gradient(135deg, #0d9488 0%, #10b981 50%, #06b6d4 100%);
-    border-radius: 2rem;
+    font-weight: 700;
+    color: #0d9488;
+    font-size: 0.75rem;
+    letter-spacing: 0.025em;
+    padding: 0.375rem 0.75rem;
+    background: linear-gradient(135deg, #f0fdfa 0%, #ecfdf5 100%);
+    border: 1px solid #a7f3d0;
+    border-radius: 0.375rem;
     display: inline-block;
-    box-shadow:
-        0 4px 20px rgba(13, 148, 136, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
-    position: relative;
-    overflow: hidden;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    font-family: 'Courier New', monospace;
 }
 
-.haloip-ticket-code::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg,
-        transparent,
-        rgba(255, 255, 255, 0.4),
-        rgba(255, 255, 255, 0.6),
-        rgba(255, 255, 255, 0.4),
-        transparent);
-    transition: left 0.8s ease;
-    animation: shimmer 3s ease-in-out infinite;
-}
-
-.haloip-card:hover .haloip-ticket-code::before {
-    left: 100%;
-}
-
-.haloip-ticket-code::after {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: linear-gradient(45deg, #0d9488, #10b981, #06b6d4, #8b5cf6, #ec4899);
-    background-size: 300% 300%;
-    border-radius: 2rem;
-    z-index: -1;
-    opacity: 0;
-    animation: gradientShift 2s ease infinite;
-    transition: opacity 0.3s ease;
-}
-
-.haloip-card:hover .haloip-ticket-code::after {
-    opacity: 0.7;
-}
-
-@keyframes shimmer {
-    0%, 100% { left: -100%; }
-    50% { left: 100%; }
-}
-
-/* Dynamic card title with animated gradient */
-.haloip-card-title {
-    font-size: 1.4rem;
-    font-weight: 800;
-    margin-bottom: 1.5rem;
-    line-height: 1.2;
-    background: linear-gradient(135deg, #0d9488, #10b981, #06b6d4, #8b5cf6);
-    background-size: 300% 300%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: gradientText 4s ease-in-out infinite;
-    position: relative;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.haloip-card:hover .haloip-card-title {
-    animation-duration: 1s;
-    transform: translateY(-2px);
-}
-
-.haloip-card-title::after {
-    content: '';
-    position: absolute;
-    bottom: -4px;
-    left: 0;
-    width: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #0d9488, #10b981, #06b6d4);
-    border-radius: 2px;
-    transition: width 0.5s ease;
-}
-
-.haloip-card:hover .haloip-card-title::after {
-    width: 100%;
-}
-
-@keyframes gradientText {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-}
-
-/* Ultra-dynamic status badges with particle effects */
+/* Legacy status badges (used in other pages) */
 .haloip-status {
-    padding: 0.75rem 1.5rem;
-    border-radius: 2rem;
-    font-size: 0.8rem;
-    font-weight: 800;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.025em;
     display: inline-flex;
     align-items: center;
-    gap: 0.75rem;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(10px);
-}
-
-.haloip-status::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(45deg,
-        transparent 20%,
-        rgba(255, 255, 255, 0.3) 40%,
-        rgba(255, 255, 255, 0.5) 50%,
-        rgba(255, 255, 255, 0.3) 60%,
-        transparent 80%);
-    transform: translateX(-100%) skewX(-20deg);
-    transition: transform 0.8s ease;
-}
-
-.haloip-card:hover .haloip-status::before {
-    transform: translateX(100%) skewX(-20deg);
+    gap: 0.5rem;
 }
 
 .haloip-status-pending {
-    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
-    color: #ffffff;
-    box-shadow:
-        0 4px 20px rgba(251, 191, 36, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    color: #92400e;
+    border: 1px solid #fbbf24;
 }
 
 .haloip-status-in_progress {
-    background: linear-gradient(135deg, #fb923c 0%, #ea580c 50%, #c2410c 100%);
-    color: #ffffff;
-    box-shadow:
-        0 4px 20px rgba(251, 146, 60, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%);
+    color: #9a3412;
+    border: 1px solid #fb923c;
 }
 
 .haloip-status-completed {
-    background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
-    color: #ffffff;
-    box-shadow:
-        0 4px 20px rgba(16, 185, 129, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    color: #065f46;
+    border: 1px solid #6ee7b7;
 }
 
-/* Animated status indicator */
-.haloip-status::after {
-    content: '';
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.9);
-    animation: statusPulse 2s ease-in-out infinite;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+/* Legacy ticket title */
+.haloip-ticket-title {
+    font-weight: 600;
+    color: #111827;
+    line-height: 1.5;
 }
 
-.haloip-card:hover .haloip-status {
-    transform: scale(1.05) translateY(-2px);
-}
-
-.haloip-card:hover .haloip-status::after {
-    animation-duration: 0.5s;
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
-}
-
-@keyframes statusPulse {
-    0%, 100% {
-        opacity: 1;
-        transform: scale(1);
-        box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-    }
-    50% {
-        opacity: 0.7;
-        transform: scale(1.3);
-        box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
-    }
-}
-
-/* Standardized button system matching KMS normal size - Static appearance */
+/* ===== LEGACY BUTTON SYSTEM (for backward compatibility) ===== */
 .haloip-btn {
     display: inline-flex;
     align-items: center;
@@ -467,148 +1279,40 @@
     text-decoration: none;
     cursor: pointer;
     gap: 0.375rem;
-    position: relative;
-    text-transform: none;
     white-space: nowrap;
+    transition: all 0.2s;
 }
 
-/* Legacy large button support for backward compatibility - Static appearance */
-.haloip-btn-lg {
-    font-size: 0.9rem;
-    font-weight: 700;
-    padding: 1rem 2rem;
-    border-radius: 2rem;
-    gap: 0.75rem;
-    letter-spacing: 0.05em;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(10px);
-    overflow: hidden;
-}
-
-/* Static button appearance - no hover effects */
-.haloip-btn:active {
-    transform: translateY(0);
-}
-
-/* Static large button appearance - no hover effects */
-.haloip-btn-lg:active {
-    transform: translateY(0);
-}
-
-/* Back to HaloIP button - matches KMS normal button size - Static appearance */
-.haloip-btn-back {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.375rem;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    text-decoration: none;
-    border: none;
-    cursor: pointer;
-    white-space: nowrap;
-    background: #f3f4f6;
-    color: #374151;
-    border: 1px solid #d1d5db;
-}
-
-/* Primary button (teal theme) - Static appearance */
 .haloip-btn-primary {
     background: linear-gradient(to right, #0d9488, #10b981);
     color: #ffffff;
     box-shadow: 0 2px 4px rgba(13, 148, 136, 0.25);
 }
 
-/* Secondary button - Static appearance */
 .haloip-btn-secondary {
     background-color: #f3f4f6;
     color: #374151;
     border: 1px solid #d1d5db;
 }
 
-/* Success button - Static appearance */
 .haloip-btn-success {
     background: linear-gradient(to right, #10b981, #34d399);
     color: #ffffff;
     box-shadow: 0 2px 4px rgba(16, 185, 129, 0.25);
 }
 
-/* Info button - Static appearance */
-.haloip-btn-info {
-    background: linear-gradient(to right, #0ea5e9, #38bdf8);
-    color: #ffffff;
-    box-shadow: 0 2px 4px rgba(14, 165, 233, 0.25);
-}
-
-/* Warning button - Static appearance */
-.haloip-btn-warning {
-    background: linear-gradient(to right, #f59e0b, #fbbf24);
-    color: #ffffff;
-    box-shadow: 0 2px 4px rgba(245, 158, 11, 0.25);
-}
-
-/* Danger button - Static appearance */
 .haloip-btn-danger {
     background: linear-gradient(to right, #ef4444, #f87171);
     color: #ffffff;
     box-shadow: 0 2px 4px rgba(239, 68, 68, 0.25);
 }
 
-/* Outline button - Static appearance */
-.haloip-btn-outline {
-    background-color: transparent;
-    color: #0d9488;
-    border: 2px solid #0d9488;
-}
-
-/* Button sizes */
 .haloip-btn-sm {
     font-size: 0.75rem;
     padding: 0.375rem 0.75rem;
 }
 
-.haloip-btn-lg {
-    font-size: 1rem;
-    padding: 0.75rem 1.5rem;
-}
-
-/* Filter section */
-.haloip-filter {
-    background-color: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.75rem;
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-/* Form controls */
-.haloip-form-control {
-    width: 100%;
-    padding: 0.5rem 0.75rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.5rem;
-    font-size: 0.875rem;
-    transition: all 0.3s ease;
-    background-color: #ffffff;
-}
-
-.haloip-form-control:focus {
-    outline: none;
-    border-color: #0d9488;
-    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
-}
-
-.haloip-form-label {
-    display: block;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #374151;
-    margin-bottom: 0.5rem;
-}
-
-/* Action buttons container */
+/* Legacy actions container */
 .haloip-actions {
     display: flex;
     flex-wrap: wrap;
@@ -617,148 +1321,21 @@
     justify-content: center;
 }
 
-/* Interactive card content with spectacular effects */
-.haloip-card-info {
-    display: flex;
-    align-items: center;
-    padding: 0.75rem 1rem;
-    border-radius: 1rem;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    position: relative;
-    overflow: hidden;
-    margin: 0.25rem -1rem;
+/* ===== LEGACY CONTAINER STYLES ===== */
+.haloip-container {
+    font-family: 'Inter', sans-serif;
+    color: #111827;
+    background-color: transparent;
 }
 
-.haloip-card-info::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg,
-        transparent,
-        rgba(13, 148, 136, 0.1),
-        rgba(16, 185, 129, 0.15),
-        rgba(13, 148, 136, 0.1),
-        transparent);
-    transition: left 0.5s ease;
-}
-
-.haloip-card-info:hover::before {
-    left: 100%;
-}
-
-.haloip-card-info:hover {
-    background: linear-gradient(135deg,
-        rgba(13, 148, 136, 0.08),
-        rgba(16, 185, 129, 0.12),
-        rgba(6, 182, 212, 0.08));
-    transform: translateX(8px) scale(1.02);
-    box-shadow:
-        0 4px 20px rgba(13, 148, 136, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.5);
-    border-left: 3px solid #0d9488;
-}
-
-.haloip-card-info svg {
-    color: #0d9488;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    filter: drop-shadow(0 2px 4px rgba(13, 148, 136, 0.2));
-}
-
-.haloip-card-info:hover svg {
-    transform: scale(1.2) rotate(5deg);
-    color: #0f766e;
-    filter: drop-shadow(0 4px 8px rgba(13, 148, 136, 0.4));
-}
-
-/* Text glow effect on hover */
-.haloip-card-info span {
-    transition: all 0.3s ease;
-}
-
-.haloip-card-info:hover span {
-    text-shadow: 0 0 10px rgba(13, 148, 136, 0.3);
-}
-
-/* Enhanced grid layout */
-.haloip-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 2rem;
-    margin-top: 2rem;
-}
-
-/* Spectacular staggered entrance animations */
-.haloip-card {
-    animation: spectacularEntrance 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-    opacity: 0;
-    transform: translateY(50px) rotateX(20deg) scale(0.9);
-}
-
-.haloip-card:nth-child(1) { animation-delay: 0.1s; }
-.haloip-card:nth-child(2) { animation-delay: 0.2s; }
-.haloip-card:nth-child(3) { animation-delay: 0.3s; }
-.haloip-card:nth-child(4) { animation-delay: 0.4s; }
-.haloip-card:nth-child(5) { animation-delay: 0.5s; }
-.haloip-card:nth-child(6) { animation-delay: 0.6s; }
-.haloip-card:nth-child(7) { animation-delay: 0.7s; }
-.haloip-card:nth-child(8) { animation-delay: 0.8s; }
-.haloip-card:nth-child(9) { animation-delay: 0.9s; }
-
-/* Magnetic hover effect */
-.haloip-card {
-    cursor: pointer;
-}
-
-.haloip-card:hover {
-    animation: magneticFloat 2s ease-in-out infinite;
-}
-
-/* Card tilt effect on mouse move */
-.haloip-card {
-    transform-style: preserve-3d;
-    perspective: 1000px;
-}
-
-/* Glowing border effect */
-.haloip-card {
-    border: 1px solid transparent;
-    background-clip: padding-box;
-}
-
-.haloip-card:hover {
-    border-image: linear-gradient(45deg, #0d9488, #10b981, #06b6d4, #8b5cf6) 1;
-    border-image-slice: 1;
-}
-
-@keyframes spectacularEntrance {
-    0% {
-        opacity: 0;
-        transform: translateY(50px) rotateX(20deg) scale(0.9);
-        filter: blur(5px);
-    }
-    50% {
-        opacity: 0.8;
-        transform: translateY(-10px) rotateX(-5deg) scale(1.05);
-        filter: blur(2px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0) rotateX(0deg) scale(1);
-        filter: blur(0px);
-    }
-}
-
-@keyframes magneticFloat {
-    0%, 100% { transform: translateY(-12px) scale(1.03) rotateX(5deg); }
-    50% { transform: translateY(-16px) scale(1.04) rotateX(3deg); }
-}
-
-/* Static button SVG icons - no hover effects */
-.haloip-btn svg {
-    /* No transitions or hover effects */
+/* Legacy filter section */
+.haloip-filter-section {
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 /* Responsive design */
@@ -1005,9 +1582,10 @@
     scroll-margin: 1rem;
 }
 
-/* Table header with refined gradient */
+/* Table header with subtle professional design */
 .haloip-table thead {
-    background: linear-gradient(135deg, #0d9488 0%, #10b981 100%);
+    background: #f8f9fa;
+    border-bottom: 2px solid #e5e7eb;
     position: relative;
 }
 
@@ -1016,12 +1594,11 @@
     text-align: left;
     font-weight: 600;
     font-size: 0.875rem;
-    color: #ffffff;
+    color: #374151;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     border: none;
     position: relative;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .haloip-table th:first-child {
@@ -1058,16 +1635,16 @@
 
 /* Table cell content styling with cleaner design - Static appearance */
 .haloip-table-code {
-    font-weight: 700;
-    color: #0d9488;
+    font-weight: 600;
+    color: #4b5563;
     font-size: 0.75rem;
     letter-spacing: 0.05em;
     text-transform: uppercase;
     padding: 0.375rem 0.75rem;
-    background: #f0fdfa;
+    background: #f3f4f6;
     border-radius: 0.375rem;
     display: inline-block;
-    border: 1px solid #99f6e4;
+    border: 1px solid #d1d5db;
     margin-bottom: 0.375rem;
 }
 
@@ -1104,21 +1681,21 @@
 }
 
 .haloip-table-status.status-pending {
-    background: #fef3c7;
-    color: #92400e;
-    border-color: #fbbf24;
+    background: #fef9e7;
+    color: #856404;
+    border-color: #e0d4a8;
 }
 
 .haloip-table-status.status-in_progress {
-    background: #fed7aa;
-    color: #9a3412;
-    border-color: #fb923c;
+    background: #e7f3ff;
+    color: #004085;
+    border-color: #b8daff;
 }
 
 .haloip-table-status.status-completed {
-    background: #d1fae5;
-    color: #065f46;
-    border-color: #34d399;
+    background: #e8f5e9;
+    color: #155724;
+    border-color: #c3e6cb;
 }
 
 /* Action buttons in table - Static appearance */
@@ -1232,7 +1809,9 @@
     }
 }
 
-@media (max-width: 768px) {
+/* This media query is now handled by the new mobile-first responsive breakpoints below */
+/* Keeping this section for tablet devices only (576px-768px) */
+@media (min-width: 576px) and (max-width: 768px) {
     .haloip-table-container {
         border-radius: 0.75rem !important;
         overflow-x: auto !important;
@@ -1240,107 +1819,51 @@
         -webkit-overflow-scrolling: touch !important;
         margin: 1rem 0.25rem !important;
         position: relative !important;
-        /* Enhanced scrollbar styling for mobile */
+        /* Enhanced scrollbar styling for tablet */
         scrollbar-width: thin !important;
-        scrollbar-color: #0d9488 #f1f5f9 !important;
+        scrollbar-color: #6b7280 #f1f5f9 !important;
         /* Add smooth scrolling behavior */
         scroll-behavior: smooth !important;
         /* Force container to allow scrolling */
-        max-width: calc(100vw - 2rem) !important;
-        width: calc(100vw - 2rem) !important;
-        /* Tailwind-compatible mobile enhancements */
-        @apply rounded-xl;
-        /* Better touch interaction */
-        touch-action: pan-x pinch-zoom;
-        /* Improved momentum scrolling */
-        scroll-snap-type: x proximity;
-        /* Enhanced accessibility */
-        scroll-padding-left: 1rem;
-        scroll-padding-right: 1rem;
+        max-width: 100% !important;
+        width: 100% !important;
     }
 
-    /* Enhanced mobile scrollbar with gradient and better visibility */
+    /* Enhanced tablet scrollbar */
     .haloip-table-container::-webkit-scrollbar {
-        height: 16px !important; /* Make scrollbar more visible on mobile */
+        height: 12px !important;
         display: block !important;
     }
 
     .haloip-table-container::-webkit-scrollbar-track {
-        background: linear-gradient(90deg, #f8fafc 0%, #f1f5f9 50%, #f8fafc 100%) !important;
-        border-radius: 8px !important;
-        margin: 0 0.5rem !important;
-        border: 2px solid #e2e8f0 !important;
+        background: #f1f5f9 !important;
+        border-radius: 6px !important;
     }
 
     .haloip-table-container::-webkit-scrollbar-thumb {
-        background: linear-gradient(135deg, #0d9488 0%, #10b981 50%, #0d9488 100%) !important;
-        border-radius: 8px !important;
-        border: 3px solid #f1f5f9 !important;
-        box-shadow: 0 3px 6px rgba(13, 148, 136, 0.5) !important;
-        min-width: 50px !important; /* Ensure thumb is large enough for touch */
+        background: #6b7280 !important;
+        border-radius: 6px !important;
+        border: 2px solid #f1f5f9 !important;
     }
-
-    /* Static scrollbar thumb - no hover effects */
 
     .haloip-table-container::-webkit-scrollbar-thumb:active {
-        background: linear-gradient(135deg, #134e4a 0%, #047857 50%, #134e4a 100%) !important;
-        box-shadow: 0 2px 4px rgba(13, 148, 136, 0.7) !important;
-    }
-
-    /* Force scrollbar to always be visible on mobile */
-    .haloip-table-container::-webkit-scrollbar-corner {
-        background: transparent !important;
-    }
-
-    /* Touch-friendly scroll indicators with dynamic opacity */
-    .haloip-table-container::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        width: 20px;
-        background: linear-gradient(90deg, rgba(255, 255, 255, 0.9) 0%, transparent 100%);
-        pointer-events: none;
-        z-index: 1;
-        opacity: var(--scroll-left-opacity, 0);
-        transition: opacity 0.3s ease;
-    }
-
-    .haloip-table-container::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        width: 20px;
-        background: linear-gradient(270deg, rgba(255, 255, 255, 0.9) 0%, transparent 100%);
-        pointer-events: none;
-        z-index: 1;
-        opacity: var(--scroll-right-opacity, 1);
-        transition: opacity 0.3s ease;
+        background: #4b5563 !important;
     }
 
     .haloip-table {
-        min-width: 1200px !important; /* Force table to be much wider than mobile screens */
-        width: 1200px !important; /* Fixed width to ensure horizontal scrolling */
-        /* Enhanced mobile table styling */
-        @apply table-fixed;
-        /* Better column distribution */
+        min-width: 900px !important;
+        /* Enhanced tablet table styling */
         table-layout: fixed !important;
     }
 
     .haloip-table th,
     .haloip-table td {
-        padding: 0.75rem 0.5rem !important;
-        font-size: 0.8rem !important;
+        padding: 0.875rem 0.75rem !important;
+        font-size: 0.8125rem !important;
         line-height: 1.4 !important;
-        /* Ensure text doesn't wrap and shows ellipsis */
         white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
-        /* Touch-friendly minimum width */
-        min-width: 120px !important;
     }
 
     /* Enhanced pagination for mobile */
@@ -1573,87 +2096,7 @@
     }
 }
 
-/* Extra small devices (phones in portrait mode) */
-@media (max-width: 480px) {
-    .haloip-table-container {
-        margin: 0.5rem 0;
-        border-radius: 0.375rem;
-        /* Maximum touch-friendly scrollbar */
-        scrollbar-width: auto;
-        scrollbar-color: #0d9488 #cbd5e1;
-    }
-
-    .haloip-table-container::-webkit-scrollbar {
-        height: 16px;
-    }
-
-    .haloip-table-container::-webkit-scrollbar-track {
-        background: linear-gradient(90deg, #f1f5f9 0%, #cbd5e1 50%, #f1f5f9 100%);
-        border-radius: 8px;
-        margin: 0 0.125rem;
-        border: 2px solid #94a3b8;
-    }
-
-    .haloip-table-container::-webkit-scrollbar-thumb {
-        background: linear-gradient(135deg, #0d9488 0%, #10b981 30%, #059669 70%, #0d9488 100%);
-        border-radius: 8px;
-        border: 3px solid #cbd5e1;
-        box-shadow: 0 4px 8px rgba(13, 148, 136, 0.5);
-        min-width: 40px;
-    }
-
-    /* Static scrollbar thumb - no hover effects */
-
-    .haloip-table-container::-webkit-scrollbar-thumb:active {
-        background: linear-gradient(135deg, #134e4a 0%, #047857 30%, #065f46 70%, #134e4a 100%);
-        box-shadow: 0 2px 4px rgba(13, 148, 136, 0.7);
-    }
-
-    /* Maximum touch indicators for extra small screens */
-    .haloip-table-container::before {
-        width: 40px;
-        background: linear-gradient(90deg, rgba(255, 255, 255, 0.98) 0%, transparent 100%);
-        opacity: var(--scroll-left-opacity, 0);
-    }
-
-    .haloip-table-container::after {
-        width: 40px;
-        background: linear-gradient(270deg, rgba(255, 255, 255, 0.98) 0%, transparent 100%);
-        opacity: var(--scroll-right-opacity, 1);
-    }
-
-    .haloip-table {
-        min-width: 680px;
-    }
-
-    .haloip-table th,
-    .haloip-table td {
-        padding: 0.5rem 0.25rem;
-        font-size: 0.7rem;
-    }
-
-    .haloip-table-code {
-        font-size: 0.65rem;
-        padding: 0.2rem 0.4rem;
-        max-width: 100px;
-    }
-
-    .haloip-table-title {
-        font-size: 0.8rem;
-        max-width: 120px;
-    }
-
-    .haloip-table-meta {
-        font-size: 0.7rem;
-        max-width: 110px;
-    }
-
-    .haloip-table-btn {
-        padding: 0.5rem 0.625rem;
-        font-size: 0.65rem;
-        min-height: 2.25rem;
-    }
-}
+/* Extra small devices now handled by the new mobile-first card layout at max-width: 575px */
 
 /* Empty state for table */
 .haloip-table-empty {
@@ -2031,51 +2474,199 @@ html {
     overscroll-behavior-x: contain;
 }
 
-/* Mobile-first responsive breakpoints */
-@media (max-width: 640px) {
+/* Mobile-first responsive breakpoints - Card Layout for Small Devices */
+@media (max-width: 575px) {
     .haloip-table-container {
-        @apply mx-1 rounded-lg;
-        width: calc(100vw - 0.5rem) !important;
-        max-width: calc(100vw - 0.5rem) !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: visible !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
 
-    .haloip-table {
-        min-width: 800px !important; /* Smaller minimum for very small screens */
+    /* Hide table header on mobile */
+    .haloip-table thead {
+        display: none;
     }
 
-    .haloip-table th,
+    /* Transform table to card layout */
+    .haloip-table,
+    .haloip-table tbody,
+    .haloip-table tr,
     .haloip-table td {
-        @apply px-2 py-3 text-xs;
-        min-width: 120px !important;
+        display: block;
+        width: 100% !important;
+        min-width: 100% !important;
+    }
+
+    /* Card styling for each row */
+    .haloip-table tbody tr {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.75rem;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .haloip-table tbody tr:last-child {
+        margin-bottom: 0;
+    }
+
+    /* Card cell styling */
+    .haloip-table td {
+        padding: 0.75rem 0 !important;
+        border: none !important;
+        text-align: left !important;
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+        position: relative;
+        padding-left: 45% !important;
+        min-height: 2.5rem;
+    }
+
+    /* Add labels before each cell */
+    .haloip-table td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0;
+        width: 40%;
+        padding-right: 1rem;
+        font-weight: 600;
+        color: #374151;
+        font-size: 0.875rem;
+        white-space: normal;
+        text-align: left;
+    }
+
+    /* First cell (Tiket & Detail) */
+    .haloip-table td:nth-child(1):before {
+        content: "Tiket & Detail";
+    }
+
+    /* Second cell (Pengaju & Ruangan) */
+    .haloip-table td:nth-child(2):before {
+        content: "Pengaju";
+    }
+
+    /* Third cell (Status & IT Staff) */
+    .haloip-table td:nth-child(3):before {
+        content: "Status";
+    }
+
+    /* Fourth cell (Tanggal) */
+    .haloip-table td:nth-child(4):before {
+        content: "Tanggal";
+    }
+
+    /* Fifth cell (Aksi) */
+    .haloip-table td:nth-child(5):before {
+        content: "Aksi";
+    }
+
+    /* For 8-column table (main HaloIP index) */
+    .haloip-table td:nth-child(6):before {
+        content: "Status";
+    }
+
+    .haloip-table td:nth-child(7):before {
+        content: "Tanggal";
+    }
+
+    .haloip-table td:nth-child(8):before {
+        content: "Aksi";
+    }
+
+    /* Adjust content styling for mobile */
+    .haloip-table-code,
+    .haloip-ticket-code {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.5rem;
+        display: inline-block;
+        margin-bottom: 0.25rem;
+    }
+
+    .haloip-table-title,
+    .haloip-ticket-title {
+        font-size: 0.875rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .haloip-table-meta {
+        font-size: 0.75rem;
+        line-height: 1.4;
+    }
+
+    .haloip-table-status,
+    .haloip-status {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.5rem;
+        display: inline-block;
+    }
+
+    /* Badge styling for mobile */
+    .badge {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.5rem;
+        display: inline-block;
+    }
+
+    /* Action buttons full width on mobile */
+    .haloip-table-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        width: 100%;
+    }
+
+    .haloip-table-btn,
+    .haloip-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 0.625rem 1rem;
+        font-size: 0.875rem;
     }
 }
 
 /* Tablet responsive adjustments */
-@media (min-width: 641px) and (max-width: 1024px) {
+@media (min-width: 576px) and (max-width: 768px) {
     .haloip-table-container {
-        @apply mx-2 rounded-xl;
+        width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
     }
 
     .haloip-table {
-        min-width: 1000px !important;
+        min-width: 900px !important;
     }
 
     .haloip-table th,
     .haloip-table td {
-        @apply px-3 py-4 text-sm;
-        min-width: 140px !important;
+        padding: 0.875rem 0.75rem !important;
+        font-size: 0.8125rem !important;
+        white-space: nowrap !important;
+    }
+
+    .haloip-table-code {
+        font-size: 0.7rem;
+    }
+
+    .haloip-table-title {
+        font-size: 0.875rem;
+    }
+
+    .haloip-table-meta {
+        font-size: 0.75rem;
     }
 }
 
 /* Desktop responsive adjustments */
-@media (min-width: 1025px) {
+@media (min-width: 769px) {
     .haloip-table-container {
-        @apply mx-auto rounded-2xl;
         max-width: none !important;
         width: 100% !important;
-        /* Enhanced wheel scrolling for desktop */
-        scroll-behavior: smooth;
-        overscroll-behavior-x: contain;
+        overflow-x: visible !important;
     }
 
     .haloip-table {
@@ -2085,9 +2676,19 @@ html {
 
     .haloip-table th,
     .haloip-table td {
-        @apply px-4 py-5 text-base;
+        padding: 1.125rem 1rem !important;
+        font-size: 0.875rem !important;
         min-width: auto !important;
         white-space: normal !important;
+    }
+
+    /* Enable text wrapping on desktop */
+    .haloip-table-code,
+    .haloip-table-title,
+    .haloip-table-meta {
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
     }
 }
 
@@ -2111,20 +2712,20 @@ html {
     outline-offset: 2px;
 }
 
-/* Enhanced scrollbar for better wheel interaction feedback */
+/* Enhanced scrollbar with subtle professional colors */
 .haloip-table-container::-webkit-scrollbar {
     height: 12px;
     background: #f8fafc;
 }
 
 .haloip-table-container::-webkit-scrollbar-track {
-    background: linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%);
+    background: #f1f5f9;
     border-radius: 6px;
     margin: 0 0.5rem;
 }
 
 .haloip-table-container::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #0d9488 0%, #10b981 100%);
+    background: #9ca3af;
     border-radius: 6px;
     border: 2px solid #f8fafc;
     transition: all 0.2s ease;
@@ -2133,5 +2734,73 @@ html {
 /* Static scrollbar thumb - no hover effects */
 
 .haloip-table-container::-webkit-scrollbar-thumb:active {
-    background: linear-gradient(135deg, #134e4a 0%, #047857 100%);
+    background: #6b7280;
 }
+
+/* Minimal overrides for neutral, clean design and responsive cards */
+
+.haloip-container::before { content: none !important; display: none !important; animation: none !important; }
+.haloip-particle { display: none !important; }
+
+.haloip-table-code { background: #fafafa !important; border-color: #e5e7eb !important; }
+
+.haloip-table-status { background: #fafafa !important; color: #4b5563 !important; border-color: #e5e7eb !important; }
+.haloip-table-status.status-pending,
+.haloip-table-status.status-in_progress,
+.haloip-table-status.status-completed { background: #fafafa !important; color: #4b5563 !important; border-color: #e5e7eb !important; }
+
+.ticketing .status-pending,
+.ticketing .status-in_progress,
+.ticketing .status-completed { background-color: #fafafa !important; color: #4b5563 !important; border-color: #e5e7eb !important; }
+
+.haloip-table-btn-primary { background: #f3f4f6 !important; color: #374151 !important; border-color: #d1d5db !important; box-shadow: none !important; }
+.haloip-table-btn-outline { background: transparent !important; color: #374151 !important; border-color: #d1d5db !important; }
+
+.pagination .page-link { color: #374151 !important; border-color: #e5e7eb !important; }
+.pagination .page-item.active .page-link { background-color: #e5e7eb !important; border-color: #d1d5db !important; color: #111827 !important; }
+.pagination .page-item.disabled .page-link { color: #9ca3af !important; background-color: #fafafa !important; border-color: #e5e7eb !important; }
+
+.haloip-table-container { box-shadow: none !important; }
+
+@media (max-width: 992px) {
+  .haloip-table-container { overflow-x: hidden !important; margin: 0 !important; padding: 0 !important; width: 100% !important; max-width: 100% !important; }
+  .haloip-table thead { display: none !important; }
+  .haloip-table, .haloip-table tbody, .haloip-table tr, .haloip-table td { display: block !important; width: 100% !important; min-width: 100% !important; }
+  .haloip-table tbody tr { border: 1px solid #e5e7eb !important; border-radius: 0.5rem !important; margin-bottom: 1rem !important; padding: 1rem !important; background: #ffffff !important; box-shadow: none !important; }
+  .haloip-table td { padding: 0.75rem 0 !important; border: none !important; text-align: left !important; white-space: normal !important; overflow: visible !important; text-overflow: clip !important; position: relative !important; padding-left: 45% !important; min-height: 2.5rem !important; }
+  .haloip-table td:before { position: absolute; left: 0; width: 40%; padding-right: 1rem; font-weight: 600; color: #374151; font-size: 0.875rem; white-space: normal; text-align: left; content: attr(data-label); }
+  .haloip-table td:nth-child(1):before { content: "Tiket & Detail"; }
+  .haloip-table td:nth-child(2):before { content: "Pengaju"; }
+  .haloip-table td:nth-child(3):before { content: "Status"; }
+  .haloip-table td:nth-child(4):before { content: "Tanggal"; }
+  .haloip-table td:nth-child(5):before { content: "Aksi"; }
+  .haloip-table td:nth-child(6):before { content: "Status"; }
+  .haloip-table td:nth-child(7):before { content: "Tanggal"; }
+  .haloip-table td:nth-child(8):before { content: "Aksi"; }
+  .haloip-table-code, .haloip-ticket-code { font-size: 0.75rem !important; padding: 0.25rem 0.5rem !important; }
+  .haloip-table-title, .haloip-ticket-title { font-size: 0.9rem !important; }
+  .haloip-table-actions { display: flex !important; flex-direction: column !important; gap: 0.5rem !important; width: 100% !important; }
+  .haloip-table-btn, .haloip-btn { width: 100% !important; justify-content: center !important; padding: 0.625rem 1rem !important; font-size: 0.875rem !important; }
+  .haloip-table { min-width: 100% !important; }
+}
+
+/* Additional minimal tuning: ticket code, badges, buttons, indicators */
+.haloip-table-container::after { content: none !important; display: none !important; }
+
+.haloip-ticket-code { background: #fafafa !important; color: #374151 !important; border: 1px solid #e5e7eb !important; border-radius: 0.375rem !important; box-shadow: none !important; text-shadow: none !important; padding: 0.375rem 0.625rem !important; }
+.haloip-ticket-code::before, .haloip-ticket-code::after { content: none !important; display: none !important; }
+
+.badge { background-color: #fafafa !important; color: #374151 !important; border: 1px solid #e5e7eb !important; border-radius: 0.25rem !important; box-shadow: none !important; }
+
+.haloip-btn, .haloip-btn-primary, .haloip-btn-success, .haloip-btn-info, .haloip-btn-warning, .haloip-btn-danger, .haloip-btn-outline { background: #f3f4f6 !important; color: #374151 !important; border: 1px solid #d1d5db !important; box-shadow: none !important; }
+.haloip-btn-outline { background: transparent !important; }
+
+/* ===== Alignment fixes for Filter Section (HaloIP) ===== */
+/* Ensure the button column aligns with the bottom of the input columns */
+.haloip-filter-grid { align-items: end !important; grid-auto-rows: 1fr !important; }
+.haloip-filter-group { height: 100% !important; overflow: visible !important; }
+.haloip-filter-submit { align-self: end !important; display: flex !important; flex-direction: column !important; justify-content: flex-end !important; }
+
+/* Keep Apply Filter button static (no hover motion) to match HaloIP buttons */
+.haloip-filter-btn { transition: none !important; box-shadow: none !important; }
+.haloip-filter-btn:hover { transform: none !important; box-shadow: none !important; }

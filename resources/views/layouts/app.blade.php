@@ -13,6 +13,11 @@
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
 
+    <!-- Favicon and Social Sharing Images -->
+    <link rel="icon" type="image/png" href="{{ asset('img/Logo BPS.png') }}">
+    <meta property="og:image" content="{{ asset('img/Logo BPS.png') }}">
+    <meta name="twitter:image" content="{{ asset('img/Logo BPS.png') }}">
+
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -20,7 +25,8 @@
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
+                <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
+                    <img src="{{ asset('img/Logo BPS.png') }}" alt="BPS Logo" style="height: 30px;" class="me-2">
                     {{ config('app.name', 'Laravel') }}
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">

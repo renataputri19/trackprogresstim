@@ -11,7 +11,7 @@ class Ticket extends Model
     protected $fillable = [
         'ticket_code', 'user_id', 'ruangan', 'title', 'description', 'requestor_photo',
         'it_staff_id', 'it_photo', 'status', 'done_at', 'public_token', 'service_type',
-        'map_type', 'zone', 'kdkec', 'nmkec', 'kddesa', 'nmdesa',
+        'category', 'map_type', 'zone', 'kdkec', 'nmkec', 'kddesa', 'nmdesa',
     ];
 
     protected $casts = [
@@ -36,10 +36,17 @@ class Ticket extends Model
     }
 
     // Static method to generate ticket code
-    public static function generateTicketCode($serviceType = 'ticket')
+    public static function generateTicketCode($category = null)
     {
         $yearMonth = now()->format('Ym'); // e.g., 202503 for March 2025
-        $prefix = $serviceType === 'map_request' ? 'MAP-' . $yearMonth : 'TICKET-' . $yearMonth;
+
+        // Determine prefix based on category
+        if ($category === 'Peta Cetak') {
+            $prefix = 'MAP-' . $yearMonth;
+        } else {
+            $prefix = 'TICKET-' . $yearMonth;
+        }
+
         $lastTicket = self::where('ticket_code', 'like', $prefix . '-%')->orderBy('ticket_code', 'desc')->first();
         $lastNumber = $lastTicket ? (int) substr($lastTicket->ticket_code, -4) : 0;
         $newNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
@@ -56,22 +63,40 @@ class Ticket extends Model
         return $token;
     }
 
-    // Check if IT photo is required based on service type and status
+    // Check if IT photo is required based on category and status
     public function isItPhotoRequired($status = null)
     {
         // Use provided status or current status
         $checkStatus = $status ?? $this->status;
 
-        // For map requests, IT photo is required only when status is 'completed'
-        if ($this->service_type === 'map_request') {
+        // For map requests (Peta Cetak), IT photo is required only when status is 'completed'
+        if ($this->category === 'Peta Cetak' || $this->service_type === 'map_request') {
             return $checkStatus === 'completed';
         }
 
-        // For regular tickets, IT photo is optional
+        // For all other categories, IT photo is optional
         return false;
     }
 
-    // Get service type display name
+    // Check if requestor photo is required based on category
+    public function isRequestorPhotoRequired()
+    {
+        // Peta Cetak (map requests) - requestor photo is optional
+        if ($this->category === 'Peta Cetak') {
+            return false;
+        }
+
+        // All other categories - requestor photo is required
+        return true;
+    }
+
+    // Get category display name
+    public function getCategoryDisplayAttribute()
+    {
+        return $this->category ?? 'Lainnya';
+    }
+
+    // Get service type display name (for backward compatibility)
     public function getServiceTypeDisplayAttribute()
     {
         return $this->service_type === 'map_request' ? 'Permintaan Peta' : 'Tiket IT';
@@ -80,7 +105,7 @@ class Ticket extends Model
     // Get map type display name
     public function getMapTypeDisplayAttribute()
     {
-        if ($this->service_type !== 'map_request') {
+        if ($this->category !== 'Peta Cetak' && $this->service_type !== 'map_request') {
             return null;
         }
 
@@ -90,7 +115,7 @@ class Ticket extends Model
     // Get location display (district and village)
     public function getLocationDisplayAttribute()
     {
-        if ($this->service_type !== 'map_request') {
+        if ($this->category !== 'Peta Cetak' && $this->service_type !== 'map_request') {
             return null;
         }
 
@@ -123,5 +148,22 @@ class Ticket extends Model
             return $this->kddesa . ' - ' . $this->nmdesa;
         }
         return null;
+    }
+
+    // Get list of available categories
+    public static function getCategories()
+    {
+        return [
+            'Inovasi' => 'Inovasi',
+            'Peta Cetak' => 'Peta Cetak',
+            'Admin Fasih' => 'Admin Fasih',
+            'Infrastruktur - Perawatan PC/Laptop' => 'Infrastruktur - Perawatan PC/Laptop',
+            'Infrastruktur - Perawatan Printer' => 'Infrastruktur - Perawatan Printer',
+            'Infrastruktur - Jaringan' => 'Infrastruktur - Jaringan',
+            'Pengolahan - Susenas' => 'Pengolahan - Susenas',
+            'Pengolahan - Seruti' => 'Pengolahan - Seruti',
+            'Administrasi' => 'Administrasi',
+            'Lainnya' => 'Lainnya',
+        ];
     }
 }

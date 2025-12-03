@@ -21,6 +21,10 @@
     <link rel="stylesheet" href="{{ asset('css/new-homepage/homepage.css') }}">
     <link rel="stylesheet" href="{{ asset('css/new-homepage/homepage-new.css') }}">
     <link rel="stylesheet" href="{{ asset('css/haloip/haloip.css') }}">
+    <!-- Favicon and Social Sharing Images -->
+    <link rel="icon" type="image/png" href="{{ asset('img/Logo BPS.png') }}">
+    <meta property="og:image" content="{{ asset('img/Logo BPS.png') }}">
+    <meta name="twitter:image" content="{{ asset('img/Logo BPS.png') }}">
     @yield('styles')
     @stack('head')
 </head>
@@ -29,13 +33,7 @@
         <div class="container mx-auto flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0 px-4">
             <div class="flex gap-6 md:gap-10">
                 <a href="{{ route('home') }}" class="flex items-center space-x-2">
-                    <div class="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-teal-500 via-emerald-500 to-teal-600 shadow-md">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-white">
-                            <rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect>
-                            <line x1="3" x2="21" y1="9" y2="9"></line>
-                            <line x1="9" x2="9" y1="21" y2="9"></line>
-                        </svg>
-                    </div>
+                    <img src="{{ asset('img/Logo BPS.png') }}" alt="BPS Logo" class="h-10 w-10 rounded-full shadow-md">
                     <span class="inline-block bg-gradient-to-r from-teal-600 via-emerald-500 to-teal-600 bg-clip-text text-xl font-bold text-transparent">
                         RENTAK
                     </span>
@@ -44,7 +42,7 @@
                     <a href="{{ route('home') }}" class="flex items-center text-sm font-medium {{ request()->routeIs('home') ? 'text-teal-600' : 'text-gray-500' }} transition-colors hover:text-teal-600">
                         Home
                     </a>
-                    <a href="{{ route('tickets.index') }}" class="flex items-center text-sm font-medium {{ request()->routeIs('tickets*') ? 'text-teal-600' : 'text-gray-500' }} transition-colors hover:text-teal-600">
+                    <a href="{{ route('haloip.index') }}" class="flex items-center text-sm font-medium {{ request()->routeIs('haloip*') || request()->routeIs('tickets*') || request()->routeIs('map-requests*') ? 'text-teal-600' : 'text-gray-500' }} transition-colors hover:text-teal-600">
                         HaloIP
                     </a>
                     @auth
@@ -111,13 +109,7 @@
                 <!-- Logo and Copyright Section -->
                 <div class="flex flex-col gap-4">
                     <div class="flex items-center space-x-2">
-                        <div class="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-teal-500 via-emerald-500 to-teal-600 shadow-md">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-white">
-                                <rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect>
-                                <line x1="3" x2="21" y1="9" y2="9"></line>
-                                <line x1="9" x2="9" y1="21" y2="9"></line>
-                            </svg>
-                        </div>
+                        <img src="{{ asset('img/Logo BPS.png') }}" alt="BPS Logo" class="h-10 w-10 rounded-full shadow-md">
                         <span class="inline-block bg-gradient-to-r from-teal-600 via-emerald-500 to-teal-600 bg-clip-text text-xl font-bold text-transparent">
                             RENTAK
                         </span>
