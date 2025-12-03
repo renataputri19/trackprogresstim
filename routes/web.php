@@ -372,6 +372,25 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/api/map-requests/pending-count', function() {
             return redirect()->route('haloip.pendingCount');
         })->name('map-requests.pendingCount');
+
+        // Backward compatibility for uppercase assign and update-status routes
+        Route::get('/haloIP/{ticket}/assign', function($ticket) {
+            return redirect()->route('haloip.assign', ['ticket' => $ticket]);
+        });
+        Route::post('/haloIP/{ticket}/assign', function($ticket) {
+            return redirect()->route('haloip.storeAssignment', ['ticket' => $ticket]);
+        });
+        Route::get('/haloIP/{ticket}/update-status', function($ticket) {
+            return redirect()->route('haloip.editStatus', ['ticket' => $ticket]);
+        });
+        Route::put('/haloIP/{ticket}/update-status', function($ticket) {
+            return redirect()->route('haloip.updateStatus', ['ticket' => $ticket]);
+        });
+
+        // Backward compatibility: support DELETE on old uppercase base path
+        // Allow direct deletion via /haloIP/{ticket} to avoid method redirect issues
+        Route::delete('/haloIP/{ticket}', [HaloIPController::class, 'destroy'])
+            ->whereNumber('ticket');
         Route::get('/api/tickets', function() {
             return redirect()->route('haloip.getTickets');
         })->name('tickets.get');

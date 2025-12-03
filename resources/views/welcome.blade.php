@@ -109,7 +109,7 @@
                             <div class="app-title">Knowledge Management</div>
                         </a>
                         <!-- Inside the "Our Apps" div -->
-                        <a href="{{ url('/haloIP') }}" class="app-item">
+                        <a href="{{ url('/haloip') }}" class="app-item">
                             <div class="app-icon"><i class="fas fa-ticket-alt"></i></div>
                             <div class="app-title">Halo IP - IT Tickets</div>
                         </a>

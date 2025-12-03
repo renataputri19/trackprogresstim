@@ -284,11 +284,11 @@
                                                 </a>
 
                                                 <!-- Status Update Button - Only visible to assigned IT staff -->
-                                                @if ($ticket->it_staff_id === Auth::id())
-                                                    <a href="{{ route('haloip.editStatus', $ticket->id) }}" class="haloip-action-btn haloip-action-update" title="Perbarui Status">
+                                                @if ($activeTab === 'unassigned' || $ticket->it_staff_id === Auth::id())
+                                                    {{-- <a href="{{ route('haloip.editStatus', $ticket->id) }}" class="haloip-action-btn haloip-action-update" title="Perbarui Status">
                                                         <i class="bi bi-pencil-square haloip-action-icon"></i>
                                                         Perbarui
-                                                    </a>
+                                                    </a> --}}
                                                     <button type="button" class="haloip-action-btn haloip-action-delete haloip-delete-btn" title="Hapus Tiket" data-ticket-id="{{ $ticket->id }}" data-ticket-code="{{ $ticket->ticket_code }}" data-ticket-title="{{ $ticket->title }}">
                                                         <i class="bi bi-trash3 haloip-action-icon"></i>
                                                         Hapus
@@ -357,7 +357,7 @@
                                     </a>
 
                                     <!-- Status Update Button - Only visible to assigned IT staff -->
-                                    @if ($ticket->it_staff_id === Auth::id())
+                                    @if ($activeTab === 'unassigned' || $ticket->it_staff_id === Auth::id())
                                         <a href="{{ route('haloip.editStatus', $ticket->id) }}" class="haloip-action-btn haloip-action-update" title="Perbarui Status">
                                             <i class="bi bi-pencil-square haloip-action-icon"></i>
                                             Perbarui
@@ -388,7 +388,7 @@
 </div>
 </div>
 <!-- Delete Confirmation Modal -->
-<div id="haloipDeleteModal" class="haloip-modal" data-delete-url-base="{{ url('/haloIP') }}">
+<div id="haloipDeleteModal" class="haloip-modal" data-delete-url-base="{{ url('/haloip') }}">
     <div class="haloip-modal-backdrop"></div>
     <div class="haloip-modal-dialog">
         <div class="haloip-modal-header">

@@ -373,7 +373,7 @@
 
                                 <!-- Action Button -->
                                 <div class="flex mt-auto">
-                                    <a href="{{ $system['id'] === 'ipds' ? url('/haloIP') : '#' }}"
+                                    <a href="{{ $system['id'] === 'ipds' ? url('/haloip') : '#' }}"
                                         class="group inline-flex items-center rounded-md px-4 py-2
                                 {{ $system['color'] === 'blue' ? 'bg-blue-500 hover:bg-blue-600' : 'bg-emerald-500 hover:bg-emerald-600' }}
                                 text-white font-medium shadow-sm hover:shadow-md transition-all duration-200">
