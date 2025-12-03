@@ -286,7 +286,7 @@ class HaloIPController extends Controller
     public function editStatus(Ticket $ticket)
     {
         // Only the assigned IT staff can access this page
-        if ($ticket->it_staff_id !== Auth::id()) {
+        if ((int) $ticket->it_staff_id !== (int) Auth::id()) {
             abort(403, 'Unauthorized: Only the assigned IT staff can update this ticket.');
         }
 
@@ -296,7 +296,7 @@ class HaloIPController extends Controller
     public function updateStatus(Request $request, Ticket $ticket)
     {
         // Only the assigned IT staff can update the status
-        if ($ticket->it_staff_id !== Auth::id()) {
+        if ((int) $ticket->it_staff_id !== (int) Auth::id()) {
             abort(403, 'Unauthorized: Only the assigned IT staff can update this ticket.');
         }
 
