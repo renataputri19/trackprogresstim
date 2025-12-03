@@ -408,7 +408,7 @@
                                     </svg>
                                 </div>
                                 <div class="ml-4">
-                                    <p class="text-sm font-medium text-gray-900 group-hover:text-teal-700">Halo IPDS</p>
+                                    <p class="text-sm font-medium text-gray-900 group-hover:text-teal-700">Halo IP</p>
                                     <p class="text-xs text-gray-600">IT Tickets</p>
                                 </div>
                             </a>

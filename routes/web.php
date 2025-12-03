@@ -20,6 +20,7 @@ use App\Http\Controllers\NewHomepage\HomeController as NewHomepageController;
 use App\Http\Controllers\SuperAdminTasksAssignmentController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\MapRequestController;
+use App\Http\Controllers\HaloIPController;
 use App\Http\Controllers\PublicViewController;
 use App\Http\Controllers\VhtsController;
 use App\Http\Controllers\VhtsControllerv2;
@@ -245,23 +246,33 @@ Route::middleware(['auth'])->group(function () {
 
 
 
-// Public routes - Updated HaloIP structure
-Route::get('/haloIP', function() {
-    return redirect('/haloIP/ticket');
-});
-Route::get('/haloIP/ticket', [TicketController::class, 'index'])->name('tickets.index');
-Route::get('/haloIP/map-request', [MapRequestController::class, 'index'])->name('map-requests.index');
+// Public routes - Unified HaloIP structure
+Route::get('/haloIP', [HaloIPController::class, 'index'])->name('haloip.index');
 
 // Backward compatibility redirects
+Route::get('/haloIP/ticket', function() {
+    return redirect('/haloIP');
+});
+Route::get('/haloIP/map-request', function() {
+    return redirect('/haloIP?category=Peta+Cetak');
+});
 Route::get('/map-requests', function() {
-    return redirect('/haloIP/map-request');
+    return redirect('/haloIP?category=Peta+Cetak');
 });
 Route::get('/tickets/manage', function() {
-    return redirect('/haloIP/tickets/manage');
+    return redirect('/haloIP/manage');
 });
 Route::get('/map-requests/manage', function() {
-    return redirect('/haloIP/map-requests/manage');
+    return redirect('/haloIP/manage?category=Peta+Cetak');
 });
+
+// Keep old named routes for backward compatibility
+Route::get('/haloIP/tickets/index', function() {
+    return redirect('/haloIP');
+})->name('tickets.index');
+Route::get('/haloIP/map-requests/index', function() {
+    return redirect('/haloIP?category=Peta+Cetak');
+})->name('map-requests.index');
 
 // Public viewing routes (no authentication required) - Updated to HaloIP structure
 Route::get('/haloIP/public/view/{token}', [PublicViewController::class, 'viewByToken'])->name('public.view');
@@ -272,37 +283,86 @@ Route::get('/public/view/{token}', function($token) {
 
 // Authenticated routes
 Route::middleware(['auth'])->group(function () {
-    // HaloIP creation routes with unified prefix
-    Route::get('/haloip/tickets/create', [TicketController::class, 'create'])->name('tickets.create');
-    Route::post('/haloip/tickets', [TicketController::class, 'store'])->name('tickets.store');
-    Route::get('/haloip/map-requests/create', [MapRequestController::class, 'create'])->name('map-requests.create');
-    Route::post('/haloip/map-requests', [MapRequestController::class, 'store'])->name('map-requests.store');
+    // Unified HaloIP creation route
+    Route::get('/haloip/create', [HaloIPController::class, 'create'])->name('haloip.create');
+    Route::post('/haloip', [HaloIPController::class, 'store'])->name('haloip.store');
 
     // Backward compatibility redirects for creation routes
+    Route::get('/haloip/tickets/create', function() {
+        return redirect('/haloip/create');
+    })->name('tickets.create');
+    Route::get('/haloip/map-requests/create', function() {
+        return redirect('/haloip/create?category=Peta+Cetak');
+    })->name('map-requests.create');
     Route::get('/tickets/create', function() {
-        return redirect('/haloip/tickets/create');
+        return redirect('/haloip/create');
     });
     Route::get('/map-requests/create', function() {
-        return redirect('/haloip/map-requests/create');
+        return redirect('/haloip/create?category=Peta+Cetak');
     });
 
+    // Backward compatibility for store routes
+    Route::post('/haloip/tickets', function() {
+        return redirect('/haloip/create');
+    })->name('tickets.store');
+    Route::post('/haloip/map-requests', function() {
+        return redirect('/haloip/create?category=Peta+Cetak');
+    })->name('map-requests.store');
+
     // Location API for dropdowns - Available to all authenticated users
-    Route::get('/api/villages/{districtCode}', [MapRequestController::class, 'getVillagesByDistrict'])->name('villages.by-district');
+    Route::get('/api/villages/{districtCode}', [HaloIPController::class, 'getVillagesByDistrict'])->name('villages.by-district');
 
     Route::middleware('it_staff')->group(function () {
-        // Ticket management - Updated to HaloIP structure
-        Route::get('/haloIP/tickets/manage', [TicketController::class, 'manage'])->name('tickets.manage');
-        Route::get('/haloIP/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
-        Route::put('/haloIP/tickets/{ticket}', [TicketController::class, 'update'])->name('tickets.update');
-        Route::get('/api/tickets/pending-count', [TicketController::class, 'pendingCount'])->name('tickets.pendingCount');
-        Route::get('/api/tickets', [TicketController::class, 'getTickets'])->name('tickets.get');
+        // Unified ticket management
+        Route::get('/haloIP/manage', [HaloIPController::class, 'manage'])->name('haloip.manage');
 
-        // Map request management - Updated to HaloIP structure
-        Route::get('/haloIP/map-requests/manage', [MapRequestController::class, 'manage'])->name('map-requests.manage');
-        Route::get('/haloIP/map-requests/{mapRequest}', [MapRequestController::class, 'show'])->name('map-requests.show');
-        Route::put('/haloIP/map-requests/{mapRequest}', [MapRequestController::class, 'update'])->name('map-requests.update');
-        Route::get('/api/map-requests/pending-count', [MapRequestController::class, 'pendingCount'])->name('map-requests.pendingCount');
-        Route::get('/api/map-requests', [MapRequestController::class, 'getMapRequests'])->name('map-requests.get');
+        // Assignment routes - accessible to all IT staff
+        Route::get('/haloIP/{ticket}/assign', [HaloIPController::class, 'assign'])->name('haloip.assign');
+        Route::post('/haloIP/{ticket}/assign', [HaloIPController::class, 'storeAssignment'])->name('haloip.storeAssignment');
+
+        // Status update routes - only accessible to assigned IT staff
+        Route::get('/haloIP/{ticket}/update-status', [HaloIPController::class, 'editStatus'])->name('haloip.editStatus');
+        Route::put('/haloIP/{ticket}/update-status', [HaloIPController::class, 'updateStatus'])->name('haloip.updateStatus');
+
+        // Legacy routes - kept for backward compatibility
+        Route::get('/haloIP/{ticket}', [HaloIPController::class, 'show'])->name('haloip.show');
+        Route::put('/haloIP/{ticket}', [HaloIPController::class, 'update'])->name('haloip.update');
+        Route::delete('/haloIP/{ticket}', [HaloIPController::class, 'destroy'])->name('haloip.destroy');
+
+        Route::get('/api/haloip/pending-count', [HaloIPController::class, 'pendingCount'])->name('haloip.pendingCount');
+        Route::get('/api/haloip/tickets', [HaloIPController::class, 'getTickets'])->name('haloip.getTickets');
+
+        // Backward compatibility routes for old ticket management
+        Route::get('/haloIP/tickets/manage', function() {
+            return redirect('/haloIP/manage');
+        })->name('tickets.manage');
+        Route::get('/haloIP/map-requests/manage', function() {
+            return redirect('/haloIP/manage?category=Peta+Cetak');
+        })->name('map-requests.manage');
+        Route::get('/haloIP/tickets/{ticket}', function($ticket) {
+            return redirect('/haloIP/' . $ticket);
+        })->name('tickets.show');
+        Route::get('/haloIP/map-requests/{mapRequest}', function($mapRequest) {
+            return redirect('/haloIP/' . $mapRequest);
+        })->name('map-requests.show');
+        Route::put('/haloIP/tickets/{ticket}', function($ticket) {
+            return redirect('/haloIP/' . $ticket);
+        })->name('tickets.update');
+        Route::put('/haloIP/map-requests/{mapRequest}', function($mapRequest) {
+            return redirect('/haloIP/' . $mapRequest);
+        })->name('map-requests.update');
+        Route::get('/api/tickets/pending-count', function() {
+            return redirect('/api/haloip/pending-count');
+        })->name('tickets.pendingCount');
+        Route::get('/api/map-requests/pending-count', function() {
+            return redirect('/api/haloip/pending-count');
+        })->name('map-requests.pendingCount');
+        Route::get('/api/tickets', function() {
+            return redirect('/api/haloip/tickets');
+        })->name('tickets.get');
+        Route::get('/api/map-requests', function() {
+            return redirect('/api/haloip/tickets?category=Peta+Cetak');
+        })->name('map-requests.get');
     });
 });
 

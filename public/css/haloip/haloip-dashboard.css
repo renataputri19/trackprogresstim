@@ -1,0 +1,59 @@
+/* HaloIP Dashboard overrides: clean, professional, minimal motion */
+
+/* Hide decorative background for a calmer aesthetic */
+.haloip-bg-decoration { display: none !important; }
+
+/* Make hero title solid color to reduce AI-like gradients */
+.haloip-hero-title {
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+  color: #0d9488 !important; /* teal-600 */
+}
+
+/* Remove animations across key sections */
+.haloip-hero-text,
+.haloip-hero-stats,
+.haloip-alert,
+.haloip-stat-card-modern,
+.haloip-table-modern { animation: none !important; }
+
+/* Disable transitions and hover transforms for static feel */
+.haloip-btn-hero,
+.haloip-stat-card-modern,
+.haloip-action-btn,
+.haloip-table-modern tr,
+.haloip-table-modern td,
+.haloip-table-modern th { transition: none !important; }
+
+.haloip-stat-card-modern:hover {
+  transform: none !important;
+  box-shadow: none !important;
+  border-color: inherit !important;
+}
+
+.haloip-btn-hero:hover {
+  transform: none !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
+
+/* Badge: soften visuals */
+.haloip-badge-new {
+  background: #f0fdfa !important; /* teal-50 */
+  border: 1px solid rgba(13, 148, 136, 0.25) !important;
+}
+
+/* Table: remove row hover effects */
+.haloip-table-modern tbody tr:hover {
+  background-color: inherit !important;
+  box-shadow: none !important;
+}
+
+/* Icon utilities for Bootstrap Icons */
+.haloip-icon { font-size: 1rem; vertical-align: middle; color: inherit; }
+.haloip-label-icon { font-size: 0.95rem; margin-right: 0.35rem; color: #64748b; }
+.haloip-action-icon { font-size: 1rem; }
+
+/* Pagination: subtle rounding */
+.haloip-pagination-wrapper .pagination .page-link { border-radius: 6px; }

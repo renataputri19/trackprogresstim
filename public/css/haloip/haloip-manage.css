@@ -1,0 +1,92 @@
+/* HaloIP Manage overrides: clean, professional, minimal motion */
+
+.haloip-bg-decoration { display: none !important; }
+
+.haloip-hero-title {
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+  color: #0d9488 !important;
+}
+
+.haloip-hero-text,
+.haloip-alert,
+.haloip-table-modern,
+.haloip-tabs-wrapper { animation: none !important; }
+
+.haloip-action-btn,
+.haloip-tab,
+.haloip-table-modern tr,
+.haloip-table-modern td,
+.haloip-table-modern th { transition: none !important; }
+
+.haloip-action-btn:hover,
+.haloip-tab:hover { transform: none !important; box-shadow: none !important; }
+
+/* Action buttons (assign/update/delete) static styles */
+.haloip-action-assign { background: #10b981 !important; color: #fff !important; }
+.haloip-action-update { background: #0ea5e9 !important; color: #fff !important; }
+.haloip-action-delete { background: #ef4444 !important; color: #fff !important; }
+
+/* Actions container extracted from inline styles */
+.haloip-actions-grid { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+/* Mobile card actions: ensure vertical spacing and full-width buttons */
+.haloip-mobile-card-actions { display: flex; flex-direction: column; gap: 0.5rem; }
+.haloip-mobile-card-actions .haloip-action-btn { width: 100%; }
+
+/* Button content alignment and spacing */
+.haloip-action-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem; }
+
+/* Modal extracted styles */
+.haloip-modal { position: fixed; inset: 0; z-index: 1050; display: none; }
+.haloip-modal.show { display: block; }
+.haloip-modal-backdrop { position: absolute; inset: 0; background: rgba(2, 6, 23, 0.5); }
+.haloip-modal-dialog {
+  position: relative;
+  max-width: 520px;
+  margin: 10% auto;
+  background: #0b1930;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  color: #e2e8f0;
+}
+.haloip-modal-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.haloip-modal-title-icon { font-size: 1rem; color: #f87171; }
+.haloip-modal-body { padding: 16px 20px; color: #cbd5e1; }
+.haloip-delete-details { font-size: 14px; }
+.haloip-modal-footer {
+  padding: 16px 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.haloip-btn { font-weight: 600; border-radius: 8px; padding: 10px 16px; border: 1px solid transparent; transition: none !important; }
+.haloip-btn-secondary { background: transparent; color: #e2e8f0; border-color: rgba(255, 255, 255, 0.2); }
+.haloip-btn-danger { background: #b91c1c; color: #fff; }
+
+/* Icon utilities for Bootstrap Icons */
+.haloip-icon { font-size: 1rem; vertical-align: middle; color: inherit; }
+.haloip-label-icon { font-size: 0.95rem; margin-right: 0.35rem; color: #64748b; }
+.haloip-action-icon { font-size: 1rem; }
+
+/* Theme-aware variants (automatic via prefers-color-scheme) */
+@media (prefers-color-scheme: dark) {
+  .haloip-action-assign { background: #0f766e !important; }
+  .haloip-action-update { background: #0284c7 !important; }
+  .haloip-action-delete { background: #dc2626 !important; }
+}
+
+/* Support explicit dark theme class if app uses it */
+.dark .haloip-action-assign { background: #0f766e !important; }
+.dark .haloip-action-update { background: #0284c7 !important; }
+.dark .haloip-action-delete { background: #dc2626 !important; }

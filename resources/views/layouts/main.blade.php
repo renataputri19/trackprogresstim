@@ -26,13 +26,20 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/homepage.css') }}" rel="stylesheet">
     <link href="{{ asset('css/ticketing.css') }}" rel="stylesheet">
+    <!-- Favicon and Social Sharing Images -->
+    <link rel="icon" type="image/png" href="{{ asset('img/Logo BPS.png') }}">
+    <meta property="og:image" content="{{ asset('img/Logo BPS.png') }}">
+    <meta name="twitter:image" content="{{ asset('img/Logo BPS.png') }}">
 </head>
 
 <body>
     <header class="bg-white shadow">
         <div class="container">
             <div class="d-flex justify-content-between align-items-center py-3">
-                <a href="{{ url('/') }}" class="h4 text-decoration-none text-dark font-weight-bold">RENTAK</a>
+                <a href="{{ url('/') }}" class="d-flex align-items-center h4 text-decoration-none text-dark font-weight-bold">
+                    <img src="{{ asset('img/Logo BPS.png') }}" alt="BPS Logo" style="height: 32px;" class="mr-2">
+                    <span>RENTAK</span>
+                </a>
 
                 <nav class="d-flex align-items-center">
                     @guest
