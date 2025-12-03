@@ -4,7 +4,7 @@
 @section('styles')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-<link href="{{ asset('css/haloip/haloip-manage.css') }}" rel="stylesheet">
+<link href="{{ asset('css/haloip/haloip-manage.css') }}?v={{ filemtime(public_path('css/haloip/haloip-manage.css')) }}" rel="stylesheet">
 @endsection
 
 @section('content')
@@ -552,7 +552,7 @@
 
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="{{ asset('js/haloip/haloip-manage.js') }}"></script>
+<script src="{{ asset('js/haloip/haloip-manage.js') }}?v={{ filemtime(public_path('js/haloip/haloip-manage.js')) }}"></script>
 
 @if(session('whatsapp_url'))
 <script>
