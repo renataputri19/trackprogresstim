@@ -57,6 +57,137 @@
                 </div>
             </div>
 
+            <!-- Dashboard Summary Section -->
+            <div class="haloip-summary-section">
+                <div class="haloip-summary-header">
+                    <h2 class="haloip-summary-title">
+                        <i class="bi bi-graph-up-arrow haloip-icon"></i>
+                        Ringkasan Tiket Aktif
+                    </h2>
+                    <p class="haloip-summary-desc">Statistik tiket yang sedang ditangani oleh tim IT</p>
+                </div>
+
+                <!-- Summary Stats Cards -->
+                <div class="haloip-stats-grid">
+                    <div class="haloip-stat-card haloip-stat-total">
+                        <div class="haloip-stat-icon">
+                            <i class="bi bi-ticket-detailed"></i>
+                        </div>
+                        <div class="haloip-stat-content">
+                            <span class="haloip-stat-value">{{ $summaryTotals['total_active'] }}</span>
+                            <span class="haloip-stat-label">Total Tiket Aktif</span>
+                        </div>
+                    </div>
+                    <div class="haloip-stat-card haloip-stat-pending">
+                        <div class="haloip-stat-icon">
+                            <i class="bi bi-clock-history"></i>
+                        </div>
+                        <div class="haloip-stat-content">
+                            <span class="haloip-stat-value">{{ $summaryTotals['total_pending'] }}</span>
+                            <span class="haloip-stat-label">Menunggu</span>
+                        </div>
+                    </div>
+                    <div class="haloip-stat-card haloip-stat-progress">
+                        <div class="haloip-stat-icon">
+                            <i class="bi bi-arrow-repeat"></i>
+                        </div>
+                        <div class="haloip-stat-content">
+                            <span class="haloip-stat-value">{{ $summaryTotals['total_in_progress'] }}</span>
+                            <span class="haloip-stat-label">Sedang Diproses</span>
+                        </div>
+                    </div>
+                    <div class="haloip-stat-card haloip-stat-staff">
+                        <div class="haloip-stat-icon">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <div class="haloip-stat-content">
+                            <span class="haloip-stat-value">{{ $summaryTotals['staff_count'] }}</span>
+                            <span class="haloip-stat-label">Staff IT Aktif</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- IT Staff Breakdown Table -->
+                @if($itStaffStats->count() > 0)
+                <div class="haloip-staff-breakdown">
+                    <h3 class="haloip-breakdown-title">
+                        <i class="bi bi-person-lines-fill haloip-icon"></i>
+                        Distribusi Tiket per Staff IT
+                    </h3>
+                    <div class="haloip-breakdown-table-wrapper">
+                        <table class="haloip-breakdown-table">
+                            <thead>
+                                <tr>
+                                    <th>Nama Staff IT</th>
+                                    <th>Total</th>
+                                    <th>Menunggu</th>
+                                    <th>Diproses</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($itStaffStats as $stat)
+                                <!-- Summary Row: Clickable to expand details -->
+                                <tr class="haloip-row-expandable" data-target="details-{{ $stat['staff_id'] }}" aria-expanded="false">
+                                    <td>
+                                        <div class="haloip-staff-name">
+                                            <i class="bi bi-person-circle"></i>
+                                            {{ $stat['name'] }}
+                                            <span class="haloip-expand-indicator">
+                                                <i class="bi bi-chevron-down haloip-expand-icon"></i>
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="haloip-breakdown-badge haloip-breakdown-total">{{ $stat['total'] }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="haloip-breakdown-badge haloip-breakdown-pending">{{ $stat['pending'] }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="haloip-breakdown-badge haloip-breakdown-progress">{{ $stat['in_progress'] }}</span>
+                                    </td>
+                                </tr>
+                                <!-- Details Row: Hidden by default, shows active tickets -->
+                                <tr class="haloip-breakdown-details" id="details-{{ $stat['staff_id'] }}" style="display: none;">
+                                    <td colspan="4">
+                                        <div class="haloip-details-container">
+                                            @if(count($stat['tickets']) > 0)
+                                                <ul class="haloip-ticket-list">
+                                                    @foreach($stat['tickets'] as $ticket)
+                                                        <li class="haloip-ticket-item">
+                                                            <div class="haloip-ticket-item-header">
+                                                                <span class="haloip-ticket-code">{{ $ticket->ticket_code }}</span>
+                                                                <span class="haloip-ticket-title">{{ $ticket->title }}</span>
+                                                            </div>
+                                                            <div class="haloip-ticket-item-meta">
+                                                                <span class="haloip-ticket-category">{{ $ticket->category ?? 'Lainnya' }}</span>
+                                                                <span class="haloip-status-badge {{ $ticket->status === 'pending' ? 'pending' : 'in-progress' }}">
+                                                                    {{ $ticket->status === 'pending' ? 'Menunggu' : 'Sedang Diproses' }}
+                                                                </span>
+                                                                <span class="haloip-ticket-date">{{ optional($ticket->created_at)->format('d M Y') }}</span>
+                                                            </div>
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+                                            @else
+                                                <div class="haloip-ticket-empty">Tidak ada tiket aktif untuk staf ini.</div>
+                                            @endif
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                @else
+                <div class="haloip-no-active-tickets">
+                    <i class="bi bi-check-circle"></i>
+                    <p>Tidak ada tiket aktif yang sedang ditangani</p>
+                </div>
+                @endif
+            </div>
+
             <!-- Modern Filter Section -->
             <div class="haloip-filter-modern">
                 <div class="haloip-filter-header">

@@ -191,7 +191,37 @@ class HaloIPController extends Controller
         $tickets = $query->latest()->paginate($perPage)->appends($request->except('page'));
         $categories = Ticket::getCategories();
 
-        return view('haloip.manage', compact('tickets', 'categories', 'activeTab'));
+        // Calculate IT staff statistics for dashboard summary
+        // Only get assigned tickets with status 'pending' or 'in_progress'
+        $itStaffStats = Ticket::whereNotNull('it_staff_id')
+            ->whereIn('status', ['pending', 'in_progress'])
+            ->with('itStaff')
+            ->get()
+            ->groupBy('it_staff_id')
+            ->map(function ($tickets, $staffId) {
+                $staff = $tickets->first()->itStaff;
+                return [
+                    'staff_id' => (int) $staffId,
+                    'name' => $staff ? $staff->name : 'Unknown',
+                    'total' => $tickets->count(),
+                    'pending' => $tickets->where('status', 'pending')->count(),
+                    'in_progress' => $tickets->where('status', 'in_progress')->count(),
+                    // Provide ticket details for expandable breakdown rows
+                    'tickets' => $tickets->sortByDesc('created_at')->values(),
+                ];
+            })
+            ->sortByDesc('total')
+            ->values();
+
+        // Calculate summary totals
+        $summaryTotals = [
+            'total_active' => $itStaffStats->sum('total'),
+            'total_pending' => $itStaffStats->sum('pending'),
+            'total_in_progress' => $itStaffStats->sum('in_progress'),
+            'staff_count' => $itStaffStats->count(),
+        ];
+
+        return view('haloip.manage', compact('tickets', 'categories', 'activeTab', 'itStaffStats', 'summaryTotals'));
     }
 
     public function show(Ticket $ticket)
