@@ -125,5 +125,58 @@
     addScreenWidthToLinks('.haloip-tab');
     attachFilterWidth();
     initDeleteModal();
+    initStaffBreakdownAccordion();
   });
 })();
+
+// Staff breakdown accordion toggling
+function initStaffBreakdownAccordion(){
+  const summaryRows = document.querySelectorAll('.haloip-row-expandable');
+  if(!summaryRows.length) return;
+
+  function collapseAll(exceptId){
+    document.querySelectorAll('.haloip-breakdown-details').forEach(row => {
+      if(row.id !== exceptId){
+        row.style.display = 'none';
+      }
+    });
+    document.querySelectorAll('.haloip-row-expandable').forEach(r => {
+      if(r.getAttribute('data-target') !== exceptId){
+        r.setAttribute('aria-expanded', 'false');
+        r.classList.remove('haloip-row-expanded');
+      }
+    });
+  }
+
+  function toggleRow(row){
+    const targetId = row.getAttribute('data-target');
+    if(!targetId) return;
+    const details = document.getElementById(targetId);
+    if(!details) return;
+    const isOpen = details.style.display !== 'none' && details.style.display !== '' ? true : false;
+    // Close others for accordion behavior
+    collapseAll(targetId);
+    if(isOpen){
+      details.style.display = 'none';
+      row.setAttribute('aria-expanded', 'false');
+      row.classList.remove('haloip-row-expanded');
+    } else {
+      details.style.display = 'table-row';
+      row.setAttribute('aria-expanded', 'true');
+      row.classList.add('haloip-row-expanded');
+    }
+  }
+
+  summaryRows.forEach(row => {
+    // Make row keyboard accessible
+    row.setAttribute('tabindex', '0');
+    row.setAttribute('role', 'button');
+    row.addEventListener('click', function(){ toggleRow(row); });
+    row.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        toggleRow(row);
+      }
+    });
+  });
+}
