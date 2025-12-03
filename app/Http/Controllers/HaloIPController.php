@@ -366,23 +366,26 @@ class HaloIPController extends Controller
 
         // Handle WhatsApp notification for completed status
         $whatsappUrl = null;
-        $requestorName = null;
+        $requestorName = $ticket->requestor->name ?? 'Pengaju';
 
-        if ($request->status === 'completed' && $request->filled('requestor_phone')) {
-            $phoneNumber = $request->requestor_phone;
+        if ($request->status === 'completed') {
+            $waNumber = null;
 
-            // Normalize phone number to +62 format for storage
-            $normalizedPhone = $this->normalizePhoneNumber($phoneNumber);
+            // Use provided phone when available and save it
+            if ($request->filled('requestor_phone')) {
+                $normalizedPhone = $this->normalizePhoneNumber($request->requestor_phone);
 
-            // Save phone number to requestor's user record
-            $requestor = $ticket->requestor;
-            if ($requestor) {
-                $requestor->update(['phone_number' => $normalizedPhone]);
-                $requestorName = $requestor->name;
+                $requestor = $ticket->requestor;
+                if ($requestor) {
+                    $requestor->update(['phone_number' => $normalizedPhone]);
+                    $requestorName = $requestor->name;
+                }
+
+                $waNumber = ltrim($normalizedPhone, '+');
+            } elseif ($ticket->requestor && $ticket->requestor->phone_number) {
+                // Fallback to stored phone number if present
+                $waNumber = ltrim($ticket->requestor->phone_number, '+');
             }
-
-            // Format phone number for WhatsApp (remove + sign)
-            $waNumber = ltrim($normalizedPhone, '+');
 
             // Build WhatsApp message
             $ticketType = $ticket->category === 'Peta Cetak' ? 'Permintaan Peta' : 'Tiket';
@@ -398,7 +401,12 @@ class HaloIPController extends Controller
             $message .= "🔗 *Lihat Detail*:\n{$publicLink}\n\n";
             $message .= "Terima kasih telah menggunakan layanan HaloIP! 🙏";
 
-            $whatsappUrl = "https://wa.me/{$waNumber}?text=" . urlencode($message);
+            // Always build a WhatsApp link: with number when available, otherwise generic share link
+            if ($waNumber) {
+                $whatsappUrl = "https://wa.me/{$waNumber}?text=" . urlencode($message);
+            } else {
+                $whatsappUrl = "https://wa.me/?text=" . urlencode($message);
+            }
         }
 
         $successMessage = $ticket->category === 'Peta Cetak'
