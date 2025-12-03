@@ -283,12 +283,16 @@
                                                     Tugaskan
                                                 </a>
 
-                                                <!-- Status Update Button - Only visible to assigned IT staff -->
-                                                @if ($activeTab === 'unassigned' || $ticket->it_staff_id === Auth::id())
-                                                    {{-- <a href="{{ route('haloip.editStatus', $ticket->id) }}" class="haloip-action-btn haloip-action-update" title="Perbarui Status">
+                                                <!-- Status Update Button - Visible only in My Tickets or when assigned to current IT staff -->
+                                                @if ($activeTab === 'my_tickets' || $ticket->it_staff_id === Auth::id())
+                                                    <a href="{{ route('haloip.editStatus', $ticket->id) }}" class="haloip-action-btn haloip-action-update" title="Perbarui Status">
                                                         <i class="bi bi-pencil-square haloip-action-icon"></i>
                                                         Perbarui
-                                                    </a> --}}
+                                                    </a>
+                                                @endif
+
+                                                <!-- Delete Button - Visible in Unassigned and My Tickets -->
+                                                @if ($activeTab === 'unassigned' || $activeTab === 'my_tickets')
                                                     <button type="button" class="haloip-action-btn haloip-action-delete haloip-delete-btn" title="Hapus Tiket" data-ticket-id="{{ $ticket->id }}" data-ticket-code="{{ $ticket->ticket_code }}" data-ticket-title="{{ $ticket->title }}">
                                                         <i class="bi bi-trash3 haloip-action-icon"></i>
                                                         Hapus
@@ -356,12 +360,16 @@
                                         Tugaskan
                                     </a>
 
-                                    <!-- Status Update Button - Only visible to assigned IT staff -->
-                                    @if ($activeTab === 'unassigned' || $ticket->it_staff_id === Auth::id())
+                                    <!-- Status Update Button - Visible only in My Tickets or when assigned to current IT staff -->
+                                    @if ($activeTab === 'my_tickets' || $ticket->it_staff_id === Auth::id())
                                         <a href="{{ route('haloip.editStatus', $ticket->id) }}" class="haloip-action-btn haloip-action-update" title="Perbarui Status">
                                             <i class="bi bi-pencil-square haloip-action-icon"></i>
                                             Perbarui
                                         </a>
+                                    @endif
+
+                                    <!-- Delete Button - Visible in Unassigned and My Tickets -->
+                                    @if ($activeTab === 'unassigned' || $activeTab === 'my_tickets')
                                         <button type="button" class="haloip-action-btn haloip-action-delete haloip-delete-btn" title="Hapus Tiket" data-ticket-id="{{ $ticket->id }}" data-ticket-code="{{ $ticket->ticket_code }}" data-ticket-title="{{ $ticket->title }}">
                                             <i class="bi bi-trash3 haloip-action-icon"></i>
                                             Hapus

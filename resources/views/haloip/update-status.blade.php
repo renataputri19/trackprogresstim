@@ -288,6 +288,7 @@
                             <div class="haloip-detail-card-body">
                                 <form method="POST" action="{{ route('haloip.updateStatus', $ticket->id) }}" enctype="multipart/form-data">
                                     @csrf
+                                    @method('PUT')
 
                                     <!-- Status Selection -->
                                     <div class="haloip-form-group">
