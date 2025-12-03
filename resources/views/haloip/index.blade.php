@@ -54,7 +54,7 @@
                     <div class="haloip-stat-card-modern">
                         <div class="haloip-stat-icon-modern haloip-stat-total"><i class="bi bi-file-earmark-text"></i></div>
                         <div class="haloip-stat-info">
-                            <div class="haloip-stat-value-modern">{{ $tickets->total() }}</div>
+                            <div class="haloip-stat-value-modern">{{ $ticketCounts['total'] }}</div>
                             <div class="haloip-stat-label-modern">Total Tiket</div>
                         </div>
                     </div>
@@ -62,7 +62,7 @@
                     <div class="haloip-stat-card-modern">
                         <div class="haloip-stat-icon-modern haloip-stat-pending"><i class="bi bi-hourglass-split"></i></div>
                         <div class="haloip-stat-info">
-                            <div class="haloip-stat-value-modern">{{ $tickets->where('status', 'pending')->count() }}</div>
+                            <div class="haloip-stat-value-modern">{{ $ticketCounts['pending'] }}</div>
                             <div class="haloip-stat-label-modern">Menunggu</div>
                         </div>
                     </div>
@@ -70,7 +70,7 @@
                     <div class="haloip-stat-card-modern">
                         <div class="haloip-stat-icon-modern haloip-stat-progress"><i class="bi bi-arrow-repeat"></i></div>
                         <div class="haloip-stat-info">
-                            <div class="haloip-stat-value-modern">{{ $tickets->where('status', 'in_progress')->count() }}</div>
+                            <div class="haloip-stat-value-modern">{{ $ticketCounts['in_progress'] }}</div>
                             <div class="haloip-stat-label-modern">Diproses</div>
                         </div>
                     </div>
@@ -78,7 +78,7 @@
                     <div class="haloip-stat-card-modern">
                         <div class="haloip-stat-icon-modern haloip-stat-completed"><i class="bi bi-check-circle"></i></div>
                         <div class="haloip-stat-info">
-                            <div class="haloip-stat-value-modern">{{ $tickets->where('status', 'completed')->count() }}</div>
+                            <div class="haloip-stat-value-modern">{{ $ticketCounts['completed'] }}</div>
                             <div class="haloip-stat-label-modern">Selesai</div>
                         </div>
                     </div>

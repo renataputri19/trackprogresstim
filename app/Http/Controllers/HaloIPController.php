@@ -63,7 +63,15 @@ class HaloIPController extends Controller
         $itStaffList = User::where('is_it_staff', true)->get();
         $categories = Ticket::getCategories();
 
-        return view('haloip.index', compact('tickets', 'itStaffList', 'categories'));
+        // Global counts across all records (not limited to current page)
+        $ticketCounts = [
+            'total' => Ticket::count(),
+            'pending' => Ticket::where('status', 'pending')->count(),
+            'in_progress' => Ticket::where('status', 'in_progress')->count(),
+            'completed' => Ticket::where('status', 'completed')->count(),
+        ];
+
+        return view('haloip.index', compact('tickets', 'itStaffList', 'categories', 'ticketCounts'));
     }
 
     public function create()
