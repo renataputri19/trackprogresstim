@@ -622,7 +622,6 @@
                             <div class="haloip-detail-card-body">
                                 <form method="POST" action="{{ route('haloip.update', $ticket->id) }}">
                                     @csrf
-                                    @method('PUT')
                                     <input type="hidden" name="action" value="assign_only">
 
                                     <div class="haloip-form-group">
@@ -673,7 +672,6 @@
                             <div class="haloip-detail-card-body">
                                 <form method="POST" action="{{ route('haloip.update', $ticket->id) }}" enctype="multipart/form-data">
                                     @csrf
-                                    @method('PUT')
 
                                     <!-- Status Selection -->
                                     <div class="haloip-form-group">
