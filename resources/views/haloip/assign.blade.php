@@ -335,12 +335,31 @@
                                         <select class="haloip-form-control" id="it_staff_id" name="it_staff_id" required>
                                             <option value="">-- Pilih Petugas --</option>
                                             @foreach ($itStaffList as $staff)
-                                                <option value="{{ $staff->id }}" {{ $ticket->it_staff_id == $staff->id ? 'selected' : '' }}>
+                                                <option value="{{ $staff->id }}"
+                                                        data-phone="{{ $staff->phone_number ?? '' }}"
+                                                        {{ $ticket->it_staff_id == $staff->id ? 'selected' : '' }}>
                                                     {{ $staff->name }}
                                                 </option>
                                             @endforeach
                                         </select>
                                         <small class="haloip-form-help">Tugaskan petugas IT untuk menangani {{ $ticket->category === 'Peta Cetak' ? 'permintaan peta' : 'tiket' }} ini</small>
+                                    </div>
+
+                                    <!-- IT Staff WhatsApp Number -->
+                                    <div class="haloip-form-group" id="phone-number-group" style="display: none;">
+                                        <label for="it_staff_phone" class="haloip-form-label">
+                                            <i class="bi bi-whatsapp" style="color: #25D366;"></i>
+                                            Nomor WhatsApp Petugas IT
+                                        </label>
+                                        <input type="text"
+                                               class="haloip-form-control"
+                                               id="it_staff_phone"
+                                               name="it_staff_phone"
+                                               placeholder="+628xxxxxxxxxx atau 08xxxxxxxxxx">
+                                        <small class="haloip-form-help">
+                                            <i class="bi bi-whatsapp" style="color: #25D366; vertical-align: middle; margin-right: 4px;"></i>
+                                            Notifikasi WhatsApp akan dikirim ke petugas IT yang ditugaskan
+                                        </small>
                                     </div>
 
                                     <div class="d-grid">
@@ -370,6 +389,42 @@
 
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Dynamic phone number field based on IT staff selection
+    document.addEventListener('DOMContentLoaded', function() {
+        const itStaffSelect = document.getElementById('it_staff_id');
+        const phoneNumberGroup = document.getElementById('phone-number-group');
+        const phoneNumberInput = document.getElementById('it_staff_phone');
+
+        // Function to update phone number field based on selected IT staff
+        function updatePhoneNumberField() {
+            const selectedOption = itStaffSelect.options[itStaffSelect.selectedIndex];
+
+            if (selectedOption && selectedOption.value) {
+                // Show the phone number field
+                phoneNumberGroup.style.display = 'block';
+
+                // Get the phone number from data attribute
+                const phoneNumber = selectedOption.getAttribute('data-phone') || '';
+                phoneNumberInput.value = phoneNumber;
+            } else {
+                // Hide the phone number field when no IT staff selected
+                phoneNumberGroup.style.display = 'none';
+                phoneNumberInput.value = '';
+            }
+        }
+
+        // Initial state based on current selection
+        if (itStaffSelect) {
+            updatePhoneNumberField();
+
+            // Listen for selection changes
+            itStaffSelect.addEventListener('change', function() {
+                updatePhoneNumberField();
+            });
+        }
+    });
+</script>
 @endsection
 
 

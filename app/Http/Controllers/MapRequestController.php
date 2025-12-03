@@ -99,7 +99,7 @@ class MapRequestController extends Controller
             'public_token' => Ticket::generatePublicToken(),
         ]);
 
-        return redirect('/haloIP/map-request?request_success=true')->with('success', 'Permintaan peta berhasil diajukan!');
+        return redirect()->route('haloip.index', ['category' => 'Peta Cetak', 'request_success' => 'true'])->with('success', 'Permintaan peta berhasil diajukan!');
     }
 
     public function manage(Request $request)
