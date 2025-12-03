@@ -142,7 +142,7 @@ class HaloIPController extends Controller
 
         Ticket::create($ticketData);
 
-        return redirect('/haloIP?ticket_success=true')->with('success', 'Tiket berhasil diajukan!');
+        return redirect()->route('haloip.index', ['ticket_success' => 'true'])->with('success', 'Tiket berhasil diajukan!');
     }
 
     public function manage(Request $request)
@@ -218,8 +218,18 @@ class HaloIPController extends Controller
 
     public function storeAssignment(Request $request, Ticket $ticket)
     {
-        $request->validate([
+        // Build validation rules
+        $rules = [
             'it_staff_id' => 'required|exists:users,id',
+        ];
+
+        // Phone number is optional but should be validated if provided
+        if ($request->filled('it_staff_phone')) {
+            $rules['it_staff_phone'] = ['nullable', 'string', 'regex:/^(\+62|62|08)[0-9]{8,13}$/'];
+        }
+
+        $request->validate($rules, [
+            'it_staff_phone.regex' => 'Format nomor WhatsApp tidak valid. Gunakan format +62xxx, 62xxx, atau 08xxx.',
         ]);
 
         $ticket->update([
@@ -230,9 +240,23 @@ class HaloIPController extends Controller
         $assignedStaff = User::find($request->it_staff_id);
         $whatsappUrl = null;
 
-        if ($assignedStaff && $assignedStaff->phone_number) {
+        // Save/update phone number for the IT staff if provided
+        if ($request->filled('it_staff_phone') && $assignedStaff) {
+            $normalizedPhone = $this->normalizePhoneNumber($request->it_staff_phone);
+            $assignedStaff->update(['phone_number' => $normalizedPhone]);
+        }
+
+        // Get the phone number (either from form input or existing database record)
+        $phoneNumber = null;
+        if ($request->filled('it_staff_phone')) {
+            $phoneNumber = $this->normalizePhoneNumber($request->it_staff_phone);
+        } elseif ($assignedStaff && $assignedStaff->phone_number) {
+            $phoneNumber = $assignedStaff->phone_number;
+        }
+
+        if ($phoneNumber) {
             // Format phone number (remove + sign for wa.me link)
-            $phoneNumber = ltrim($assignedStaff->phone_number, '+');
+            $waNumber = ltrim($phoneNumber, '+');
 
             // Build WhatsApp message
             $ticketType = $ticket->category === 'Peta Cetak' ? 'Permintaan Peta' : 'Tiket';
@@ -250,7 +274,7 @@ class HaloIPController extends Controller
             $message .= "🔗 *Link HaloIP*: " . route('haloip.editStatus', $ticket->id) . "\n\n";
             $message .= "Terima kasih! 🙏";
 
-            $whatsappUrl = "https://wa.me/{$phoneNumber}?text=" . urlencode($message);
+            $whatsappUrl = "https://wa.me/{$waNumber}?text=" . urlencode($message);
         }
 
         return redirect()->route('haloip.manage')
