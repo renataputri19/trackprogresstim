@@ -64,3 +64,60 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## SBR Import (Large Files) — Production Setup
+
+To reliably import 100k+ rows via the SBR Excel/CSV feature without timeouts:
+
+- Environment
+  - Set `QUEUE_CONNECTION=database` (or `redis`) and avoid `sync` in production.
+  - Use `QUEUE_RETRY_AFTER=3600` so long jobs are not retried prematurely.
+
+- Nginx (example server/location settings)
+
+```
+client_max_body_size 100m;
+client_body_timeout 120s;
+proxy_read_timeout 600s;      # if using a proxy upstream
+proxy_send_timeout 120s;      # if using a proxy upstream
+
+# PHP-FPM upstream
+fastcgi_read_timeout 600s;
+fastcgi_send_timeout 120s;
+```
+
+- PHP-FPM
+
+```
+# www.conf
+request_terminate_timeout = 0   ; allow long worker requests
+
+# Size & execution
+pm.max_children = 10            ; tune to server resources
+```
+
+- PHP (php.ini)
+
+```
+max_execution_time = 0
+memory_limit = 1024M
+upload_max_filesize = 100M
+post_max_size = 100M
+```
+
+- Queue Worker (Supervisor example)
+
+```
+[program:laravel-queue]
+command=php artisan queue:work --timeout=1800 --sleep=3 --tries=1 --queue=default,sbr-import
+directory=/path/to/trackprogresstim
+redirect_stderr=true
+autostart=true
+autorestart=true
+numprocs=1
+stdout_logfile=/var/log/supervisor/laravel-queue.log
+```
+
+Notes:
+- The SBR import job streams rows and performs chunked upserts; make sure the queue worker `--timeout` < `retry_after`.
+- The web request only uploads the file and schedules the job; UI polls `/sbr/import/status/{id}` for progress, even after timeouts.
