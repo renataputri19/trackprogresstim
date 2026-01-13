@@ -829,16 +829,16 @@
                                         <option value="tutup">✗ Tutup (Tidak Beroperasi)</option>
                                     </select>
                                 </div>
-                                <!-- Action Buttons - Stacked on mobile, horizontal on md+ -->
+                                <!-- Action Buttons - Stacked vertically on all breakpoints -->
                                 <div class="col-12 col-md-4">
-                                    <div class="d-grid gap-2 d-lg-flex flex-lg-row">
-                                        <button type="button" class="btn btn-outline-secondary btn-sm" id="clearBtn" title="Reset form">
+                                    <div class="d-grid gap-2">
+                                        <button type="button" class="btn btn-outline-secondary btn-sm w-100" id="clearBtn" title="Reset form">
                                             <i class="fas fa-undo me-2"></i>Clear
                                         </button>
-                                        <button type="button" class="btn btn-outline-danger btn-sm" id="deleteBtn" title="Hapus tagging">
+                                        <button type="button" class="btn btn-outline-danger btn-sm w-100" id="deleteBtn" title="Hapus tagging">
                                             <i class="fas fa-trash me-2"></i>Delete
                                         </button>
-                                        <button type="submit" class="btn btn-primary flex-grow-1" id="saveBtn" disabled>
+                                        <button type="submit" class="btn btn-primary w-100" id="saveBtn" disabled>
                                             <i class="fas fa-save me-1"></i>Simpan
                                         </button>
                                     </div>
