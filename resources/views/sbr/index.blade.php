@@ -530,6 +530,8 @@
         let selectedBusiness = null;
         let searchTimeout = null;
         let saveTooltip = null;
+        let searchAbortController = null; // AbortController to cancel pending search requests
+        let searchRequestId = 0; // Counter to track latest search request and ignore stale responses
 
         // Helper function to check if mobile
         function isMobile() {
@@ -1009,6 +1011,15 @@
 
         // Search businesses
         function searchBusinesses(page = 1) {
+            // Cancel any pending search request to prevent race conditions
+            if (searchAbortController) {
+                searchAbortController.abort();
+            }
+            searchAbortController = new AbortController();
+
+            // Increment request ID to track this specific request
+            const thisRequestId = ++searchRequestId;
+
             currentPage = page;
             const params = new URLSearchParams();
 
@@ -1023,15 +1034,31 @@
 
             document.getElementById('searchLoading').classList.remove('d-none');
 
-            fetch(`{{ route('sbr.search') }}?${params.toString()}`)
+            fetch(`{{ route('sbr.search') }}?${params.toString()}`, {
+                signal: searchAbortController.signal
+            })
                 .then(r => r.json())
                 .then(data => {
+                    // Only process response if this is still the latest request
+                    // This prevents stale responses from overwriting newer data
+                    if (thisRequestId !== searchRequestId) {
+                        console.log('Ignoring stale search response');
+                        return;
+                    }
                     document.getElementById('searchLoading').classList.add('d-none');
                     renderBusinessList(data);
                     updatePagination(data);
                 })
                 .catch(err => {
-                    document.getElementById('searchLoading').classList.add('d-none');
+                    // Ignore abort errors (expected when cancelling requests)
+                    if (err.name === 'AbortError') {
+                        console.log('Search request cancelled');
+                        return;
+                    }
+                    // Only hide loading if this is the latest request
+                    if (thisRequestId === searchRequestId) {
+                        document.getElementById('searchLoading').classList.add('d-none');
+                    }
                     console.error(err);
                 });
         }
@@ -1065,18 +1092,44 @@
 
         // Update pagination
         function updatePagination(data) {
-            lastPage = data.last_page;
+            // Validate and parse pagination data from server response
+            const total = Number(data.total) || 0;
+            const perPage = Number(data.per_page) || 20;
+            const serverCurrent = Number(data.current_page) || 1;
+
+            // Calculate expected last page based on total and per_page for validation
+            // This ensures pagination is consistent even if server returns unexpected values
+            const calculatedLastPage = Math.max(1, Math.ceil(total / perPage));
+            const serverLast = Number(data.last_page) || calculatedLastPage;
+
+            // Use the more accurate of server-reported or calculated last page
+            // Prefer calculated value if they differ significantly (sign of stale data)
+            const effectiveLastPage = (Math.abs(serverLast - calculatedLastPage) <= 1)
+                ? serverLast
+                : calculatedLastPage;
+
+            currentPage = Math.max(1, Math.min(serverCurrent, effectiveLastPage));
+            lastPage = effectiveLastPage;
+
             const pagination = document.getElementById('pagination');
             const prevBtn = document.getElementById('prevPage');
             const nextBtn = document.getElementById('nextPage');
             const pageInfo = document.getElementById('pageInfo');
 
-            if (data.last_page > 1) {
+            // Only show pagination controls when there are multiple pages
+            if (effectiveLastPage > 1) {
                 pagination.style.display = 'flex';
-                pageInfo.textContent = `Halaman ${data.current_page} dari ${data.last_page}`;
-                prevBtn.disabled = data.current_page <= 1;
-                nextBtn.disabled = data.current_page >= data.last_page;
+
+                // Show detailed range info if available
+                const from = Number(data.from) || ((currentPage - 1) * perPage + 1);
+                const to = Number(data.to) || Math.min(currentPage * perPage, total);
+
+                pageInfo.textContent = `Menampilkan ${from}–${to} dari ${total} • Hal ${currentPage}/${effectiveLastPage}`;
+
+                prevBtn.disabled = currentPage <= 1;
+                nextBtn.disabled = currentPage >= effectiveLastPage;
             } else {
+                // Hide pagination for single page or no results
                 pagination.style.display = 'none';
             }
         }
