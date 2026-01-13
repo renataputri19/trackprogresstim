@@ -75,6 +75,8 @@
                                     <li><strong>nama_usaha</strong> - Nama usaha/bisnis</li>
                                     <li><strong>kecamatan</strong> - Nama kecamatan</li>
                                     <li><strong>kelurahan</strong> - Nama kelurahan</li>
+                                    <li><strong>idsbr</strong> (opsional) - ID SBR untuk identifikasi unik</li>
+                                    <li><strong>alamat</strong> (opsional) - Alamat usaha</li>
                                 </ul>
                             </div>
 

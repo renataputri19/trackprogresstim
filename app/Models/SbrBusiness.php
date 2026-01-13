@@ -15,6 +15,8 @@ class SbrBusiness extends Model
         'nama_usaha',
         'kecamatan',
         'kelurahan',
+        'idsbr',
+        'alamat',
         'latitude',
         'longitude',
         'status'

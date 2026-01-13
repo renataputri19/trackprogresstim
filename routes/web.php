@@ -54,6 +54,7 @@ Route::get('/sbr/stats', [App\Http\Controllers\SbrController::class, 'stats'])->
 Route::get('/sbr/kelurahan/{kecamatan}', [App\Http\Controllers\SbrController::class, 'getKelurahan'])->name('sbr.kelurahan');
 Route::get('/sbr/{id}', [App\Http\Controllers\SbrController::class, 'show'])->name('sbr.show');
 Route::put('/sbr/{id}', [App\Http\Controllers\SbrController::class, 'update'])->name('sbr.update');
+Route::delete('/sbr/{id}/tagging', [App\Http\Controllers\SbrController::class, 'clearTagging'])->name('sbr.clear');
 
 // Default route - using the new homepage
 Route::get('/', [NewHomepageController::class, 'index'])->name('home');

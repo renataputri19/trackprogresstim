@@ -9,6 +9,7 @@ use OpenSpout\Reader\CSV\Reader as CsvReader;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use App\Jobs\ProcessSbrImport;
 use Illuminate\Support\Facades\Validator;
@@ -131,7 +132,22 @@ class SbrController extends Controller
             ], now()->addHours(2));
 
             // Dispatch background job that performs chunked, bulk inserts
-            ProcessSbrImport::dispatch($storedPath, $extension, $importId);
+            $queueDriver = config('queue.default');
+            $jobsTable = config('queue.connections.database.table', 'jobs');
+            $dbHasJobsTable = true;
+            if ($queueDriver === 'database') {
+                try {
+                    $dbHasJobsTable = Schema::hasTable($jobsTable);
+                } catch (\Throwable $t) {
+                    $dbHasJobsTable = false;
+                }
+            }
+
+            if ($queueDriver === 'database' && !$dbHasJobsTable) {
+                ProcessSbrImport::dispatchSync($storedPath, $extension, $importId);
+            } else {
+                ProcessSbrImport::dispatch($storedPath, $extension, $importId);
+            }
 
             // If the request expects JSON (AJAX), return import id for polling
             if ($request->wantsJson()) {
@@ -165,6 +181,8 @@ class SbrController extends Controller
             'nama_usaha' => null,
             'kecamatan' => null,
             'kelurahan' => null,
+            'idsbr' => null,
+            'alamat' => null,
         ];
 
         foreach ($headerRow as $index => $header) {
@@ -178,6 +196,10 @@ class SbrController extends Controller
                 $map['kecamatan'] = $index;
             } elseif ($headerLower === 'kelurahan' || str_contains($headerLower, 'kelurahan')) {
                 $map['kelurahan'] = $index;
+            } elseif ($headerLower === 'idsbr' || str_contains($headerLower, 'id sbr') || str_contains($headerLower, 'idsbr')) {
+                $map['idsbr'] = $index;
+            } elseif ($headerLower === 'alamat' || str_contains($headerLower, 'alamat') || str_contains($headerLower, 'address')) {
+                $map['alamat'] = $index;
             }
         }
 
@@ -193,6 +215,8 @@ class SbrController extends Controller
             'nama_usaha' => $columnMap['nama_usaha'] !== null ? ($row[$columnMap['nama_usaha']] ?? '') : '',
             'kecamatan' => $columnMap['kecamatan'] !== null ? ($row[$columnMap['kecamatan']] ?? '') : '',
             'kelurahan' => $columnMap['kelurahan'] !== null ? ($row[$columnMap['kelurahan']] ?? '') : '',
+            'idsbr' => $columnMap['idsbr'] !== null ? ($row[$columnMap['idsbr']] ?? '') : '',
+            'alamat' => $columnMap['alamat'] !== null ? ($row[$columnMap['alamat']] ?? '') : '',
         ];
     }
 
@@ -279,6 +303,32 @@ class SbrController extends Controller
             'message' => 'Data berhasil disimpan',
             'business' => $business
         ]);
+    }
+
+    /**
+     * Clear business coordinates and status (set to null)
+     */
+    public function clearTagging(Request $request, $id)
+    {
+        try {
+            $business = SbrBusiness::findOrFail($id);
+            $business->update([
+                'latitude' => null,
+                'longitude' => null,
+                'status' => null,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Koordinat dan status berhasil dihapus (null)',
+                'business' => $business,
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus koordinat/status: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
