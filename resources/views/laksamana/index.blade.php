@@ -26,6 +26,11 @@
             --bg-secondary: #f8fafc;
             --border-color: #e5e7eb;
         }
+        html, body {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
@@ -50,6 +55,9 @@
             text-decoration: none;
             max-width: calc(100% - 120px);
             flex-wrap: nowrap;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .navbar-brand .brand-icon {
             background: rgba(255,255,255,0.2);
@@ -78,7 +86,8 @@
                 text-overflow: ellipsis;
             }
             .navbar-brand .brand-text-short { display: none; }
-            .navbar-brand { max-width: none; }
+            /* Keep brand constrained to avoid pushing actions off-screen */
+            .navbar-brand { max-width: calc(100% - 160px); }
         }
         /* Large screens: full size */
         @media (min-width: 1200px) {
@@ -149,6 +158,8 @@
             min-height: 60px;
             background: white;
         }
+        /* Ensure long business names never cause horizontal overflow */
+        .business-item .fw-bold { word-break: break-word; overflow-wrap: anywhere; }
         .business-item:hover {
             border-color: var(--primary-light);
             background: linear-gradient(135deg, #f0fdfa 0%, #ffffff 100%);
