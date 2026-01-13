@@ -45,16 +45,20 @@ Route::get('/tagging/data', [BusinessTaggingController::class, 'list'])->name('b
 
 // SBR (Survei Bisnis Registrasi) Routes
 Route::get('/sbr', [App\Http\Controllers\SbrController::class, 'index'])->name('sbr.index');
-Route::get('/sbr/import', [App\Http\Controllers\SbrController::class, 'importPage'])->name('sbr.import.page');
-Route::post('/sbr/import', [App\Http\Controllers\SbrController::class, 'import'])->name('sbr.import');
-Route::post('/sbr/delete-all', [App\Http\Controllers\SbrController::class, 'deleteAll'])->name('sbr.delete.all');
-Route::get('/sbr/import/status/{id}', [App\Http\Controllers\SbrController::class, 'importStatus'])->name('sbr.import.status');
 Route::get('/sbr/search', [App\Http\Controllers\SbrController::class, 'search'])->name('sbr.search');
 Route::get('/sbr/stats', [App\Http\Controllers\SbrController::class, 'stats'])->name('sbr.stats');
 Route::get('/sbr/kelurahan/{kecamatan}', [App\Http\Controllers\SbrController::class, 'getKelurahan'])->name('sbr.kelurahan');
 Route::get('/sbr/{id}', [App\Http\Controllers\SbrController::class, 'show'])->name('sbr.show');
 Route::put('/sbr/{id}', [App\Http\Controllers\SbrController::class, 'update'])->name('sbr.update');
 Route::delete('/sbr/{id}/tagging', [App\Http\Controllers\SbrController::class, 'clearTagging'])->name('sbr.clear');
+
+// Import-related routes require authentication
+Route::middleware(['auth'])->group(function () {
+    Route::get('/sbr/import', [App\Http\Controllers\SbrController::class, 'importPage'])->name('sbr.import.page');
+    Route::post('/sbr/import', [App\Http\Controllers\SbrController::class, 'import'])->name('sbr.import');
+    Route::post('/sbr/delete-all', [App\Http\Controllers\SbrController::class, 'deleteAll'])->name('sbr.delete.all');
+    Route::get('/sbr/import/status/{id}', [App\Http\Controllers\SbrController::class, 'importStatus'])->name('sbr.import.status');
+});
 
 // Default route - using the new homepage
 Route::get('/', [NewHomepageController::class, 'index'])->name('home');
