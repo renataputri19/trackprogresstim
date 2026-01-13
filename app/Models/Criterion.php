@@ -23,5 +23,10 @@ class Criterion extends Model
         'catatan_reviu_tpi',
         'category',
         'last_updated_by',
+        'year',
+    ];
+
+    protected $casts = [
+        'year' => 'integer',
     ];
 }

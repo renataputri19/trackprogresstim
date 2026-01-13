@@ -6,16 +6,15 @@ use App\Models\Criterion;
 
 class PenilaianPilarService
 {
-    public function getPenilaianData()
+    public function getPenilaianData(int $year = 2025)
     {
         return [
-            'pemenuhan' => $this->getPemenuhanData(),
-            'reform' => $this->getReformData(),
+            'pemenuhan' => $this->getPemenuhanData($year),
+            'reform' => $this->getReformData($year),
         ];
     }
 
-
-    public function getPemenuhanData()
+    public function getPemenuhanData(int $year = 2025)
     {
         $pillars = [
             [
@@ -84,13 +83,15 @@ class PenilaianPilarService
             $totalNilaiUnit = 0;
             $totalNilaiTpi = 0;
     
-            $categories = collect($pilar['categories'])->map(function ($category) use (&$totalBobot, &$totalNilaiUnit, &$totalNilaiTpi) {
+            $categories = collect($pilar['categories'])->map(function ($category) use (&$totalBobot, &$totalNilaiUnit, &$totalNilaiTpi, $year) {
                 $avgNilaiUnit = Criterion::where('category', $category['selectedCategory'])
+                    ->where('year', $year)
                     ->pluck('nilai_unit')
                     ->map(fn($value) => $value ?? 0) // Replace null with 0
                     ->average();
-    
+
                 $avgNilaiTpi = Criterion::where('category', $category['selectedCategory'])
+                    ->where('year', $year)
                     ->pluck('nilai_tpi')
                     ->map(fn($value) => $value ?? 0) // Replace null with 0
                     ->average();
@@ -134,7 +135,7 @@ class PenilaianPilarService
     }
 
 
-    public function getReformData()
+    public function getReformData(int $year = 2025)
     {
         $reformCategories = [
             [
@@ -198,27 +199,29 @@ class PenilaianPilarService
         ];
         
 
-        $reformData = collect($reformCategories)->map(function ($pilar) {
+        $reformData = collect($reformCategories)->map(function ($pilar) use ($year) {
             $totalBobot = 0;
             $totalNilaiUnit = 0;
             $totalNilaiTpi = 0;
         
-            $categories = collect($pilar['categories'])->map(function ($category) use (&$totalBobot, &$totalNilaiUnit, &$totalNilaiTpi) {
+            $categories = collect($pilar['categories'])->map(function ($category) use (&$totalBobot, &$totalNilaiUnit, &$totalNilaiTpi, $year) {
                 $avgNilaiUnit = 0;
                 $avgNilaiTpi = 0;
         
                 if (isset($category['selectedCategories'])) {
                     // Handle multiple selectedCategories for averaging
-                    $nilaiUnits = collect($category['selectedCategories'])->map(function ($selectedCategory) {
+                    $nilaiUnits = collect($category['selectedCategories'])->map(function ($selectedCategory) use ($year) {
                         return Criterion::where('category', $selectedCategory)
+                            ->where('year', $year)
                             ->where('pilihan_jawaban', '!=', 'Jumlah') // Exclude "Jumlah"
                             ->pluck('nilai_unit')
                             ->map(fn($value) => $value ?? 0) // Replace null with 0
                             ->average();
                     });
         
-                    $nilaiTpis = collect($category['selectedCategories'])->map(function ($selectedCategory) {
+                    $nilaiTpis = collect($category['selectedCategories'])->map(function ($selectedCategory) use ($year) {
                         return Criterion::where('category', $selectedCategory)
+                            ->where('year', $year)
                             ->where('pilihan_jawaban', '!=', 'Jumlah') // Exclude "Jumlah"
                             ->pluck('nilai_tpi')
                             ->map(fn($value) => $value ?? 0) // Replace null with 0
@@ -230,12 +233,14 @@ class PenilaianPilarService
                 } else {
                     // Handle single selectedCategory
                     $avgNilaiUnit = Criterion::where('category', $category['selectedCategory'])
+                        ->where('year', $year)
                         ->where('pilihan_jawaban', '!=', 'Jumlah') // Exclude "Jumlah"
                         ->pluck('nilai_unit')
                         ->map(fn($value) => $value ?? 0) // Replace null with 0
                         ->average();
         
                     $avgNilaiTpi = Criterion::where('category', $category['selectedCategory'])
+                        ->where('year', $year)
                         ->where('pilihan_jawaban', '!=', 'Jumlah') // Exclude "Jumlah"
                         ->pluck('nilai_tpi')
                         ->map(fn($value) => $value ?? 0) // Replace null with 0
