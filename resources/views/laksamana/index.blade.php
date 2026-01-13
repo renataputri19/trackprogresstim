@@ -835,9 +835,9 @@
                                         <button type="button" class="btn btn-outline-secondary btn-sm w-100" id="clearBtn" title="Reset form">
                                             <i class="fas fa-undo me-2"></i>Clear
                                         </button>
-                                        <button type="button" class="btn btn-outline-danger btn-sm w-100" id="deleteBtn" title="Hapus tagging">
+                                        {{-- <button type="button" class="btn btn-outline-danger btn-sm w-100" id="deleteBtn" title="Hapus tagging">
                                             <i class="fas fa-trash me-2"></i>Delete
-                                        </button>
+                                        </button> --}}
                                         <button type="submit" class="btn btn-primary w-100" id="saveBtn" disabled>
                                             <i class="fas fa-save me-1"></i>Simpan
                                         </button>

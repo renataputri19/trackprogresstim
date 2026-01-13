@@ -10,10 +10,12 @@ class ManageReform extends Component
 {
     public $criteria;
     public $selectedCategory;
+    public $year;
 
     public function mount($selectedCategory)
     {
         $this->selectedCategory = $selectedCategory;
+        $this->year = (int) session('padamu_year', 2025);
         $this->loadCriteria();
     }
 
@@ -33,7 +35,9 @@ class ManageReform extends Component
 
     private function loadCriteria()
     {
-        $this->criteria = Criterion::where('category', $this->selectedCategory)->get();
+        $this->criteria = Criterion::where('category', $this->selectedCategory)
+            ->where('year', $this->year)
+            ->get();
     }
 }
 

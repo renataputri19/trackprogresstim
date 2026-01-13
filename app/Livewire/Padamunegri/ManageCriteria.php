@@ -10,11 +10,15 @@ class ManageCriteria extends Component
 {
     public $criteria;
     public $selectedCategory;
+    public $year;
 
     public function mount($selectedCategory)
     {
         $this->selectedCategory = $selectedCategory;
-        $this->criteria = Criterion::where('category', $this->selectedCategory)->get();
+        $this->year = (int) session('padamu_year', 2025);
+        $this->criteria = Criterion::where('category', $this->selectedCategory)
+            ->where('year', $this->year)
+            ->get();
     }
 
     public function render()
@@ -28,6 +32,8 @@ class ManageCriteria extends Component
         session()->flash('message', $message);
 
         // Refresh the criteria after update
-        $this->criteria = Criterion::where('category', $this->selectedCategory)->get();
+        $this->criteria = Criterion::where('category', $this->selectedCategory)
+            ->where('year', $this->year)
+            ->get();
     }
 }

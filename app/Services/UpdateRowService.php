@@ -33,7 +33,7 @@ class UpdateRowService
                 $criterion->penilaian === '- Lainnya' ||
                 $criterion->penilaian === '- Jumlah yang sudah melaporkan LHKPN'
             ) {
-                self::updatePercentageFields($criterion->category);
+                self::updatePercentageFields($criterion->category, (int) $criterion->year);
             }
 
             // Handle cascading updates for specific fields
@@ -43,12 +43,12 @@ class UpdateRowService
                 $criterion->penilaian === '- Jumlah Fungsional dan Pelaksana' ||
                 $criterion->penilaian === '- Jumlah yang sudah melaporkan Non LHKPN'
             ) {
-                self::updatePercentageFields($criterion->category);
+                self::updatePercentageFields($criterion->category, (int) $criterion->year);
             }
 
             // Check if this is a "Jumlah" field that impacts a percentage field
             if (str_contains($criterion->penilaian, 'Jumlah')) {
-                self::updatePercentageFields($criterion->category);
+                self::updatePercentageFields($criterion->category, (int) $criterion->year);
             } else {
                 // Dynamically calculate scores for regular fields
                 if ($field === 'jawaban_unit' || $field === 'jawaban_tpi') {
@@ -83,10 +83,11 @@ class UpdateRowService
     }
 
 
-    private static function updatePercentageFields($category)
+    private static function updatePercentageFields($category, int $year)
     {
         // Update all percentage fields in this category
         $percentageCriteria = Criterion::where('category', $category)
+            ->where('year', $year)
             ->where('pilihan_jawaban', '%')
             ->get();
 
@@ -118,18 +119,22 @@ class UpdateRowService
         if ($criterion->penilaian === 'a. Agen perubahan telah membuat perubahan yang konkret di Instansi (dalam 1 tahun)') {
             // Fetch related values
             $jumlahAgenUnit = (float) Criterion::where('category', $criterion->category)
+                ->where('year', $criterion->year)
                 ->where('penilaian', '- Jumlah Agen Perubahan')
                 ->value('jawaban_unit') ?? 0;
 
             $jumlahPerubahanUnit = (float) Criterion::where('category', $criterion->category)
+                ->where('year', $criterion->year)
                 ->where('penilaian', '- Jumlah Perubahan yang dibuat')
                 ->value('jawaban_unit') ?? 0;
 
             $jumlahAgenTpi = (float) Criterion::where('category', $criterion->category)
+                ->where('year', $criterion->year)
                 ->where('penilaian', '- Jumlah Agen Perubahan')
                 ->value('jawaban_tpi') ?? 0;
 
             $jumlahPerubahanTpi = (float) Criterion::where('category', $criterion->category)
+                ->where('year', $criterion->year)
                 ->where('penilaian', '- Jumlah Perubahan yang dibuat')
                 ->value('jawaban_tpi') ?? 0;
 
@@ -149,18 +154,22 @@ class UpdateRowService
         if ($criterion->penilaian === 'b. Perubahan yang dibuat Agen Perubahan telah terintegrasi dalam sistem manajemen') {
             // Fetch related values
             $jumlahPerubahanUnit = (float) Criterion::where('category', $criterion->category)
+                ->where('year', $criterion->year)
                 ->where('penilaian', '- Jumlah Perubahan yang dibuat Agen Perubahan')
                 ->value('jawaban_unit') ?? 0;
 
             $integratedChangesUnit = (float) Criterion::where('category', $criterion->category)
+                ->where('year', $criterion->year)
                 ->where('penilaian', '- Jumlah Perubahan yang telah diintegrasikan dalam sistem manajemen')
                 ->value('jawaban_unit') ?? 0;
 
             $jumlahPerubahanTpi = (float) Criterion::where('category', $criterion->category)
+                ->where('year', $criterion->year)
                 ->where('penilaian', '- Jumlah Perubahan yang dibuat Agen Perubahan')
                 ->value('jawaban_tpi') ?? 0;
 
             $integratedChangesTpi = (float) Criterion::where('category', $criterion->category)
+                ->where('year', $criterion->year)
                 ->where('penilaian', '- Jumlah Perubahan yang telah diintegrasikan dalam sistem manajemen')
                 ->value('jawaban_tpi') ?? 0;
 
@@ -182,19 +191,23 @@ class UpdateRowService
         if ($criterion->penilaian === 'a. Penurunan pelanggaran disiplin pegawai') {
             // Fetch related values for Unit
             $pelanggaranSebelumnyaUnit = (float) Criterion::where('category', $criterion->category)
+                ->where('year', $criterion->year)
                 ->where('penilaian', '- Jumlah pelanggaran tahun sebelumnya')
                 ->value('jawaban_unit') ?? 0;
 
             $pelanggaranTahunIniUnit = (float) Criterion::where('category', $criterion->category)
+                ->where('year', $criterion->year)
                 ->where('penilaian', '- Jumlah pelanggaran tahun ini')
                 ->value('jawaban_unit') ?? 0;
 
             // Fetch related values for TPI
             $pelanggaranSebelumnyaTpi = (float) Criterion::where('category', $criterion->category)
+                ->where('year', $criterion->year)
                 ->where('penilaian', '- Jumlah pelanggaran tahun sebelumnya')
                 ->value('jawaban_tpi') ?? 0;
 
             $pelanggaranTahunIniTpi = (float) Criterion::where('category', $criterion->category)
+                ->where('year', $criterion->year)
                 ->where('penilaian', '- Jumlah pelanggaran tahun ini')
                 ->value('jawaban_tpi') ?? 0;
 
