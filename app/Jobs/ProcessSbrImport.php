@@ -61,7 +61,6 @@ class ProcessSbrImport implements ShouldQueue
 
         $fullPath = storage_path('app/' . $this->path);
 
-        $initialCount = SbrBusiness::count();
         $successCount = 0;
         $errorCount = 0;
         $processed = 0;
@@ -136,16 +135,12 @@ class ProcessSbrImport implements ShouldQueue
 
             $reader->close();
 
-            $finalCount = SbrBusiness::count();
-            $insertedCount = max(0, $finalCount - $initialCount);
-            $dedupedCount = max(0, $successCount - $insertedCount);
-
             Cache::put($this->cacheKey(), [
                 'status' => 'completed',
                 'processed' => $processed,
                 'success' => $successCount,
                 'errors' => $errorCount,
-                'message' => "Import selesai. {$insertedCount} baris masuk ke database, {$errorCount} baris gagal. Duplikat/diperbarui: {$dedupedCount}.",
+                'message' => "Import selesai. {$successCount} baris berhasil, {$errorCount} baris gagal.",
             ], now()->addHours(2));
         } catch (\Throwable $e) {
             Cache::put($this->cacheKey(), [
@@ -165,16 +160,16 @@ class ProcessSbrImport implements ShouldQueue
         }
 
         try {
-            // Prevent duplication by upserting on composite key (nama_usaha, kecamatan, kelurahan)
+            // Prevent duplication by upserting on composite key including idsbr
             DB::table((new SbrBusiness())->getTable())
-                ->upsert($batch, ['idsbr'], ['nama_usaha', 'kecamatan', 'kelurahan', 'alamat']);
+                ->upsert($batch, ['idsbr', 'nama_usaha', 'kecamatan', 'kelurahan'], ['alamat']);
             $successCount += count($batch);
         } catch (\Throwable $e) {
             // Fallback to row-by-row upsert to isolate errors
             foreach ($batch as $index => $rowData) {
                 try {
                     DB::table((new SbrBusiness())->getTable())
-                        ->upsert([$rowData], ['idsbr'], ['nama_usaha', 'kecamatan', 'kelurahan', 'alamat']);
+                        ->upsert([$rowData], ['idsbr', 'nama_usaha', 'kecamatan', 'kelurahan'], ['alamat']);
                     $successCount++;
                 } catch (\Throwable $inner) {
                     $errorCount++;

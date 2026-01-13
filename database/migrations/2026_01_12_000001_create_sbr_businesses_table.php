@@ -13,6 +13,8 @@ return new class extends Migration
             $table->string('nama_usaha');
             $table->string('kecamatan', 100);
             $table->string('kelurahan', 100);
+            $table->string('idsbr')->nullable();
+            $table->text('alamat')->nullable();
             $table->decimal('latitude', 10, 8)->nullable();
             $table->decimal('longitude', 11, 8)->nullable();
             $table->enum('status', ['aktif', 'tutup'])->nullable();
@@ -25,7 +27,7 @@ return new class extends Migration
             $table->index('nama_usaha');
 
             // Prevent exact duplicate entries for the same business/location combination
-            $table->unique(['nama_usaha', 'kecamatan', 'kelurahan']);
+            $table->unique(['idsbr', 'nama_usaha', 'kecamatan', 'kelurahan']);
         });
     }
 

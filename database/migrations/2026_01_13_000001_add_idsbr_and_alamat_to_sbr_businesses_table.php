@@ -10,10 +10,17 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::table('sbr_businesses', function (Blueprint $table) {
-            $table->string('idsbr')->nullable()->after('kelurahan');
-            $table->text('alamat')->nullable()->after('idsbr');
-        });
+        // Add columns only if they don't already exist (safe re-run after base migration changes)
+        if (!Schema::hasColumn('sbr_businesses', 'idsbr') || !Schema::hasColumn('sbr_businesses', 'alamat')) {
+            Schema::table('sbr_businesses', function (Blueprint $table) {
+                if (!Schema::hasColumn('sbr_businesses', 'idsbr')) {
+                    $table->string('idsbr')->nullable()->after('kelurahan');
+                }
+                if (!Schema::hasColumn('sbr_businesses', 'alamat')) {
+                    $table->text('alamat')->nullable()->after('idsbr');
+                }
+            });
+        }
     }
 
     /**
@@ -22,7 +29,12 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::table('sbr_businesses', function (Blueprint $table) {
-            $table->dropColumn(['idsbr', 'alamat']);
+            if (Schema::hasColumn('sbr_businesses', 'alamat')) {
+                $table->dropColumn('alamat');
+            }
+            if (Schema::hasColumn('sbr_businesses', 'idsbr')) {
+                $table->dropColumn('idsbr');
+            }
         });
     }
 };
