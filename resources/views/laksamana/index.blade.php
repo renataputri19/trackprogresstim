@@ -4,42 +4,269 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>SBR Tagging - RENTAK</title>
+    <title>LAKSAMANA - Lokasi dan Klasifikasi Sensus Manajemen Usaha</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary-color: #2563eb; --secondary-color: #1e40af; }
-        body { background-color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; }
-        .navbar { background-color: var(--primary-color); padding: 0.75rem 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .navbar-brand { color: white !important; font-weight: 700; font-size: 1.25rem; letter-spacing: 0.2px; }
-        .nav-actions { display: flex; align-items: center; gap: 0.5rem; }
-        .navbar .btn { border-radius: 9999px; padding: 0.5rem 0.9rem; font-weight: 600; }
-        .card { border: none; border-radius: 12px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
-        .card-header { background-color: white; border-bottom: 1px solid #e5e7eb; padding: 0.875rem 1rem; border-radius: 12px 12px 0 0 !important; }
+        :root {
+            --primary-color: #0f766e;
+            --primary-light: #14b8a6;
+            --primary-dark: #115e59;
+            --secondary-color: #0d9488;
+            --accent-color: #f59e0b;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --bg-primary: #f0fdfa;
+            --bg-secondary: #f8fafc;
+            --border-color: #e5e7eb;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            padding: 0.75rem 0;
+            box-shadow: 0 4px 20px rgba(15, 118, 110, 0.3);
+            border-bottom: 3px solid var(--primary-light);
+        }
+        .navbar-brand {
+            color: white !important;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            max-width: calc(100% - 120px);
+            flex-wrap: nowrap;
+        }
+        .navbar-brand .brand-icon {
+            background: rgba(255,255,255,0.2);
+            padding: 0.4rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            min-width: 32px;
+            min-height: 32px;
+        }
+        .navbar-brand .brand-icon i {
+            font-size: 1rem;
+        }
+        /* Mobile: show short name only */
+        .navbar-brand .brand-text-full { display: none; }
+        .navbar-brand .brand-text-short { display: inline; font-size: 0.95rem; }
+        /* Tablet and up: show full name */
+        @media (min-width: 992px) {
+            .navbar-brand .brand-text-full {
+                display: inline;
+                font-size: 0.95rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .navbar-brand .brand-text-short { display: none; }
+            .navbar-brand { max-width: none; }
+        }
+        /* Large screens: full size */
+        @media (min-width: 1200px) {
+            .navbar-brand .brand-text-full { font-size: 1.1rem; }
+            .navbar-brand .brand-icon { padding: 0.5rem; min-width: 36px; min-height: 36px; }
+            .navbar-brand .brand-icon i { font-size: 1.1rem; }
+        }
+        .nav-actions { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
+        .navbar .btn {
+            border-radius: 10px;
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        .navbar .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            background: white;
+            overflow: hidden;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-bottom: 2px solid var(--border-color);
+            padding: 1rem 1.25rem;
+            border-radius: 16px 16px 0 0 !important;
+        }
         .card-title { color: var(--primary-color); font-weight: 600; margin: 0; font-size: 1rem; }
-        #map { height: 350px; width: 100%; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); touch-action: pan-x pan-y; }
-        .form-control, .form-select { border-radius: 8px; border: 1px solid #e5e7eb; padding: 0.75rem 1rem; font-size: 16px; /* Prevents zoom on iOS */ }
-        .form-control:focus, .form-select:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
-        .btn { padding: 0.75rem 1.25rem; border-radius: 8px; font-weight: 500; min-height: 44px; /* Touch-friendly min size */ }
-        .btn-primary { background-color: var(--primary-color); border-color: var(--primary-color); }
-        .btn-primary:hover { background-color: var(--secondary-color); border-color: var(--secondary-color); }
+        #map { height: 350px; width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); touch-action: pan-x pan-y; }
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 2px solid var(--border-color);
+            padding: 0.75rem 1rem;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.1);
+        }
+        .btn {
+            padding: 0.75rem 1.25rem;
+            border-radius: 10px;
+            font-weight: 600;
+            min-height: 44px;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border: none;
+            box-shadow: 0 4px 12px rgba(15, 118, 110, 0.3);
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(15, 118, 110, 0.4);
+        }
         .business-list { max-height: 350px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-        .business-item { padding: 0.875rem; border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 0.5rem; cursor: pointer; transition: all 0.2s; min-height: 60px; }
-        .business-item:hover { border-color: var(--primary-color); background-color: #f0f9ff; }
-        .business-item.selected { border-color: var(--primary-color); background-color: #dbeafe; border-width: 2px; }
-        .business-item.tagged { border-left: 4px solid #10b981; }
-        .business-item.untagged { border-left: 4px solid #f59e0b; }
-        .status-badge { font-size: 0.7rem; padding: 0.25rem 0.5rem; border-radius: 4px; white-space: nowrap; }
-        .status-aktif { background-color: #d1fae5; color: #065f46; }
-        .status-tutup { background-color: #fee2e2; color: #991b1b; }
-        .location-accuracy { font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem; }
-        .stats-card { background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white; border-radius: 12px; padding: 1rem; margin-bottom: 0.75rem; }
-        .stats-number { font-size: 1.5rem; font-weight: 700; }
-        .loading-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.8); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .business-item {
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 60px;
+            background: white;
+        }
+        .business-item:hover {
+            border-color: var(--primary-light);
+            background: linear-gradient(135deg, #f0fdfa 0%, #ffffff 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(15, 118, 110, 0.1);
+        }
+        .business-item.selected {
+            border-color: var(--primary-color);
+            background: linear-gradient(135deg, #ccfbf1 0%, #f0fdfa 100%);
+            border-width: 2px;
+            box-shadow: 0 4px 16px rgba(15, 118, 110, 0.2);
+        }
+        .business-item.tagged { border-left: 5px solid var(--success-color); }
+        .business-item.untagged { border-left: 5px solid var(--warning-color); }
+        .status-badge { font-size: 0.75rem; padding: 0.35rem 0.75rem; border-radius: 20px; white-space: nowrap; font-weight: 600; }
+        .status-aktif { background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); color: #065f46; }
+        .status-tutup { background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); color: #991b1b; }
+        .location-accuracy { font-size: 0.875rem; color: var(--text-secondary); margin-top: 0.5rem; }
+        .stats-card {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 8px 24px rgba(15, 118, 110, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        .stats-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .stats-number { font-size: 1.75rem; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .stats-label { font-size: 0.75rem; opacity: 0.9; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+        .loading-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.9); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px); }
         .search-container { position: relative; }
         .search-loading { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); }
+
+        /* Guide Section Header */
+        .guide-section-header {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-top: 1px solid var(--border-color);
+            margin-top: 0.5rem;
+        }
+
+        /* Guide Steps Styles */
+        .guide-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.75rem;
+        }
+        .guide-steps.compact {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+        }
+        .guide-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        .guide-steps.compact .guide-step {
+            padding: 0.5rem 0.75rem;
+            gap: 0.5rem;
+        }
+        .guide-step:hover {
+            border-color: var(--primary-light);
+            box-shadow: 0 4px 12px rgba(15, 118, 110, 0.1);
+        }
+        .step-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border-radius: 50%;
+            font-size: 0.8rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .step-content {
+            flex: 1;
+        }
+        .step-title {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+        .step-desc {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+        .guide-toggle {
+            cursor: pointer;
+            user-select: none;
+        }
+        .guide-toggle .collapse-icon {
+            transition: transform 0.3s ease;
+        }
+        .guide-toggle[aria-expanded="false"] .collapse-icon {
+            transform: rotate(-90deg);
+        }
 
         /* Form action buttons: avoid cramping and overflow */
         .form-actions { gap: 0.5rem; }
@@ -92,9 +319,20 @@
 
         @media (max-width: 767.98px) {
             .navbar { padding: 0.5rem 0; }
-            .navbar-brand { font-size: 1rem; }
-            .navbar-brand i { display: none; }
-            .navbar .btn-sm { padding: 0.375rem 0.75rem; font-size: 0.75rem; }
+            .navbar-brand {
+                font-size: 0.95rem;
+                gap: 0.4rem;
+                max-width: calc(100% - 90px);
+            }
+            /* Keep icon visible on mobile - just make it smaller */
+            .navbar-brand .brand-icon {
+                padding: 0.35rem;
+                min-width: 28px;
+                min-height: 28px;
+                border-radius: 6px;
+            }
+            .navbar-brand .brand-icon i { font-size: 0.85rem; }
+            .navbar .btn-sm { padding: 0.35rem 0.6rem; font-size: 0.7rem; }
 
             #map { height: 250px; margin-bottom: 0.5rem; }
             .stats-number { font-size: 1.2rem; }
@@ -144,6 +382,49 @@
             .workflow-step .step-number { width: 20px; height: 20px; font-size: 0.65rem; }
         }
 
+        /* Ultra-small screens (320px) */
+        @media (max-width: 359.98px) {
+            .navbar { padding: 0.4rem 0; }
+            .navbar-brand {
+                font-size: 0.85rem;
+                gap: 0.3rem;
+                max-width: calc(100% - 70px);
+            }
+            .navbar-brand .brand-icon {
+                padding: 0.3rem;
+                min-width: 24px;
+                min-height: 24px;
+            }
+            .navbar-brand .brand-icon i { font-size: 0.75rem; }
+            .navbar .btn-sm { padding: 0.3rem 0.5rem; font-size: 0.65rem; }
+
+            .container-fluid { padding-left: 0.4rem; padding-right: 0.4rem; }
+            .hero-description { padding: 0.75rem; margin-bottom: 0.5rem; }
+            .hero-icon { width: 36px; height: 36px; }
+            .hero-icon i { font-size: 1rem; }
+            .hero-title { font-size: 0.95rem; }
+            .hero-acronym { font-size: 0.7rem; }
+            .hero-content { font-size: 0.8rem; }
+            .hero-feature { padding: 0.5rem; }
+            .hero-feature-icon { width: 28px; height: 28px; }
+            .hero-feature-text { font-size: 0.75rem; }
+
+            .stats-card { padding: 0.5rem; border-radius: 8px; }
+            .stats-number { font-size: 1rem; }
+            .stats-label { font-size: 0.6rem; }
+
+            .card { border-radius: 8px; }
+            .card-header { padding: 0.5rem 0.75rem; }
+            .card-body { padding: 0.625rem; }
+            .card-title { font-size: 0.8rem; }
+
+            #map { height: 180px; }
+            .business-list { max-height: 180px; }
+            .business-item { padding: 0.5rem; }
+
+            .form-control, .form-select { padding: 0.5rem; font-size: 0.85rem; }
+        }
+
         /* Touch device optimizations */
         @media (hover: none) and (pointer: coarse) {
             .business-item { padding: 1rem 0.875rem; }
@@ -163,19 +444,137 @@
             .stats-card { padding: 0.5rem; }
             .stats-number { font-size: 1rem; }
         }
+
+        /* Guide steps responsive */
+        @media (max-width: 767.98px) {
+            .guide-steps { grid-template-columns: 1fr; gap: 0.5rem; }
+            .guide-steps.compact { grid-template-columns: 1fr; }
+            .guide-step { padding: 0.625rem; }
+            .step-number { width: 24px; height: 24px; font-size: 0.7rem; }
+            .step-title { font-size: 0.8rem; }
+            .step-desc { font-size: 0.7rem; }
+        }
+
+        /* Hero Description Section */
+        .hero-description {
+            background: linear-gradient(135deg, #ffffff 0%, #f0fdfa 100%);
+            border: 2px solid var(--primary-light);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 16px rgba(15, 118, 110, 0.08);
+        }
+        .hero-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .hero-icon {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(15, 118, 110, 0.3);
+        }
+        .hero-icon i { color: white; font-size: 1.5rem; }
+        .hero-title-group { flex: 1; min-width: 0; }
+        .hero-title {
+            color: var(--primary-dark);
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin: 0 0 0.25rem 0;
+            line-height: 1.3;
+        }
+        .hero-acronym {
+            color: var(--primary-color);
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin: 0;
+        }
+        .hero-content {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        .hero-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.75rem;
+        }
+        .hero-feature {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+        .hero-feature:hover {
+            border-color: var(--primary-light);
+            box-shadow: 0 2px 8px rgba(15, 118, 110, 0.1);
+        }
+        .hero-feature-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 0.9rem;
+        }
+        .hero-feature-icon.map { background: #dbeafe; color: #1d4ed8; }
+        .hero-feature-icon.tag { background: #d1fae5; color: #059669; }
+        .hero-feature-icon.stats { background: #fef3c7; color: #d97706; }
+        .hero-feature-text {
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            line-height: 1.4;
+        }
+        .hero-toggle {
+            cursor: pointer;
+            user-select: none;
+        }
+        .hero-toggle .collapse-icon {
+            color: var(--primary-color);
+            transition: transform 0.3s ease;
+        }
+        .hero-toggle[aria-expanded="false"] .collapse-icon {
+            transform: rotate(-90deg);
+        }
+        @media (max-width: 767.98px) {
+            .hero-description { padding: 1rem; }
+            .hero-icon { width: 44px; height: 44px; border-radius: 10px; }
+            .hero-icon i { font-size: 1.2rem; }
+            .hero-title { font-size: 1.1rem; }
+            .hero-acronym { font-size: 0.75rem; }
+            .hero-content { font-size: 0.85rem; }
+            .hero-features { grid-template-columns: 1fr; }
+            .hero-feature { padding: 0.625rem; }
+        }
     </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid d-flex justify-content-between align-items-center">
-            <a class="navbar-brand d-flex align-items-center" href="{{ route('sbr.index') }}">
-                <i class="fas fa-map-marker-alt me-2 d-none d-sm-inline"></i>
-                <span class="d-none d-md-inline">SBR - Survei Bisnis Registrasi</span>
-                <span class="d-md-none">SBR Tagging</span>
+            <a class="navbar-brand" href="{{ route('laksamana.index') }}">
+                <span class="brand-icon">
+                    <i class="fas fa-map-marked-alt"></i>
+                </span>
+                <span class="brand-text-full">LAKSAMANA - Lokasi dan Klasifikasi Sensus Manajemen Usaha</span>
+                <span class="brand-text-short">LAKSAMANA</span>
             </a>
             <div class="nav-actions">
                 @auth
-                <a href="{{ route('sbr.import.page') }}" class="btn btn-light btn-sm">
+                <a href="{{ route('laksamana.import.page') }}" class="btn btn-light btn-sm">
                     <i class="fas fa-file-excel me-1"></i><span class="d-none d-sm-inline">Import Excel</span><span class="d-sm-none">Import</span>
                 </a>
                 @endauth
@@ -185,16 +584,63 @@
 
     <div class="container-fluid my-3 my-md-4">
         @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <div class="alert alert-success alert-dismissible fade show" role="alert" style="border-radius: 12px; border-left: 4px solid var(--success-color);">
                 <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif
 
+        <!-- Unified Info & Guide Section -->
+        <div class="hero-description">
+            <div class="hero-header hero-toggle" data-bs-toggle="collapse" data-bs-target="#heroContent" aria-expanded="true">
+                <div class="hero-icon">
+                    <i class="fas fa-map-marked-alt"></i>
+                </div>
+                <div class="hero-title-group">
+                    <h1 class="hero-title">LAKSAMANA</h1>
+                    <p class="hero-acronym">Lokasi dan Klasifikasi Sensus Manajemen Usaha</p>
+                </div>
+                <i class="fas fa-chevron-down collapse-icon ms-auto"></i>
+            </div>
+            <div class="collapse show" id="heroContent">
+                <p class="hero-content">
+                    Sistem pemetaan lokasi usaha untuk Sensus Ekonomi. Tandai koordinat GPS, verifikasi status operasional, dan kelola data usaha berdasarkan wilayah.
+                </p>
+
+                <!-- Feature Highlights with Colorful Icons -->
+                <div class="hero-features mb-3">
+                    <div class="hero-feature">
+                        <div class="hero-feature-icon stats">
+                            <i class="fas fa-filter"></i>
+                        </div>
+                        <div class="hero-feature-text">
+                            <strong>Filter Wilayah</strong> — Langkah 1: Pilih Kecamatan & Kelurahan untuk memulai pencarian
+                        </div>
+                    </div>
+                    <div class="hero-feature">
+                        <div class="hero-feature-icon map">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="hero-feature-text">
+                            <strong>Pemetaan GPS</strong> — Langkah 2: Tandai lokasi di peta atau gunakan GPS/manual
+                        </div>
+                    </div>
+                    <div class="hero-feature">
+                        <div class="hero-feature-icon tag">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="hero-feature-text">
+                            <strong>Verifikasi Status</strong> — Langkah 3: Pilih status operasional lalu simpan perubahan
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Mobile Workflow Guide - Only visible on mobile -->
         <div class="d-lg-none mb-3">
             <div class="workflow-step" id="step1Indicator">
-                <span class="step-number">1</span>
+                <span class="step-number"><i class="fas fa-hand-pointer" style="font-size: 0.6rem;"></i></span>
                 <span>Pilih usaha dari daftar di bawah</span>
             </div>
         </div>
@@ -207,53 +653,46 @@
                     <div class="row text-center g-0">
                         <div class="col-4">
                             <div class="stats-number" id="statTotal">0</div>
-                            <small>Total</small>
+                            <small class="stats-label">Total</small>
                         </div>
                         <div class="col-4">
                             <div class="stats-number" id="statTagged">0</div>
-                            <small>Tagged</small>
+                            <small class="stats-label">Tagged</small>
                         </div>
                         <div class="col-4">
                             <div class="stats-number" id="statUntagged">0</div>
-                            <small>Untagged</small>
+                            <small class="stats-label">Untagged</small>
                         </div>
                     </div>
                 </div>
 
-                <!-- Filters -->
+                <!-- Filter & Search Combined -->
                 <div class="card mb-3">
-                    <div class="card-header">
-                        <h6 class="card-title mb-0"><i class="fas fa-filter me-2"></i>Filter</h6>
+                    <div class="card-header py-2">
+                        <h6 class="card-title mb-0"><i class="fas fa-search me-2"></i>Cari Usaha</h6>
                     </div>
                     <div class="card-body">
-                        <div class="row g-2 g-md-3">
-                            <div class="col-12 col-md-6 mb-md-2">
-                                <label class="form-label fw-semibold small mb-1">Kecamatan</label>
-                                <select class="form-select" id="filterKecamatan">
-                                    <option value="">Semua Kecamatan</option>
+                        <!-- Filters (geographic first) -->
+                        <div class="row g-2">
+                            <div class="col-12 col-lg-6">
+                                <label class="form-label fw-semibold small mb-1"><i class="fas fa-map me-1 text-muted"></i>Kecamatan</label>
+                                <select class="form-select form-select-sm" id="filterKecamatan">
+                                    <option value="">Semua</option>
                                     @foreach($kecamatanList as $kec)
                                         <option value="{{ $kec }}">{{ $kec }}</option>
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-12 col-md-6">
-                                <label class="form-label fw-semibold small mb-1">Kelurahan</label>
-                                <select class="form-select" id="filterKelurahan" disabled>
-                                    <option value="">Pilih Kecamatan dulu</option>
+                            <div class="col-12 col-lg-6">
+                                <label class="form-label fw-semibold small mb-1"><i class="fas fa-building me-1 text-muted"></i>Kelurahan</label>
+                                <select class="form-select form-select-sm" id="filterKelurahan" disabled>
+                                    <option value="">Pilih Kecamatan</option>
                                 </select>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Search -->
-                <div class="card mb-3">
-                    <div class="card-header py-2">
-                        <h6 class="card-title mb-0"><i class="fas fa-search me-2"></i>Cari Usaha</h6>
-                    </div>
-                    <div class="card-body py-2">
-                        <div class="search-container">
-                            <input type="text" class="form-control" id="searchInput" placeholder="Ketik nama usaha..." autocomplete="off" inputmode="search">
+                        <!-- Search (after geographic filters) -->
+                        <div class="search-container mt-2">
+                            <input type="text" class="form-control" id="searchInput" placeholder="Cari nama usaha atau alamat..." autocomplete="off" inputmode="search">
                             <div class="search-loading d-none" id="searchLoading">
                                 <i class="fas fa-spinner fa-spin text-primary"></i>
                             </div>
@@ -357,49 +796,47 @@
                             @endif
                         </div>
 
-                        <!-- Form Section -->
+                        <!-- Form Section - Simplified -->
                         <form id="taggingForm">
                             <input type="hidden" id="businessId">
-                            <div class="row g-2 g-md-3">
-                                <div class="col-6 col-md-3">
-                                    <label class="form-label fw-semibold small mb-1">Latitude</label>
-                                    <input type="text" class="form-control form-control-sm" id="latitude" readonly placeholder="Klik peta">
+                            <div class="row g-2 g-md-3 align-items-end">
+                                <!-- Coordinates - Compact Display -->
+                                <div class="col-6 col-md-2">
+                                    <label class="form-label fw-semibold small mb-1"><i class="fas fa-crosshairs me-1 text-muted"></i>Lat</label>
+                                    <input type="text" class="form-control form-control-sm" id="latitude" readonly placeholder="—">
                                 </div>
-                                <div class="col-6 col-md-3">
-                                    <label class="form-label fw-semibold small mb-1">Longitude</label>
-                                    <input type="text" class="form-control form-control-sm" id="longitude" readonly placeholder="Klik peta">
+                                <div class="col-6 col-md-2">
+                                    <label class="form-label fw-semibold small mb-1"><i class="fas fa-crosshairs me-1 text-muted"></i>Long</label>
+                                    <input type="text" class="form-control form-control-sm" id="longitude" readonly placeholder="—">
                                 </div>
-                                <div class="col-12 col-md-3">
+                                <!-- Status - Prominent -->
+                                <div class="col-12 col-md-4">
                                     <label class="form-label fw-semibold small mb-1 label-required">Status Usaha</label>
-                                    <select class="form-select" id="status" required aria-describedby="statusHelp statusError">
-                                        <option value="">Pilih Status</option>
+                                    <select class="form-select" id="status" required>
+                                        <option value="">— Pilih Status —</option>
                                         <option value="aktif">✓ Aktif (Beroperasi)</option>
                                         <option value="tutup">✗ Tutup (Tidak Beroperasi)</option>
                                     </select>
-                                    <div class="form-text" id="statusHelp">Pilih status usaha (✓ Aktif atau ✗ Tutup) untuk mengaktifkan tombol Simpan.</div>
-                                    <div class="invalid-feedback" id="statusError">Status usaha wajib dipilih.</div>
                                 </div>
-                                <div class="col-12">
-                                    <div id="formGuidance" class="alert alert-warning py-2 px-3 small mb-2" role="alert" style="display:none;">
-                                        <i class="fas fa-info-circle me-1"></i>
-                                        <span id="formGuidanceText">Lengkapi data wajib sebelum menyimpan.</span>
-                                    </div>
-                                </div>
-                                <div class="col-12 d-flex align-items-end">
-                                    <div class="d-flex w-100 gap-2 flex-column flex-md-row flex-wrap form-actions">
-                                        <button type="button" class="btn btn-outline-secondary w-100" id="clearBtn">
-                                            <i class="fas fa-undo me-2"></i>Reset
+                                <!-- Action Buttons - Stacked on mobile, horizontal on md+ -->
+                                <div class="col-12 col-md-4">
+                                    <div class="d-grid gap-2 d-lg-flex flex-lg-row">
+                                        <button type="button" class="btn btn-outline-secondary btn-sm" id="clearBtn" title="Reset form">
+                                            <i class="fas fa-undo me-2"></i>Clear
                                         </button>
-                                        <button type="button" class="btn btn-danger w-100" id="deleteBtn">
+                                        <button type="button" class="btn btn-outline-danger btn-sm" id="deleteBtn" title="Hapus tagging">
                                             <i class="fas fa-trash me-2"></i>Delete
                                         </button>
-                                        <span class="d-inline-block w-100" id="saveBtnWrapper" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="top" title="Lengkapi data wajib sebelum menyimpan">
-                                            <button type="submit" class="btn btn-primary w-100" id="saveBtn" disabled>
-                                                <i class="fas fa-save me-2"></i>Simpan Data
-                                            </button>
-                                        </span>
+                                        <button type="submit" class="btn btn-primary flex-grow-1" id="saveBtn" disabled>
+                                            <i class="fas fa-save me-1"></i>Simpan
+                                        </button>
                                     </div>
                                 </div>
+                            </div>
+                            <!-- Guidance message (hidden by default) -->
+                            <div id="formGuidance" class="alert alert-warning py-2 px-3 small mt-2 mb-0" role="alert" style="display:none;">
+                                <i class="fas fa-info-circle me-1"></i>
+                                <span id="formGuidanceText">Pilih usaha terlebih dahulu, lalu tandai lokasi dan pilih status.</span>
                             </div>
                         </form>
                     </div>
@@ -529,7 +966,6 @@
         let lastPage = 1;
         let selectedBusiness = null;
         let searchTimeout = null;
-        let saveTooltip = null;
         let searchAbortController = null; // AbortController to cancel pending search requests
         let searchRequestId = 0; // Counter to track latest search request and ignore stale responses
 
@@ -565,14 +1001,8 @@
             }
         }
 
-        // Initialize map & tooltips
+        // Initialize map
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize tooltip for disabled save button wrapper
-            const saveBtnWrapper = document.getElementById('saveBtnWrapper');
-            if (saveBtnWrapper && window.bootstrap) {
-                saveTooltip = new bootstrap.Tooltip(saveBtnWrapper, { trigger: 'hover focus' });
-            }
-
             // Initialize map with touch support
             map = L.map('map', {
                 tap: true,
@@ -968,7 +1398,7 @@
 
         // Load stats
         function loadStats() {
-            fetch('{{ route("sbr.stats") }}')
+            fetch('{{ route("laksamana.stats") }}')
                 .then(r => r.json())
                 .then(data => {
                     document.getElementById('statTotal').textContent = data.total;
@@ -993,7 +1423,7 @@
                 return;
             }
 
-            fetch(`{{ url('sbr/kelurahan') }}/${encodeURIComponent(this.value)}`)
+            fetch(`{{ url('laksamana/kelurahan') }}/${encodeURIComponent(this.value)}`)
                 .then(r => r.json())
                 .then(data => {
                     kelurahanSelect.innerHTML = '<option value="">Semua Kelurahan</option>';
@@ -1053,7 +1483,7 @@
 
             document.getElementById('searchLoading').classList.remove('d-none');
 
-            fetch(`{{ route('sbr.search') }}?${params.toString()}`, {
+            fetch(`{{ route('laksamana.search') }}?${params.toString()}`, {
                 signal: searchAbortController.signal
             })
                 .then(r => r.json())
@@ -1153,7 +1583,7 @@
 
         // Select business
         function selectBusiness(id) {
-            fetch(`{{ url('sbr') }}/${id}`)
+            fetch(`{{ url('laksamana') }}/${id}`)
                 .then(r => r.json())
                 .then(data => {
                     selectedBusiness = data;
@@ -1212,19 +1642,17 @@
             const statusEl = document.getElementById('status');
             const businessEl = document.getElementById('businessId');
             const saveBtn = document.getElementById('saveBtn');
-            const saveBtnWrapper = document.getElementById('saveBtnWrapper');
             const guidanceBox = document.getElementById('formGuidance');
             const guidanceText = document.getElementById('formGuidanceText');
-            const statusHelp = document.getElementById('statusHelp');
 
             const hasLocation = latEl.value && lngEl.value;
             const hasStatus = statusEl.value;
             const hasBusiness = businessEl.value;
 
             const missing = [];
-            if (!hasBusiness) missing.push('Pilih usaha dari daftar di kiri');
-            if (!hasLocation) missing.push('Tandai lokasi pada peta');
-            if (!hasStatus) missing.push('Pilih Status Usaha: ✓ Aktif atau ✗ Tutup');
+            if (!hasBusiness) missing.push('Pilih usaha');
+            if (!hasLocation) missing.push('Tandai lokasi');
+            if (!hasStatus) missing.push('Pilih status');
 
             // Toggle save button
             saveBtn.disabled = missing.length > 0;
@@ -1232,27 +1660,18 @@
             // Status-specific UI
             if (!hasStatus) {
                 statusEl.classList.add('is-invalid');
-                if (statusHelp) statusHelp.style.display = 'block';
             } else {
                 statusEl.classList.remove('is-invalid');
-                if (statusHelp) statusHelp.style.display = 'none';
             }
 
-            // Guidance box
-            if (missing.length > 0) {
+            // Guidance box - simplified
+            if (missing.length > 0 && hasBusiness) {
                 if (guidanceBox && guidanceText) {
                     guidanceBox.style.display = 'block';
-                    guidanceText.innerHTML = 'Lengkapi sebelum menyimpan: ' + missing.map(m => `<span class="text-danger">${m}</span>`).join(' • ');
-                }
-                if (saveBtnWrapper) {
-                    const tip = 'Perlu dilengkapi: ' + missing.join(' • ');
-                    saveBtnWrapper.setAttribute('title', tip);
-                    saveBtnWrapper.setAttribute('data-bs-original-title', tip);
-                    if (saveTooltip) saveTooltip.enable();
+                    guidanceText.innerHTML = '<strong>Perlu:</strong> ' + missing.join(' • ');
                 }
             } else {
                 if (guidanceBox) guidanceBox.style.display = 'none';
-                if (saveTooltip) { saveTooltip.hide(); saveTooltip.disable(); }
             }
         }
 
@@ -1306,7 +1725,7 @@
                 btn.disabled = true;
                 btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Menghapus...';
 
-                fetch(`{{ url('sbr') }}/${id}/tagging`, {
+                fetch(`{{ url('laksamana') }}/${id}/tagging`, {
                     method: 'DELETE',
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
@@ -1370,7 +1789,7 @@
                 status: document.getElementById('status').value
             };
 
-            fetch(`{{ url('sbr') }}/${id}`, {
+            fetch(`{{ url('laksamana') }}/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

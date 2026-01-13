@@ -23,8 +23,8 @@ class SbrController extends Controller
     {
         // Get distinct kecamatan for filter dropdown
         $kecamatanList = SbrBusiness::getDistinctKecamatan();
-        
-        return view('sbr.index', compact('kecamatanList'));
+
+        return view('laksamana.index', compact('kecamatanList'));
     }
 
     /**
@@ -32,36 +32,62 @@ class SbrController extends Controller
      */
     public function search(Request $request)
     {
-        $query = SbrBusiness::query();
-        
-        // Apply filters
-        if ($request->filled('kecamatan')) {
-            $query->byKecamatan($request->kecamatan);
+        // Normalize and apply filters to a single base query
+        $kecamatan = trim((string) $request->input('kecamatan', ''));
+        $kelurahan = trim((string) $request->input('kelurahan', ''));
+        $status = (string) $request->input('status', '');
+        $search = trim((string) $request->input('search', ''));
+
+        $baseQuery = SbrBusiness::query();
+
+        if ($kecamatan !== '') {
+            $baseQuery->byKecamatan($kecamatan);
         }
-        
-        if ($request->filled('kelurahan')) {
-            $query->byKelurahan($request->kelurahan);
+
+        if ($kelurahan !== '') {
+            $baseQuery->byKelurahan($kelurahan);
         }
-        
-        if ($request->filled('status')) {
-            $query->byStatus($request->status);
+
+        if ($status !== '') {
+            $baseQuery->byStatus($status);
         }
-        
-        if ($request->filled('search')) {
-            $query->search($request->search);
+
+        if ($search !== '') {
+            $baseQuery->search($search);
         }
-        
+
         // Efficient pagination for large datasets
-        $perPage = $request->get('per_page', 20);
-        $businesses = $query->orderBy('nama_usaha')
-                           ->paginate($perPage);
-        
+        $perPage = (int) $request->get('per_page', 20);
+        $perPage = max(1, min($perPage, 100)); // Clamp between 1 and 100
+
+        // Compute accurate total from the filtered query
+        $total = (clone $baseQuery)->count();
+
+        // Determine requested and effective page indices
+        $requestedPage = (int) $request->get('page', 1);
+        $requestedPage = $requestedPage > 0 ? $requestedPage : 1;
+        $lastPage = max(1, (int) ceil($total / $perPage));
+        $effectivePage = min($requestedPage, $lastPage);
+
+        // Paginate using the clamped page number to ensure consistent items and counts
+        $businesses = (clone $baseQuery)
+            ->orderBy('nama_usaha')
+            ->paginate($perPage, ['*'], 'page', $effectivePage);
+
+        // Use paginator metadata for correctness
+        $currentPage = (int) $businesses->currentPage();
+        $lastPage = (int) $businesses->lastPage();
+        $from = $businesses->firstItem() ?? 0;
+        $to = $businesses->lastItem() ?? 0;
+
         return response()->json([
             'data' => $businesses->items(),
-            'current_page' => $businesses->currentPage(),
-            'last_page' => $businesses->lastPage(),
-            'total' => $businesses->total(),
-            'per_page' => $businesses->perPage()
+            'current_page' => $currentPage,
+            'last_page' => $lastPage,
+            'total' => $total,
+            'per_page' => $perPage,
+            'from' => $from,
+            'to' => $to,
         ]);
     }
 
@@ -79,7 +105,7 @@ class SbrController extends Controller
      */
     public function importPage()
     {
-        return view('sbr.import');
+        return view('laksamana.import');
     }
 
     /**
