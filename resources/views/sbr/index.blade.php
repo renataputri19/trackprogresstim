@@ -55,6 +55,9 @@
         .workflow-step.completed { background: #d1fae5; border-color: #10b981; color: #065f46; }
         .workflow-step.completed .step-number { background: #10b981; }
 
+        /* Label required indicator */
+        .label-required::after { content: ' *'; color: #dc3545; font-weight: 700; }
+
         /* Mobile-specific styles */
         @media (max-width: 991.98px) {
             .container-fluid { padding-left: 0.75rem; padding-right: 0.75rem; }
@@ -367,12 +370,20 @@
                                     <input type="text" class="form-control form-control-sm" id="longitude" readonly placeholder="Klik peta">
                                 </div>
                                 <div class="col-12 col-md-3">
-                                    <label class="form-label fw-semibold small mb-1">Status Usaha</label>
-                                    <select class="form-select" id="status" required>
+                                    <label class="form-label fw-semibold small mb-1 label-required">Status Usaha</label>
+                                    <select class="form-select" id="status" required aria-describedby="statusHelp statusError">
                                         <option value="">Pilih Status</option>
                                         <option value="aktif">✓ Aktif (Beroperasi)</option>
                                         <option value="tutup">✗ Tutup (Tidak Beroperasi)</option>
                                     </select>
+                                    <div class="form-text" id="statusHelp">Pilih status usaha (✓ Aktif atau ✗ Tutup) untuk mengaktifkan tombol Simpan.</div>
+                                    <div class="invalid-feedback" id="statusError">Status usaha wajib dipilih.</div>
+                                </div>
+                                <div class="col-12">
+                                    <div id="formGuidance" class="alert alert-warning py-2 px-3 small mb-2" role="alert" style="display:none;">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        <span id="formGuidanceText">Lengkapi data wajib sebelum menyimpan.</span>
+                                    </div>
                                 </div>
                                 <div class="col-12 d-flex align-items-end">
                                     <div class="d-flex w-100 gap-2 flex-column flex-md-row flex-wrap form-actions">
@@ -382,9 +393,11 @@
                                         <button type="button" class="btn btn-danger w-100" id="deleteBtn">
                                             <i class="fas fa-trash me-2"></i>Delete
                                         </button>
-                                        <button type="submit" class="btn btn-primary w-100" id="saveBtn" disabled>
-                                            <i class="fas fa-save me-2"></i>Simpan Data
-                                        </button>
+                                        <span class="d-inline-block w-100" id="saveBtnWrapper" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="top" title="Lengkapi data wajib sebelum menyimpan">
+                                            <button type="submit" class="btn btn-primary w-100" id="saveBtn" disabled>
+                                                <i class="fas fa-save me-2"></i>Simpan Data
+                                            </button>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -516,6 +529,7 @@
         let lastPage = 1;
         let selectedBusiness = null;
         let searchTimeout = null;
+        let saveTooltip = null;
 
         // Helper function to check if mobile
         function isMobile() {
@@ -549,8 +563,14 @@
             }
         }
 
-        // Initialize map
+        // Initialize map & tooltips
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize tooltip for disabled save button wrapper
+            const saveBtnWrapper = document.getElementById('saveBtnWrapper');
+            if (saveBtnWrapper && window.bootstrap) {
+                saveTooltip = new bootstrap.Tooltip(saveBtnWrapper, { trigger: 'hover focus' });
+            }
+
             // Initialize map with touch support
             map = L.map('map', {
                 tap: true,
@@ -1121,10 +1141,53 @@
 
         // Validate form
         function validateForm() {
-            const hasLocation = document.getElementById('latitude').value && document.getElementById('longitude').value;
-            const hasStatus = document.getElementById('status').value;
-            const hasBusiness = document.getElementById('businessId').value;
-            document.getElementById('saveBtn').disabled = !(hasLocation && hasStatus && hasBusiness);
+            const latEl = document.getElementById('latitude');
+            const lngEl = document.getElementById('longitude');
+            const statusEl = document.getElementById('status');
+            const businessEl = document.getElementById('businessId');
+            const saveBtn = document.getElementById('saveBtn');
+            const saveBtnWrapper = document.getElementById('saveBtnWrapper');
+            const guidanceBox = document.getElementById('formGuidance');
+            const guidanceText = document.getElementById('formGuidanceText');
+            const statusHelp = document.getElementById('statusHelp');
+
+            const hasLocation = latEl.value && lngEl.value;
+            const hasStatus = statusEl.value;
+            const hasBusiness = businessEl.value;
+
+            const missing = [];
+            if (!hasBusiness) missing.push('Pilih usaha dari daftar di kiri');
+            if (!hasLocation) missing.push('Tandai lokasi pada peta');
+            if (!hasStatus) missing.push('Pilih Status Usaha: ✓ Aktif atau ✗ Tutup');
+
+            // Toggle save button
+            saveBtn.disabled = missing.length > 0;
+
+            // Status-specific UI
+            if (!hasStatus) {
+                statusEl.classList.add('is-invalid');
+                if (statusHelp) statusHelp.style.display = 'block';
+            } else {
+                statusEl.classList.remove('is-invalid');
+                if (statusHelp) statusHelp.style.display = 'none';
+            }
+
+            // Guidance box
+            if (missing.length > 0) {
+                if (guidanceBox && guidanceText) {
+                    guidanceBox.style.display = 'block';
+                    guidanceText.innerHTML = 'Lengkapi sebelum menyimpan: ' + missing.map(m => `<span class="text-danger">${m}</span>`).join(' • ');
+                }
+                if (saveBtnWrapper) {
+                    const tip = 'Perlu dilengkapi: ' + missing.join(' • ');
+                    saveBtnWrapper.setAttribute('title', tip);
+                    saveBtnWrapper.setAttribute('data-bs-original-title', tip);
+                    if (saveTooltip) saveTooltip.enable();
+                }
+            } else {
+                if (guidanceBox) guidanceBox.style.display = 'none';
+                if (saveTooltip) { saveTooltip.hide(); saveTooltip.disable(); }
+            }
         }
 
         document.getElementById('status').addEventListener('change', validateForm);
