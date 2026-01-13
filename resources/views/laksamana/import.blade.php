@@ -15,6 +15,7 @@
             --primary-dark: #115e59;
             --secondary-color: #0d9488;
         }
+        html, body { width: 100%; max-width: 100%; overflow-x: hidden; }
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #f0fdfa 0%, #f8fafc 100%);
@@ -26,7 +27,16 @@
             box-shadow: 0 4px 20px rgba(15, 118, 110, 0.3);
             border-bottom: 3px solid var(--primary-light);
         }
-        .navbar-brand { color: white !important; font-weight: 700; font-size: 1.1rem; }
+        .navbar-brand {
+            color: white !important;
+            font-weight: 700;
+            font-size: 1.1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: calc(100% - 140px);
+            min-width: 0;
+        }
         @media (min-width: 768px) { .navbar-brand { font-size: 1.25rem; } }
         .card {
             border: none;
