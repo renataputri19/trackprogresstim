@@ -43,23 +43,60 @@ Route::get('/tagging', [BusinessTaggingController::class, 'index'])->name('busin
 Route::post('/business', [BusinessTaggingController::class, 'store'])->name('business.store');
 Route::get('/tagging/data', [BusinessTaggingController::class, 'list'])->name('business.list');
 
-// SBR (Survei Bisnis Registrasi) Routes
-Route::get('/sbr', [App\Http\Controllers\SbrController::class, 'index'])->name('sbr.index');
-Route::get('/sbr/search', [App\Http\Controllers\SbrController::class, 'search'])->name('sbr.search');
-Route::get('/sbr/stats', [App\Http\Controllers\SbrController::class, 'stats'])->name('sbr.stats');
-Route::get('/sbr/kelurahan/{kecamatan}', [App\Http\Controllers\SbrController::class, 'getKelurahan'])->name('sbr.kelurahan');
-Route::get('/sbr/{id}', [App\Http\Controllers\SbrController::class, 'show'])
+// LAKSAMANA (Lokasi dan Klasifikasi Sensus Manajemen Usaha) Routes
+Route::get('/laksamana', [App\Http\Controllers\SbrController::class, 'index'])->name('laksamana.index');
+Route::get('/laksamana/search', [App\Http\Controllers\SbrController::class, 'search'])->name('laksamana.search');
+Route::get('/laksamana/stats', [App\Http\Controllers\SbrController::class, 'stats'])->name('laksamana.stats');
+Route::get('/laksamana/kelurahan/{kecamatan}', [App\Http\Controllers\SbrController::class, 'getKelurahan'])->name('laksamana.kelurahan');
+Route::get('/laksamana/{id}', [App\Http\Controllers\SbrController::class, 'show'])
     ->whereNumber('id')
-    ->name('sbr.show');
-Route::put('/sbr/{id}', [App\Http\Controllers\SbrController::class, 'update'])->name('sbr.update');
-Route::delete('/sbr/{id}/tagging', [App\Http\Controllers\SbrController::class, 'clearTagging'])->name('sbr.clear');
+    ->name('laksamana.show');
+Route::put('/laksamana/{id}', [App\Http\Controllers\SbrController::class, 'update'])->name('laksamana.update');
+Route::delete('/laksamana/{id}/tagging', [App\Http\Controllers\SbrController::class, 'clearTagging'])->name('laksamana.clear');
 
 // Import-related routes require authentication
 Route::middleware(['auth'])->group(function () {
-    Route::get('/sbr/import', [App\Http\Controllers\SbrController::class, 'importPage'])->name('sbr.import.page');
-    Route::post('/sbr/import', [App\Http\Controllers\SbrController::class, 'import'])->name('sbr.import');
-    Route::post('/sbr/delete-all', [App\Http\Controllers\SbrController::class, 'deleteAll'])->name('sbr.delete.all');
-    Route::get('/sbr/import/status/{id}', [App\Http\Controllers\SbrController::class, 'importStatus'])->name('sbr.import.status');
+    Route::get('/laksamana/import', [App\Http\Controllers\SbrController::class, 'importPage'])->name('laksamana.import.page');
+    Route::post('/laksamana/import', [App\Http\Controllers\SbrController::class, 'import'])->name('laksamana.import');
+    Route::post('/laksamana/delete-all', [App\Http\Controllers\SbrController::class, 'deleteAll'])->name('laksamana.delete.all');
+    Route::get('/laksamana/import/status/{id}', [App\Http\Controllers\SbrController::class, 'importStatus'])->name('laksamana.import.status');
+});
+
+// Backward compatibility redirects: /sbr/* to /laksamana/*
+Route::get('/sbr', function () {
+    return redirect()->route('laksamana.index', request()->query());
+})->name('sbr.index');
+Route::get('/sbr/search', function () {
+    return redirect()->route('laksamana.search', request()->query());
+})->name('sbr.search');
+Route::get('/sbr/stats', function () {
+    return redirect()->route('laksamana.stats');
+})->name('sbr.stats');
+Route::get('/sbr/kelurahan/{kecamatan}', function ($kecamatan) {
+    return redirect()->route('laksamana.kelurahan', ['kecamatan' => $kecamatan]);
+})->name('sbr.kelurahan');
+Route::get('/sbr/{id}', function ($id) {
+    return redirect()->route('laksamana.show', ['id' => $id]);
+})->whereNumber('id')->name('sbr.show');
+Route::put('/sbr/{id}', function ($id) {
+    return redirect()->route('laksamana.update', ['id' => $id]);
+})->name('sbr.update');
+Route::delete('/sbr/{id}/tagging', function ($id) {
+    return redirect()->route('laksamana.clear', ['id' => $id]);
+})->name('sbr.clear');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/sbr/import', function () {
+        return redirect()->route('laksamana.import.page');
+    })->name('sbr.import.page');
+    Route::post('/sbr/import', function () {
+        return redirect()->route('laksamana.import');
+    })->name('sbr.import');
+    Route::post('/sbr/delete-all', function () {
+        return redirect()->route('laksamana.delete.all');
+    })->name('sbr.delete.all');
+    Route::get('/sbr/import/status/{id}', function ($id) {
+        return redirect()->route('laksamana.import.status', ['id' => $id]);
+    })->name('sbr.import.status');
 });
 
 // Default route - using the new homepage
