@@ -13,7 +13,9 @@
         :root { --primary-color: #2563eb; --secondary-color: #1e40af; }
         body { background-color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; }
         .navbar { background-color: var(--primary-color); padding: 0.75rem 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .navbar-brand { color: white !important; font-weight: 600; font-size: 1.25rem; }
+        .navbar-brand { color: white !important; font-weight: 700; font-size: 1.25rem; letter-spacing: 0.2px; }
+        .nav-actions { display: flex; align-items: center; gap: 0.5rem; }
+        .navbar .btn { border-radius: 9999px; padding: 0.5rem 0.9rem; font-weight: 600; }
         .card { border: none; border-radius: 12px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
         .card-header { background-color: white; border-bottom: 1px solid #e5e7eb; padding: 0.875rem 1rem; border-radius: 12px 12px 0 0 !important; }
         .card-title { color: var(--primary-color); font-weight: 600; margin: 0; font-size: 1rem; }
@@ -38,6 +40,10 @@
         .loading-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.8); display: flex; align-items: center; justify-content: center; z-index: 1000; }
         .search-container { position: relative; }
         .search-loading { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); }
+
+        /* Form action buttons: avoid cramping and overflow */
+        .form-actions { gap: 0.5rem; }
+        .form-actions .btn { min-width: 160px; }
 
         /* Utility: robust text wrapping for long IDs, addresses, and tokens */
         .text-wrap-break { white-space: normal !important; word-break: break-word !important; overflow-wrap: anywhere !important; }
@@ -164,10 +170,12 @@
                 <span class="d-none d-md-inline">SBR - Survei Bisnis Registrasi</span>
                 <span class="d-md-none">SBR Tagging</span>
             </a>
-            <div class="d-flex gap-2">
+            <div class="nav-actions">
+                @auth
                 <a href="{{ route('sbr.import.page') }}" class="btn btn-light btn-sm">
                     <i class="fas fa-file-excel me-1"></i><span class="d-none d-sm-inline">Import Excel</span><span class="d-sm-none">Import</span>
                 </a>
+                @endauth
             </div>
         </div>
     </nav>
@@ -216,7 +224,7 @@
                     </div>
                     <div class="card-body">
                         <div class="row g-2 g-md-3">
-                            <div class="col-6 col-md-12 mb-md-2">
+                            <div class="col-12 col-md-6 mb-md-2">
                                 <label class="form-label fw-semibold small mb-1">Kecamatan</label>
                                 <select class="form-select" id="filterKecamatan">
                                     <option value="">Semua Kecamatan</option>
@@ -225,7 +233,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-6 col-md-12">
+                            <div class="col-12 col-md-6">
                                 <label class="form-label fw-semibold small mb-1">Kelurahan</label>
                                 <select class="form-select" id="filterKelurahan" disabled>
                                     <option value="">Pilih Kecamatan dulu</option>
@@ -325,7 +333,7 @@
                                     <span class="d-none d-sm-inline">Klik pada peta untuk menandai lokasi</span>
                                     <span class="d-sm-none">Tap peta untuk tandai lokasi</span>
                                 </label>
-                                <div class="btn-group btn-group-sm w-100 w-md-auto" style="max-width: 280px;">
+                                <div class="d-flex flex-column flex-md-row w-100 w-md-auto gap-2" style="max-width: 320px;">
                                     <button type="button" id="getLocationBtn" class="btn btn-outline-primary flex-fill" title="Gunakan GPS untuk mendapatkan lokasi">
                                         <i class="fas fa-location-arrow me-1"></i><span class="d-none d-sm-inline">Lokasi Saya</span><span class="d-sm-none">GPS</span>
                                     </button>
@@ -366,15 +374,15 @@
                                         <option value="tutup">✗ Tutup (Tidak Beroperasi)</option>
                                     </select>
                                 </div>
-                                <div class="col-12 col-md-3 d-flex align-items-end">
-                                    <div class="d-flex w-100 gap-2 flex-column flex-md-row">
-                                        <button type="button" class="btn btn-outline-secondary w-100 w-md-50" id="clearBtn">
+                                <div class="col-12 d-flex align-items-end">
+                                    <div class="d-flex w-100 gap-2 flex-column flex-md-row flex-wrap form-actions">
+                                        <button type="button" class="btn btn-outline-secondary w-100" id="clearBtn">
                                             <i class="fas fa-undo me-2"></i>Reset
                                         </button>
-                                        <button type="button" class="btn btn-danger w-100 w-md-50" id="deleteBtn">
+                                        <button type="button" class="btn btn-danger w-100" id="deleteBtn">
                                             <i class="fas fa-trash me-2"></i>Delete
                                         </button>
-                                        <button type="submit" class="btn btn-primary w-100 w-md-50" id="saveBtn" disabled>
+                                        <button type="submit" class="btn btn-primary w-100" id="saveBtn" disabled>
                                             <i class="fas fa-save me-2"></i>Simpan Data
                                         </button>
                                     </div>
