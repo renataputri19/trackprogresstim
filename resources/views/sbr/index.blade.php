@@ -12,50 +12,167 @@
     <style>
         :root { --primary-color: #2563eb; --secondary-color: #1e40af; }
         body { background-color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; }
-        .navbar { background-color: var(--primary-color); padding: 1rem 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .navbar-brand { color: white !important; font-weight: 600; font-size: 1.5rem; }
+        .navbar { background-color: var(--primary-color); padding: 0.75rem 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .navbar-brand { color: white !important; font-weight: 600; font-size: 1.25rem; }
         .card { border: none; border-radius: 12px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
-        .card-header { background-color: white; border-bottom: 1px solid #e5e7eb; padding: 1rem 1.5rem; border-radius: 12px 12px 0 0 !important; }
-        .card-title { color: var(--primary-color); font-weight: 600; margin: 0; }
-        #map { height: 400px; width: 100%; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .form-control, .form-select { border-radius: 8px; border: 1px solid #e5e7eb; padding: 0.75rem 1rem; }
+        .card-header { background-color: white; border-bottom: 1px solid #e5e7eb; padding: 0.875rem 1rem; border-radius: 12px 12px 0 0 !important; }
+        .card-title { color: var(--primary-color); font-weight: 600; margin: 0; font-size: 1rem; }
+        #map { height: 350px; width: 100%; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); touch-action: pan-x pan-y; }
+        .form-control, .form-select { border-radius: 8px; border: 1px solid #e5e7eb; padding: 0.75rem 1rem; font-size: 16px; /* Prevents zoom on iOS */ }
         .form-control:focus, .form-select:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
-        .btn { padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 500; }
+        .btn { padding: 0.75rem 1.25rem; border-radius: 8px; font-weight: 500; min-height: 44px; /* Touch-friendly min size */ }
         .btn-primary { background-color: var(--primary-color); border-color: var(--primary-color); }
         .btn-primary:hover { background-color: var(--secondary-color); border-color: var(--secondary-color); }
-        .business-list { max-height: 400px; overflow-y: auto; }
-        .business-item { padding: 1rem; border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 0.5rem; cursor: pointer; transition: all 0.2s; }
+        .business-list { max-height: 350px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .business-item { padding: 0.875rem; border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 0.5rem; cursor: pointer; transition: all 0.2s; min-height: 60px; }
         .business-item:hover { border-color: var(--primary-color); background-color: #f0f9ff; }
-        .business-item.selected { border-color: var(--primary-color); background-color: #dbeafe; }
+        .business-item.selected { border-color: var(--primary-color); background-color: #dbeafe; border-width: 2px; }
         .business-item.tagged { border-left: 4px solid #10b981; }
         .business-item.untagged { border-left: 4px solid #f59e0b; }
-        .status-badge { font-size: 0.75rem; padding: 0.25rem 0.5rem; border-radius: 4px; }
+        .status-badge { font-size: 0.7rem; padding: 0.25rem 0.5rem; border-radius: 4px; white-space: nowrap; }
         .status-aktif { background-color: #d1fae5; color: #065f46; }
         .status-tutup { background-color: #fee2e2; color: #991b1b; }
         .location-accuracy { font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem; }
-        .stats-card { background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; }
-        .stats-number { font-size: 2rem; font-weight: 700; }
+        .stats-card { background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white; border-radius: 12px; padding: 1rem; margin-bottom: 0.75rem; }
+        .stats-number { font-size: 1.5rem; font-weight: 700; }
         .loading-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.8); display: flex; align-items: center; justify-content: center; z-index: 1000; }
         .search-container { position: relative; }
         .search-loading { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); }
-        @media (max-width: 768px) { #map { height: 300px; } }
+
+        /* Utility: robust text wrapping for long IDs, addresses, and tokens */
+        .text-wrap-break { white-space: normal !important; word-break: break-word !important; overflow-wrap: anywhere !important; }
+
+        /* Workflow step indicator */
+        .workflow-step { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.75rem; border-radius: 8px; background: #f0f9ff; border: 1px solid #bfdbfe; margin-bottom: 0.75rem; font-size: 0.875rem; color: #1e40af; }
+        .workflow-step .step-number { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; background: var(--primary-color); color: white; border-radius: 50%; font-size: 0.75rem; font-weight: 600; flex-shrink: 0; }
+        .workflow-step.active { background: #dbeafe; border-color: var(--primary-color); }
+        .workflow-step.completed { background: #d1fae5; border-color: #10b981; color: #065f46; }
+        .workflow-step.completed .step-number { background: #10b981; }
+
+        /* Mobile-specific styles */
+        @media (max-width: 991.98px) {
+            .container-fluid { padding-left: 0.75rem; padding-right: 0.75rem; }
+            .my-4 { margin-top: 0.75rem !important; margin-bottom: 0.75rem !important; }
+            .card-body { padding: 0.875rem; }
+            .card-header { padding: 0.75rem 0.875rem; }
+            .stats-card { padding: 0.875rem; }
+            .stats-number { font-size: 1.35rem; }
+            .stats-card small { font-size: 0.7rem; }
+
+            /* Reorder columns for mobile workflow */
+            .row.mobile-reorder { flex-direction: column; }
+            .mobile-reorder > .col-lg-4 { order: 1; }
+            .mobile-reorder > .col-lg-8 { order: 2; }
+
+            /* Business list adjustments */
+            .business-list { max-height: 280px; }
+            .business-item { padding: 0.75rem; }
+            .business-item .fw-bold { font-size: 0.9rem; word-break: break-word; }
+            .business-item small { font-size: 0.75rem; }
+
+            /* Map container adjustments */
+            #map { height: 280px; }
+
+            /* Form adjustments */
+            .form-label { font-size: 0.875rem; }
+
+            /* Button group stacking on small screens */
+            .btn-group-mobile { display: flex; flex-direction: column; gap: 0.5rem; }
+            .btn-group-mobile .btn { width: 100%; }
+        }
+
+        @media (max-width: 767.98px) {
+            .navbar { padding: 0.5rem 0; }
+            .navbar-brand { font-size: 1rem; }
+            .navbar-brand i { display: none; }
+            .navbar .btn-sm { padding: 0.375rem 0.75rem; font-size: 0.75rem; }
+
+            #map { height: 250px; margin-bottom: 0.5rem; }
+            .stats-number { font-size: 1.2rem; }
+            .business-list { max-height: 240px; }
+
+            /* Stack map action buttons */
+            .map-actions { flex-direction: column; gap: 0.5rem; }
+            .map-actions .btn-group { width: 100%; }
+            .map-actions .btn-group .btn { flex: 1; }
+
+            /* Compact alert */
+            .alert { padding: 0.625rem 0.875rem; font-size: 0.875rem; }
+            .alert h6 { font-size: 0.9rem; }
+
+            /* Form section stacking */
+            .form-row-mobile { flex-direction: column; }
+            .form-row-mobile > div { margin-bottom: 1rem; }
+
+            /* Pagination mobile */
+            .pagination-mobile { gap: 0.25rem; }
+            .pagination-mobile .btn { padding: 0.5rem 0.75rem; font-size: 0.75rem; }
+            .pagination-mobile .text-muted { font-size: 0.75rem; }
+        }
+
+        @media (max-width: 575.98px) {
+            .container-fluid { padding-left: 0.5rem; padding-right: 0.5rem; }
+            .card { border-radius: 10px; }
+            .card-header { border-radius: 10px 10px 0 0 !important; }
+            .card-title { font-size: 0.9rem; }
+            .stats-card { border-radius: 10px; padding: 0.75rem; }
+            .stats-number { font-size: 1.1rem; }
+
+            #map { height: 220px; border-radius: 6px; }
+            .business-list { max-height: 200px; }
+            .business-item { padding: 0.625rem; border-radius: 6px; }
+
+            .btn { padding: 0.625rem 1rem; font-size: 0.875rem; }
+            .btn-sm { padding: 0.5rem 0.75rem; font-size: 0.75rem; }
+
+            /* Selected business info compact */
+            #selectedBusinessInfo { padding: 0.5rem 0.75rem !important; }
+            #selectedBusinessInfo h6 { font-size: 0.85rem; word-break: break-word; }
+            #selectedBusinessInfo small { font-size: 0.7rem; }
+
+            /* Workflow step compact */
+            .workflow-step { padding: 0.375rem 0.5rem; font-size: 0.8rem; }
+            .workflow-step .step-number { width: 20px; height: 20px; font-size: 0.65rem; }
+        }
+
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .business-item { padding: 1rem 0.875rem; }
+            .business-item:active { background-color: #dbeafe; border-color: var(--primary-color); }
+            .btn:active { transform: scale(0.98); }
+
+            /* Larger touch targets */
+            .form-select, .form-control { min-height: 48px; }
+            .btn { min-height: 48px; }
+            .btn-sm { min-height: 40px; }
+        }
+
+        /* Landscape phone optimization */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .business-list { max-height: 150px; }
+            #map { height: 180px; }
+            .stats-card { padding: 0.5rem; }
+            .stats-number { font-size: 1rem; }
+        }
     </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{{ route('sbr.index') }}">
-                <i class="fas fa-map-marker-alt me-2"></i>SBR - Survei Bisnis Registrasi
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <a class="navbar-brand d-flex align-items-center" href="{{ route('sbr.index') }}">
+                <i class="fas fa-map-marker-alt me-2 d-none d-sm-inline"></i>
+                <span class="d-none d-md-inline">SBR - Survei Bisnis Registrasi</span>
+                <span class="d-md-none">SBR Tagging</span>
             </a>
             <div class="d-flex gap-2">
                 <a href="{{ route('sbr.import.page') }}" class="btn btn-light btn-sm">
-                    <i class="fas fa-file-excel me-1"></i>Import Excel
+                    <i class="fas fa-file-excel me-1"></i><span class="d-none d-sm-inline">Import Excel</span><span class="d-sm-none">Import</span>
                 </a>
             </div>
         </div>
     </nav>
 
-    <div class="container-fluid my-4">
+    <div class="container-fluid my-3 my-md-4">
         @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
@@ -63,12 +180,20 @@
             </div>
         @endif
 
-        <div class="row">
+        <!-- Mobile Workflow Guide - Only visible on mobile -->
+        <div class="d-lg-none mb-3">
+            <div class="workflow-step" id="step1Indicator">
+                <span class="step-number">1</span>
+                <span>Pilih usaha dari daftar di bawah</span>
+            </div>
+        </div>
+
+        <div class="row mobile-reorder">
             <!-- Left Panel: Filters & Search -->
-            <div class="col-lg-4 mb-4">
+            <div class="col-lg-4 mb-3 mb-lg-4">
                 <!-- Stats -->
                 <div class="stats-card">
-                    <div class="row text-center">
+                    <div class="row text-center g-0">
                         <div class="col-4">
                             <div class="stats-number" id="statTotal">0</div>
                             <small>Total</small>
@@ -90,32 +215,34 @@
                         <h6 class="card-title mb-0"><i class="fas fa-filter me-2"></i>Filter</h6>
                     </div>
                     <div class="card-body">
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Kecamatan</label>
-                            <select class="form-select" id="filterKecamatan">
-                                <option value="">Semua Kecamatan</option>
-                                @foreach($kecamatanList as $kec)
-                                    <option value="{{ $kec }}">{{ $kec }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Kelurahan</label>
-                            <select class="form-select" id="filterKelurahan" disabled>
-                                <option value="">Pilih Kecamatan dulu</option>
-                            </select>
+                        <div class="row g-2 g-md-3">
+                            <div class="col-6 col-md-12 mb-md-2">
+                                <label class="form-label fw-semibold small mb-1">Kecamatan</label>
+                                <select class="form-select" id="filterKecamatan">
+                                    <option value="">Semua Kecamatan</option>
+                                    @foreach($kecamatanList as $kec)
+                                        <option value="{{ $kec }}">{{ $kec }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-6 col-md-12">
+                                <label class="form-label fw-semibold small mb-1">Kelurahan</label>
+                                <select class="form-select" id="filterKelurahan" disabled>
+                                    <option value="">Pilih Kecamatan dulu</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Search -->
                 <div class="card mb-3">
-                    <div class="card-header">
+                    <div class="card-header py-2">
                         <h6 class="card-title mb-0"><i class="fas fa-search me-2"></i>Cari Usaha</h6>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body py-2">
                         <div class="search-container">
-                            <input type="text" class="form-control" id="searchInput" placeholder="Ketik nama usaha...">
+                            <input type="text" class="form-control" id="searchInput" placeholder="Ketik nama usaha..." autocomplete="off" inputmode="search">
                             <div class="search-loading d-none" id="searchLoading">
                                 <i class="fas fa-spinner fa-spin text-primary"></i>
                             </div>
@@ -125,24 +252,27 @@
 
                 <!-- Business List -->
                 <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
+                    <div class="card-header d-flex justify-content-between align-items-center py-2">
                         <h6 class="card-title mb-0"><i class="fas fa-list me-2"></i>Daftar Usaha</h6>
-                        <small class="text-muted" id="resultCount">0 hasil</small>
+                        <span class="badge bg-primary" id="resultCount">0 hasil</span>
                     </div>
                     <div class="card-body p-2">
                         <div class="business-list" id="businessList">
                             <div class="text-center text-muted py-4">
-                                <i class="fas fa-info-circle me-2"></i>Pilih filter untuk menampilkan data
+                                <i class="fas fa-hand-pointer me-2 d-none d-lg-inline"></i>
+                                <i class="fas fa-hand-point-down me-2 d-lg-none"></i>
+                                <span class="d-lg-none">Pilih kecamatan untuk melihat daftar usaha</span>
+                                <span class="d-none d-lg-inline">Pilih filter untuk menampilkan data</span>
                             </div>
                         </div>
                         <!-- Pagination -->
-                        <div class="d-flex justify-content-between align-items-center mt-3 px-2" id="pagination" style="display: none !important;">
+                        <div class="d-flex justify-content-between align-items-center mt-2 px-1 pagination-mobile" id="pagination" style="display: none !important;">
                             <button class="btn btn-sm btn-outline-primary" id="prevPage" disabled>
-                                <i class="fas fa-chevron-left"></i> Prev
+                                <i class="fas fa-chevron-left"></i><span class="d-none d-sm-inline ms-1">Prev</span>
                             </button>
-                            <span class="text-muted" id="pageInfo">Page 1</span>
+                            <span class="text-muted small" id="pageInfo">Hal 1</span>
                             <button class="btn btn-sm btn-outline-primary" id="nextPage" disabled>
-                                Next <i class="fas fa-chevron-right"></i>
+                                <span class="d-none d-sm-inline me-1">Next</span><i class="fas fa-chevron-right"></i>
                             </button>
                         </div>
                     </div>
@@ -151,78 +281,106 @@
 
             <!-- Right Panel: Map & Form -->
             <div class="col-lg-8">
+                <!-- Mobile Workflow Step 2 - Shown when business is selected -->
+                <div class="d-lg-none mb-2" id="step2Container" style="display: none !important;">
+                    <div class="workflow-step active" id="step2Indicator">
+                        <span class="step-number">2</span>
+                        <span>Tandai lokasi di peta & pilih status</span>
+                    </div>
+                </div>
+
                 <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title"><i class="fas fa-map-marked-alt me-2"></i>Tagging Lokasi</h5>
+                    <div class="card-header py-2">
+                        <h6 class="card-title mb-0"><i class="fas fa-map-marked-alt me-2"></i>Tagging Lokasi</h6>
                     </div>
                     <div class="card-body">
                         <!-- Selected Business Info -->
-                        <div class="alert alert-info mb-3" id="selectedBusinessInfo" style="display: none;">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div>
-                                    <h6 class="mb-1 fw-bold" id="selectedBusinessName">-</h6>
-                                    <small class="text-muted">
+                        <div class="alert alert-info mb-3 py-2" id="selectedBusinessInfo" style="display: none;">
+                            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start gap-2">
+                                <div class="flex-grow-1" style="min-width: 0;">
+                                    <h6 class="mb-1 fw-bold text-wrap-break" id="selectedBusinessName" style="max-width: 100%;">-</h6>
+                                    <small class="text-muted d-block text-wrap-break">
                                         <i class="fas fa-map-marker-alt me-1"></i>
                                         <span id="selectedBusinessLocation">-</span>
+                                    </small>
+                                    <small class="text-muted d-block text-wrap-break">
+                                        <i class="fas fa-id-card me-1"></i>
+                                        <span id="selectedBusinessIdsbr">ID SBR: -</span>
+                                    </small>
+                                    <small class="text-muted d-block text-wrap-break">
+                                        <i class="fas fa-home me-1"></i>
+                                        <span id="selectedBusinessAlamat">Alamat: -</span>
                                     </small>
                                 </div>
                                 <span class="status-badge" id="selectedBusinessStatus"></span>
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-8">
-                                <!-- Map -->
-                                <div class="mb-3">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <label class="form-label fw-semibold mb-0">Klik pada peta untuk menandai lokasi</label>
-                                        <div class="btn-group btn-group-sm">
-                                            <button type="button" id="getLocationBtn" class="btn btn-outline-primary" title="Gunakan GPS untuk mendapatkan lokasi">
-                                                <i class="fas fa-location-arrow me-1"></i>Lokasi Saya
-                                            </button>
-                                            <button type="button" id="manualInputBtn" class="btn btn-outline-secondary" title="Masukkan koordinat secara manual">
-                                                <i class="fas fa-keyboard me-1"></i>Manual
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div id="map"></div>
-                                    <div class="location-accuracy" id="locationAccuracy"></div>
-                                    <!-- Location tips for HTTP users -->
-                                    @if(!request()->secure() && !in_array(request()->getHost(), ['localhost', '127.0.0.1']))
-                                    <div class="alert alert-warning mt-2 py-2 px-3 small">
-                                        <i class="fas fa-exclamation-triangle me-1"></i>
-                                        <strong>Tips:</strong> Untuk menggunakan GPS, akses halaman ini melalui HTTPS.
-                                        Alternatif: klik langsung pada peta atau gunakan tombol "Manual".
-                                    </div>
-                                    @endif
+                        <!-- Map Section -->
+                        <div class="mb-3">
+                            <!-- Map Instructions & Actions -->
+                            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 mb-2 map-actions">
+                                <label class="form-label fw-semibold mb-0 small">
+                                    <i class="fas fa-hand-pointer me-1 d-none d-md-inline"></i>
+                                    <span class="d-none d-sm-inline">Klik pada peta untuk menandai lokasi</span>
+                                    <span class="d-sm-none">Tap peta untuk tandai lokasi</span>
+                                </label>
+                                <div class="btn-group btn-group-sm w-100 w-md-auto" style="max-width: 280px;">
+                                    <button type="button" id="getLocationBtn" class="btn btn-outline-primary flex-fill" title="Gunakan GPS untuk mendapatkan lokasi">
+                                        <i class="fas fa-location-arrow me-1"></i><span class="d-none d-sm-inline">Lokasi Saya</span><span class="d-sm-none">GPS</span>
+                                    </button>
+                                    <button type="button" id="manualInputBtn" class="btn btn-outline-secondary flex-fill" title="Masukkan koordinat secara manual">
+                                        <i class="fas fa-keyboard me-1"></i>Manual
+                                    </button>
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <!-- Form -->
-                                <form id="taggingForm">
-                                    <input type="hidden" id="businessId">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-semibold">Latitude</label>
-                                        <input type="text" class="form-control" id="latitude" readonly placeholder="Klik peta">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label fw-semibold">Longitude</label>
-                                        <input type="text" class="form-control" id="longitude" readonly placeholder="Klik peta">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label fw-semibold">Status Usaha</label>
-                                        <select class="form-select" id="status" required>
-                                            <option value="">Pilih Status</option>
-                                            <option value="aktif">Aktif</option>
-                                            <option value="tutup">Tutup</option>
-                                        </select>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary w-100" id="saveBtn" disabled>
-                                        <i class="fas fa-save me-2"></i>Simpan Data
-                                    </button>
-                                </form>
+                            <div id="map"></div>
+                            <div class="location-accuracy small" id="locationAccuracy"></div>
+                            <!-- Location tips for HTTP users -->
+                            @if(!request()->secure() && !in_array(request()->getHost(), ['localhost', '127.0.0.1']))
+                            <div class="alert alert-warning mt-2 py-2 px-3 small mb-0">
+                                <i class="fas fa-exclamation-triangle me-1"></i>
+                                <span class="d-none d-sm-inline"><strong>Tips:</strong> Untuk menggunakan GPS, akses halaman ini melalui HTTPS. Alternatif: klik langsung pada peta atau gunakan tombol "Manual".</span>
+                                <span class="d-sm-none"><strong>Tips:</strong> Untuk GPS, gunakan HTTPS. Atau tap peta langsung.</span>
                             </div>
+                            @endif
                         </div>
+
+                        <!-- Form Section -->
+                        <form id="taggingForm">
+                            <input type="hidden" id="businessId">
+                            <div class="row g-2 g-md-3">
+                                <div class="col-6 col-md-3">
+                                    <label class="form-label fw-semibold small mb-1">Latitude</label>
+                                    <input type="text" class="form-control form-control-sm" id="latitude" readonly placeholder="Klik peta">
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <label class="form-label fw-semibold small mb-1">Longitude</label>
+                                    <input type="text" class="form-control form-control-sm" id="longitude" readonly placeholder="Klik peta">
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <label class="form-label fw-semibold small mb-1">Status Usaha</label>
+                                    <select class="form-select" id="status" required>
+                                        <option value="">Pilih Status</option>
+                                        <option value="aktif">✓ Aktif (Beroperasi)</option>
+                                        <option value="tutup">✗ Tutup (Tidak Beroperasi)</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-3 d-flex align-items-end">
+                                    <div class="d-flex w-100 gap-2 flex-column flex-md-row">
+                                        <button type="button" class="btn btn-outline-secondary w-100 w-md-50" id="clearBtn">
+                                            <i class="fas fa-undo me-2"></i>Reset
+                                        </button>
+                                        <button type="button" class="btn btn-danger w-100 w-md-50" id="deleteBtn">
+                                            <i class="fas fa-trash me-2"></i>Delete
+                                        </button>
+                                        <button type="submit" class="btn btn-primary w-100 w-md-50" id="saveBtn" disabled>
+                                            <i class="fas fa-save me-2"></i>Simpan Data
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -231,102 +389,107 @@
 
     <!-- Manual Coordinate Input Modal -->
     <div class="modal fade" id="manualCoordinateModal" tabindex="-1" aria-labelledby="manualCoordinateModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
             <div class="modal-content" style="border: none; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.15);">
-                <div class="modal-header" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); border-radius: 12px 12px 0 0; padding: 1.25rem 1.5rem;">
-                    <h5 class="modal-title text-white" id="manualCoordinateModalLabel">
+                <div class="modal-header" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); border-radius: 12px 12px 0 0; padding: 1rem;">
+                    <h6 class="modal-title text-white" id="manualCoordinateModalLabel">
                         <i class="fas fa-map-pin me-2"></i>Input Koordinat Manual
-                    </h5>
+                    </h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body" style="padding: 1.5rem;">
-                    <!-- Instructions Card -->
-                    <div class="alert alert-info border-0" style="background: linear-gradient(135deg, #e0f2fe, #f0f9ff); border-radius: 10px; padding: 1rem;">
-                        <h6 class="fw-bold mb-2" style="color: var(--primary-color);">
-                            <i class="fas fa-lightbulb me-2"></i>Cara Mendapatkan Koordinat dari Google Maps:
-                        </h6>
-                        <ol class="mb-0 small" style="padding-left: 1.25rem; color: #1e40af;">
-                            <li>Buka <strong>Google Maps</strong> di browser atau aplikasi</li>
-                            <li>Cari lokasi usaha yang akan ditandai</li>
-                            <li>Klik kanan pada lokasi (atau tekan lama di HP)</li>
-                            <li>Koordinat akan muncul di popup bawah</li>
-                            <li>Salin dan tempel ke form di bawah</li>
-                        </ol>
+                <div class="modal-body" style="padding: 1rem;">
+                    <!-- Instructions Card - Collapsible on mobile -->
+                    <div class="alert alert-info border-0 mb-3" style="background: linear-gradient(135deg, #e0f2fe, #f0f9ff); border-radius: 10px; padding: 0.75rem;">
+                        <div class="d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#instructionsCollapse" role="button" style="cursor: pointer;">
+                            <h6 class="fw-bold mb-0 small" style="color: var(--primary-color);">
+                                <i class="fas fa-lightbulb me-2"></i>Cara Mendapatkan Koordinat
+                            </h6>
+                            <i class="fas fa-chevron-down d-sm-none text-primary"></i>
+                        </div>
+                        <div class="collapse show" id="instructionsCollapse">
+                            <ol class="mb-0 small mt-2" style="padding-left: 1.25rem; color: #1e40af;">
+                                <li>Buka <strong>Google Maps</strong></li>
+                                <li>Cari lokasi usaha</li>
+                                <li class="d-none d-sm-list-item">Klik kanan pada lokasi (atau tekan lama di HP)</li>
+                                <li class="d-sm-none">Tekan lama pada lokasi</li>
+                                <li>Salin koordinat ke form</li>
+                            </ol>
+                        </div>
                     </div>
 
                     <!-- Coordinate Input Form -->
                     <form id="manualCoordinateForm">
-                        <div class="mb-3">
-                            <label for="manualLatInput" class="form-label fw-semibold">
-                                <i class="fas fa-arrows-alt-v me-1 text-primary"></i>Latitude
-                            </label>
-                            <input type="text"
-                                   class="form-control form-control-lg"
-                                   id="manualLatInput"
-                                   placeholder="1.04404846"
-                                   maxlength="10"
-                                   pattern="^-?\d{1,2}\.\d{6,8}$"
-                                   autocomplete="off"
-                                   style="font-family: 'Consolas', 'Monaco', monospace; font-size: 1.1rem; letter-spacing: 0.5px;">
-                            <div class="form-text">
-                                <span class="text-muted">Format: </span>
-                                <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">1.04404846</code>
-                                <span class="text-muted"> (maks 10 karakter, 6-8 desimal)</span>
+                        <div class="row g-2 g-sm-3">
+                            <div class="col-12 col-sm-6">
+                                <label for="manualLatInput" class="form-label fw-semibold small mb-1">
+                                    <i class="fas fa-arrows-alt-v me-1 text-primary"></i>Latitude
+                                </label>
+                                <input type="text"
+                                       class="form-control"
+                                       id="manualLatInput"
+                                       placeholder="1.04404846"
+                                       maxlength="10"
+                                       pattern="^-?\d{1,2}\.\d{6,8}$"
+                                       autocomplete="off"
+                                       inputmode="decimal"
+                                       style="font-family: 'Consolas', 'Monaco', monospace; font-size: 1rem;">
+                                <div class="form-text small d-none d-sm-block">
+                                    Format: <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px;">1.04404846</code>
+                                </div>
+                                <div class="invalid-feedback" id="latitudeError"></div>
                             </div>
-                            <div class="invalid-feedback" id="latitudeError"></div>
-                        </div>
 
-                        <div class="mb-4">
-                            <label for="manualLngInput" class="form-label fw-semibold">
-                                <i class="fas fa-arrows-alt-h me-1 text-primary"></i>Longitude
-                            </label>
-                            <input type="text"
-                                   class="form-control form-control-lg"
-                                   id="manualLngInput"
-                                   placeholder="104.03319729"
-                                   maxlength="12"
-                                   pattern="^-?\d{1,3}\.\d{6,8}$"
-                                   autocomplete="off"
-                                   style="font-family: 'Consolas', 'Monaco', monospace; font-size: 1.1rem; letter-spacing: 0.5px;">
-                            <div class="form-text">
-                                <span class="text-muted">Format: </span>
-                                <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">104.03319729</code>
-                                <span class="text-muted"> (maks 12 karakter, 6-8 desimal)</span>
+                            <div class="col-12 col-sm-6">
+                                <label for="manualLngInput" class="form-label fw-semibold small mb-1">
+                                    <i class="fas fa-arrows-alt-h me-1 text-primary"></i>Longitude
+                                </label>
+                                <input type="text"
+                                       class="form-control"
+                                       id="manualLngInput"
+                                       placeholder="104.03319729"
+                                       maxlength="12"
+                                       pattern="^-?\d{1,3}\.\d{6,8}$"
+                                       autocomplete="off"
+                                       inputmode="decimal"
+                                       style="font-family: 'Consolas', 'Monaco', monospace; font-size: 1rem;">
+                                <div class="form-text small d-none d-sm-block">
+                                    Format: <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px;">104.03319729</code>
+                                </div>
+                                <div class="invalid-feedback" id="longitudeError"></div>
                             </div>
-                            <div class="invalid-feedback" id="longitudeError"></div>
                         </div>
 
                         <!-- Validation Summary -->
-                        <div class="alert alert-danger border-0 d-none" id="validationSummary" style="border-radius: 10px;">
+                        <div class="alert alert-danger border-0 d-none mt-3 mb-0 py-2" id="validationSummary" style="border-radius: 10px;">
                             <i class="fas fa-exclamation-circle me-2"></i>
                             <span id="validationMessage"></span>
                         </div>
 
-                        <!-- Example Card -->
-                        <div class="card border-0 mb-3" style="background: #f8fafc; border-radius: 10px;">
-                            <div class="card-body py-3">
-                                <h6 class="card-title mb-2" style="color: var(--primary-color); font-size: 0.875rem;">
-                                    <i class="fas fa-info-circle me-1"></i>Contoh Koordinat yang Valid:
+                        <!-- Example Card - Hidden on mobile for space -->
+                        <div class="card border-0 mt-3 d-none d-sm-block" style="background: #f8fafc; border-radius: 10px;">
+                            <div class="card-body py-2">
+                                <h6 class="card-title mb-2" style="color: var(--primary-color); font-size: 0.8rem;">
+                                    <i class="fas fa-info-circle me-1"></i>Contoh Koordinat:
                                 </h6>
                                 <div class="row g-2">
                                     <div class="col-6">
                                         <small class="text-muted d-block">Latitude:</small>
-                                        <code style="font-size: 0.85rem;">1.04404846</code>
+                                        <code style="font-size: 0.8rem;">1.04404846</code>
                                     </div>
                                     <div class="col-6">
                                         <small class="text-muted d-block">Longitude:</small>
-                                        <code style="font-size: 0.85rem;">104.03319729</code>
+                                        <code style="font-size: 0.8rem;">104.03319729</code>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </form>
                 </div>
-                <div class="modal-footer" style="border-top: 1px solid #e5e7eb; padding: 1rem 1.5rem;">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" style="padding: 0.6rem 1.25rem;">
+                <div class="modal-footer d-flex flex-column flex-sm-row gap-2" style="border-top: 1px solid #e5e7eb; padding: 1rem;">
+                    <button type="button" class="btn btn-outline-secondary w-100 w-sm-auto order-2 order-sm-1" data-bs-dismiss="modal">
                         <i class="fas fa-times me-1"></i>Batal
                     </button>
-                    <button type="button" class="btn btn-primary" id="applyCoordinateBtn" style="padding: 0.6rem 1.5rem;">
+                    <button type="button" class="btn btn-primary w-100 w-sm-auto order-1 order-sm-2" id="applyCoordinateBtn">
                         <i class="fas fa-check me-1"></i>Terapkan Koordinat
                     </button>
                 </div>
@@ -346,20 +509,73 @@
         let selectedBusiness = null;
         let searchTimeout = null;
 
+        // Helper function to check if mobile
+        function isMobile() {
+            return window.innerWidth < 992;
+        }
+
+        // Update workflow indicators (mobile only)
+        function updateWorkflowIndicators(step) {
+            const step1 = document.getElementById('step1Indicator');
+            const step2Container = document.getElementById('step2Container');
+            const step2 = document.getElementById('step2Indicator');
+
+            if (!step1 || !step2Container) return; // Elements don't exist
+
+            if (step === 1) {
+                step1.classList.remove('completed');
+                step1.classList.add('active');
+                step2Container.style.display = 'none';
+            } else if (step === 2) {
+                step1.classList.remove('active');
+                step1.classList.add('completed');
+                step2Container.style.display = 'block';
+                step2.classList.add('active');
+
+                // Scroll to map section on mobile when business is selected
+                if (isMobile()) {
+                    setTimeout(() => {
+                        step2Container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 100);
+                }
+            }
+        }
+
         // Initialize map
         document.addEventListener('DOMContentLoaded', function() {
-            map = L.map('map').setView([1.0456, 104.0304], 12);
+            // Initialize map with touch support
+            map = L.map('map', {
+                tap: true,
+                touchZoom: true,
+                dragging: true,
+                scrollWheelZoom: true
+            }).setView([1.0456, 104.0304], 12);
+
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap contributors'
+                attribution: '© OpenStreetMap'
             }).addTo(map);
 
             // Map click handler
             map.on('click', function(e) {
                 if (!selectedBusiness) {
-                    Swal.fire({ icon: 'warning', title: 'Pilih Usaha', text: 'Silakan pilih usaha terlebih dahulu dari daftar' });
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Pilih Usaha',
+                        text: isMobile() ? 'Pilih usaha dari daftar di atas' : 'Silakan pilih usaha terlebih dahulu dari daftar',
+                        confirmButtonText: 'OK'
+                    });
                     return;
                 }
                 setLocation(e.latlng.lat, e.latlng.lng);
+            });
+
+            // Handle window resize - invalidate map size
+            let resizeTimeout;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(function() {
+                    map.invalidateSize();
+                }, 200);
             });
 
             // Load stats
@@ -809,6 +1025,9 @@
                         <div>
                             <div class="fw-bold">${b.nama_usaha}</div>
                             <small class="text-muted">${b.kecamatan} - ${b.kelurahan}</small>
+                            ${ (b.idsbr || b.alamat)
+                                ? `<small class=\"text-muted d-block text-wrap-break\">${b.idsbr ? 'ID SBR: ' + b.idsbr : ''}${(b.idsbr && b.alamat) ? ' • ' : ''}${b.alamat ? b.alamat : ''}</small>`
+                                : '' }
                         </div>
                         ${b.status ? `<span class="status-badge status-${b.status}">${b.status}</span>` : '<span class="badge bg-secondary">Belum</span>'}
                     </div>
@@ -852,6 +1071,8 @@
                     document.getElementById('selectedBusinessInfo').style.display = 'block';
                     document.getElementById('selectedBusinessName').textContent = data.nama_usaha;
                     document.getElementById('selectedBusinessLocation').textContent = `${data.kecamatan} - ${data.kelurahan}`;
+                    document.getElementById('selectedBusinessIdsbr').textContent = `ID SBR: ${data.idsbr ?? '-'}`;
+                    document.getElementById('selectedBusinessAlamat').textContent = `Alamat: ${data.alamat ?? '-'}`;
 
                     const statusEl = document.getElementById('selectedBusinessStatus');
                     if (data.status) {
@@ -877,6 +1098,16 @@
                     }
 
                     validateForm();
+
+                    // Update workflow indicators for mobile
+                    updateWorkflowIndicators(2);
+
+                    // Invalidate map size after scroll (for mobile)
+                    if (isMobile()) {
+                        setTimeout(() => {
+                            map.invalidateSize();
+                        }, 300);
+                    }
                 });
         }
 
@@ -890,11 +1121,112 @@
 
         document.getElementById('status').addEventListener('change', validateForm);
 
+        // Clear/reset button: only clears manual inputs (lat, lng, status) for testing
+        document.getElementById('clearBtn').addEventListener('click', function() {
+            // Do not modify selected business or imported data; only clear form inputs
+            document.getElementById('latitude').value = '';
+            document.getElementById('longitude').value = '';
+            document.getElementById('status').value = '';
+
+            // Remove map markers and accuracy circle
+            if (marker) map.removeLayer(marker);
+            if (locationCircle) map.removeLayer(locationCircle);
+            document.getElementById('locationAccuracy').innerHTML = '';
+
+            // Re-validate to disable Save button
+            validateForm();
+
+            // Optional feedback
+            Swal.fire({
+                icon: 'info',
+                title: 'Form Direset',
+                text: 'Latitude, Longitude, dan Status telah dikosongkan',
+                timer: 1200,
+                showConfirmButton: false
+            });
+        });
+
+        // Delete button: set latitude, longitude, and status to null on server
+        document.getElementById('deleteBtn').addEventListener('click', function() {
+            const id = document.getElementById('businessId').value;
+            if (!id) {
+                Swal.fire({ icon: 'warning', title: 'Pilih Usaha', text: 'Silakan pilih usaha terlebih dahulu.' });
+                return;
+            }
+
+            Swal.fire({
+                icon: 'warning',
+                title: 'Hapus Tagging?',
+                html: '<p>Tindakan ini akan mengosongkan Latitude, Longitude, dan Status di database.</p><p class="text-muted small">Data usaha dari import tidak dihapus.</p>',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Hapus',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#dc3545'
+            }).then((result) => {
+                if (!result.isConfirmed) return;
+
+                const btn = document.getElementById('deleteBtn');
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Menghapus...';
+
+                fetch(`{{ url('sbr') }}/${id}/tagging`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(r => r.json())
+                .then(result => {
+                    if (result.success) {
+                        // Clear UI fields
+                        document.getElementById('latitude').value = '';
+                        document.getElementById('longitude').value = '';
+                        document.getElementById('status').value = '';
+                        if (marker) map.removeLayer(marker);
+                        if (locationCircle) map.removeLayer(locationCircle);
+                        document.getElementById('locationAccuracy').innerHTML = '';
+
+                        // Update selected business status badge
+                        const statusEl = document.getElementById('selectedBusinessStatus');
+                        statusEl.textContent = 'Belum ditag';
+                        statusEl.className = 'badge bg-secondary';
+
+                        if (selectedBusiness) {
+                            selectedBusiness.latitude = null;
+                            selectedBusiness.longitude = null;
+                            selectedBusiness.status = null;
+                        }
+
+                        Swal.fire({ icon: 'success', title: 'Berhasil', text: 'Tagging dihapus (null).', timer: 1400, showConfirmButton: false });
+                        loadStats();
+                        searchBusinesses(currentPage);
+                    } else {
+                        Swal.fire({ icon: 'error', title: 'Error', text: result.message || 'Gagal menghapus tagging.' });
+                    }
+                })
+                .catch(() => {
+                    Swal.fire({ icon: 'error', title: 'Error', text: 'Terjadi kesalahan saat menghapus.' });
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-trash me-2"></i>Delete';
+                    validateForm();
+                });
+            });
+        });
+
         // Form submit
         document.getElementById('taggingForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
             const id = document.getElementById('businessId').value;
+            const saveBtn = document.getElementById('saveBtn');
+
+            // Disable button and show loading
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Menyimpan...';
+
             const data = {
                 latitude: document.getElementById('latitude').value,
                 longitude: document.getElementById('longitude').value,
@@ -913,15 +1245,45 @@
             .then(r => r.json())
             .then(result => {
                 if (result.success) {
-                    Swal.fire({ icon: 'success', title: 'Berhasil!', text: result.message, timer: 1500 });
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: isMobile() ? 'Data tersimpan' : result.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
                     loadStats();
                     searchBusinesses(currentPage);
+
+                    // Reset workflow for next business on mobile
+                    if (isMobile()) {
+                        updateWorkflowIndicators(1);
+                        // Reset selected business info
+                        selectedBusiness = null;
+                        document.getElementById('selectedBusinessInfo').style.display = 'none';
+                        document.getElementById('businessId').value = '';
+                        document.getElementById('latitude').value = '';
+                        document.getElementById('longitude').value = '';
+                        document.getElementById('status').value = '';
+                        if (marker) map.removeLayer(marker);
+                        if (locationCircle) map.removeLayer(locationCircle);
+
+                        // Scroll back to business list
+                        setTimeout(() => {
+                            document.getElementById('step1Indicator')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }, 1600);
+                    }
                 } else {
                     Swal.fire({ icon: 'error', title: 'Error', text: 'Gagal menyimpan data' });
                 }
             })
             .catch(err => {
                 Swal.fire({ icon: 'error', title: 'Error', text: 'Terjadi kesalahan' });
+            })
+            .finally(() => {
+                // Re-enable button
+                saveBtn.innerHTML = '<i class="fas fa-save me-2"></i>Simpan Data';
+                validateForm();
             });
         });
     </script>

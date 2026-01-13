@@ -111,6 +111,8 @@ class ProcessSbrImport implements ShouldQueue
                         'nama_usaha' => trim($data['nama_usaha']),
                         'kecamatan' => trim($data['kecamatan'] ?? ''),
                         'kelurahan' => trim($data['kelurahan'] ?? ''),
+                        'idsbr' => (trim($data['idsbr'] ?? '') !== '') ? trim($data['idsbr']) : null,
+                        'alamat' => (trim($data['alamat'] ?? '') !== '') ? trim($data['alamat']) : null,
                         'latitude' => null,
                         'longitude' => null,
                         'status' => null,
@@ -160,14 +162,14 @@ class ProcessSbrImport implements ShouldQueue
         try {
             // Prevent duplication by upserting on composite key (nama_usaha, kecamatan, kelurahan)
             DB::table((new SbrBusiness())->getTable())
-                ->upsert($batch, ['nama_usaha', 'kecamatan', 'kelurahan'], ['nama_usaha', 'kecamatan', 'kelurahan']);
+                ->upsert($batch, ['nama_usaha', 'kecamatan', 'kelurahan'], ['idsbr', 'alamat']);
             $successCount += count($batch);
         } catch (\Throwable $e) {
             // Fallback to row-by-row upsert to isolate errors
             foreach ($batch as $index => $rowData) {
                 try {
                     DB::table((new SbrBusiness())->getTable())
-                        ->upsert([$rowData], ['nama_usaha', 'kecamatan', 'kelurahan'], ['nama_usaha', 'kecamatan', 'kelurahan']);
+                        ->upsert([$rowData], ['nama_usaha', 'kecamatan', 'kelurahan'], ['idsbr', 'alamat']);
                     $successCount++;
                 } catch (\Throwable $inner) {
                     $errorCount++;
@@ -204,6 +206,8 @@ class ProcessSbrImport implements ShouldQueue
             'nama_usaha' => null,
             'kecamatan' => null,
             'kelurahan' => null,
+            'idsbr' => null,
+            'alamat' => null,
         ];
 
         foreach ($headerRow as $index => $header) {
@@ -217,6 +221,10 @@ class ProcessSbrImport implements ShouldQueue
                 $map['kecamatan'] = $index;
             } elseif ($headerLower === 'kelurahan' || str_contains($headerLower, 'kelurahan')) {
                 $map['kelurahan'] = $index;
+            } elseif ($headerLower === 'idsbr' || str_contains($headerLower, 'id sbr') || str_contains($headerLower, 'idsbr')) {
+                $map['idsbr'] = $index;
+            } elseif ($headerLower === 'alamat' || str_contains($headerLower, 'alamat') || str_contains($headerLower, 'address')) {
+                $map['alamat'] = $index;
             }
         }
 
@@ -229,6 +237,8 @@ class ProcessSbrImport implements ShouldQueue
             'nama_usaha' => $columnMap['nama_usaha'] !== null ? ($row[$columnMap['nama_usaha']] ?? '') : '',
             'kecamatan' => $columnMap['kecamatan'] !== null ? ($row[$columnMap['kecamatan']] ?? '') : '',
             'kelurahan' => $columnMap['kelurahan'] !== null ? ($row[$columnMap['kelurahan']] ?? '') : '',
+            'idsbr' => $columnMap['idsbr'] !== null ? ($row[$columnMap['idsbr']] ?? '') : '',
+            'alamat' => $columnMap['alamat'] !== null ? ($row[$columnMap['alamat']] ?? '') : '',
         ];
     }
 }
