@@ -18,7 +18,8 @@ class ReformPenilaian extends Page
 
     public function mount(PenilaianPilarService $service)
     {
-        $this->reform = $service->getReformData();
+        $year = (int) session('padamu_year', 2025);
+        $this->reform = $service->getReformData($year);
     }
 
     protected static string $view = 'filament.padamunegri.pages.reform-penilaian';

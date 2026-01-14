@@ -16,7 +16,8 @@ class PenilaianPilar extends Page
 
     public function mount(PenilaianPilarService $service)
     {
-        $this->pemenuhan = $service->getPemenuhanData();
+        $year = (int) session('padamu_year', 2025);
+        $this->pemenuhan = $service->getPemenuhanData($year);
     }
     
 

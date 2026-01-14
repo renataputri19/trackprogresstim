@@ -1,5 +1,9 @@
 <x-filament::page>
     <div class="space-y-4">
+        <div class="flex items-center justify-between">
+            <h1 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Penataan Tatalaksana - PEMENUHAN (Tahun {{ session('padamu_year', 2025) }})</h1>
+            <x-padamunegri.year-switcher />
+        </div>
 
         <!-- Dropdown -->
         <label for="section-select" class="block text-sm font-medium text-gray-900 dark:text-white">Select Section</label>

@@ -1,7 +1,9 @@
 <x-filament::page>
     <div class="space-y-4">
-        <!-- Title -->
-        <h1 class="text-2xl font-bold">Manajemen Perubahan - Reform</h1>
+        <div class="flex items-center justify-between">
+            <h1 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Manajemen Perubahan - REFORM (Tahun {{ session('padamu_year', 2025) }})</h1>
+            <x-padamunegri.year-switcher />
+        </div>
 
         <!-- Dropdown -->
         <label for="section-select" class="block text-sm font-medium text-gray-900 dark:text-white">Select Section</label>

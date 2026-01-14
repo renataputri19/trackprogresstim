@@ -78,11 +78,11 @@ class PenilaianPilarService
         $grandTotalNilaiUnit = 0;
         $grandTotalNilaiTpi = 0;
     
-        $processedPillars = collect($pillars)->map(function ($pilar) use (&$grandTotalBobot, &$grandTotalNilaiUnit, &$grandTotalNilaiTpi) {
+        $processedPillars = collect($pillars)->map(function ($pilar) use (&$grandTotalBobot, &$grandTotalNilaiUnit, &$grandTotalNilaiTpi, $year) {
             $totalBobot = 0;
             $totalNilaiUnit = 0;
             $totalNilaiTpi = 0;
-    
+
             $categories = collect($pilar['categories'])->map(function ($category) use (&$totalBobot, &$totalNilaiUnit, &$totalNilaiTpi, $year) {
                 $avgNilaiUnit = Criterion::where('category', $category['selectedCategory'])
                     ->where('year', $year)

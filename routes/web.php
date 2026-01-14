@@ -141,6 +141,18 @@ Route::middleware(['auth'])->group(function () {
     // New welcome route using the new homepage controller
     Route::get('/welcome', [NewHomepageController::class, 'welcome'])->name('welcome');
 
+    // Padamu Negeri: set selected year in session
+    Route::post('/padamunegri/set-year', function (Request $request) {
+        $year = (int) $request->input('year');
+        if (! in_array($year, [2025, 2026], true)) {
+            abort(422, 'Invalid year');
+        }
+        $request->session()->put('padamu_year', $year);
+        // Ensure baseline criteria exist for the selected year (clone from latest, typically 2025)
+        \App\Services\YearCriteriaReplicator::ensureYear($year);
+        return back();
+    })->name('padamunegri.set-year');
+
     // Settings routes
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
     Route::put('/settings/profile', [SettingsController::class, 'updateProfile'])->name('settings.profile.update');

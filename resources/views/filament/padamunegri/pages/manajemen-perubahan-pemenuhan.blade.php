@@ -1,5 +1,9 @@
 <x-filament::page>
     <div class="space-y-4">
+        <div class="flex items-center justify-between">
+            <h1 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Manajemen Perubahan - PEMENUHAN (Tahun {{ session('padamu_year', 2025) }})</h1>
+            <x-padamunegri.year-switcher />
+        </div>
         <!-- Title -->
         {{-- <h1 class="text-2xl font-bold">1. Manajemen Perubahan - Pemenuhan</h1> --}}
 

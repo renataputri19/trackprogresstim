@@ -1,5 +1,10 @@
 <x-filament::page>
     <div class="space-y-6">
+        <div class="flex items-center justify-between">
+            <h1 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Penilaian Pilar Pemenuhan (Tahun {{ session('padamu_year', 2025) }})</h1>
+            <x-padamunegri.year-switcher />
+        </div>
+
         @foreach ($pemenuhan['pillars'] as $pilar)
             <div class="overflow-hidden shadow rounded-lg bg-white dark:bg-gray-800 p-4">
                 <h2 class="text-xl font-bold text-center mb-4 text-gray-900 dark:text-gray-200">{{ $pilar['pilar'] }}</h2>
