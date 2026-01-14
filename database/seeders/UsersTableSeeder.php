@@ -57,15 +57,15 @@ $users = [
         DB::table('users')->insert($users);
 
         // Set is_it_staff for specific users
-        $itStaffEmails = [
-            'idon@bps.go.id',
-            'retza.anugrah@bps.go.id',
-            'moon@bps.go.id',
-            'adi.darmanto@bps.go.id',
-            'putri.henessa@bps.go.id',
-            'maulidfan.ghul@bps.go.id',
-        ];
-        \App\Models\User::whereIn('email', $itStaffEmails)->update(['is_it_staff' => true]);
+        // $itStaffEmails = [
+        //     'idon@bps.go.id',
+        //     'retza.anugrah@bps.go.id',
+        //     'moon@bps.go.id',
+        //     'adi.darmanto@bps.go.id',
+        //     'putri.henessa@bps.go.id',
+        //     'maulidfan.ghul@bps.go.id',
+        // ];
+        // \App\Models\User::whereIn('email', $itStaffEmails)->update(['is_it_staff' => true]);
 
 
 
