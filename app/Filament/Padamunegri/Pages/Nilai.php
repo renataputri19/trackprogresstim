@@ -11,12 +11,12 @@ class Nilai extends Page
     protected static ?string $navigationGroup = 'Dashboard';
     protected static ?string $navigationLabel = 'Nilai';
     protected static ?string $title = 'Nilai';
+    protected static ?int $navigationSort = 2; // ensure below Perbandingan Nilai
 
     public $year;
     public $pemenuhan;
     public $reform;
     public $grandTotal;
-    public $comparison;
 
     public function mount(PenilaianPilarService $service)
     {
@@ -42,35 +42,7 @@ class Nilai extends Page
             ),
         ];
 
-        // Comparison: always compare 2026 to baseline 2025 if current year is 2026
-        $this->comparison = null;
-        if ($this->year === 2026) {
-            $baselinePemenuhan = $service->getPemenuhanData(2025);
-            $baselineReform = $service->getReformData(2025);
-
-            $baselineGrandTotalUnit = (float) $baselinePemenuhan['summary']['total_nilai_unit'] + (float) $baselineReform['summary']['total_nilai_unit'];
-            $baselineGrandTotalTpi = (float) $baselinePemenuhan['summary']['total_nilai_tpi'] + (float) $baselineReform['summary']['total_nilai_tpi'];
-
-            $currentGrandTotalUnit = (float) $this->grandTotal['total_nilai_unit'];
-            $currentGrandTotalTpi = (float) $this->grandTotal['total_nilai_tpi'];
-
-            $this->comparison = [
-                'baseline_year' => 2025,
-                'current_year' => 2026,
-                'baseline' => [
-                    'total_nilai_unit' => number_format($baselineGrandTotalUnit, 2),
-                    'total_nilai_tpi' => number_format($baselineGrandTotalTpi, 2),
-                ],
-                'current' => [
-                    'total_nilai_unit' => number_format($currentGrandTotalUnit, 2),
-                    'total_nilai_tpi' => number_format($currentGrandTotalTpi, 2),
-                ],
-                'diff' => [
-                    'total_nilai_unit' => number_format($currentGrandTotalUnit - $baselineGrandTotalUnit, 2),
-                    'total_nilai_tpi' => number_format($currentGrandTotalTpi - $baselineGrandTotalTpi, 2),
-                ],
-            ];
-        }
+        // No comparison logic here; comparison is handled on Perbandingan Nilai page
     }
 
     protected static string $view = 'filament.padamunegri.pages.nilai';

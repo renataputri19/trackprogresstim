@@ -8,6 +8,7 @@ use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 
 use App\Filament\Padamunegri\Pages\Dashboard;
+use App\Filament\Padamunegri\Pages\PerbandinganNilai;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -44,8 +45,10 @@ class PadamunegriPanelProvider extends PanelProvider
             ])
             ->discoverResources(in: app_path('Filament/Padamunegri/Resources'), for: 'App\\Filament\\Padamunegri\\Resources')
             ->discoverPages(in: app_path('Filament/Padamunegri/Pages'), for: 'App\\Filament\\Padamunegri\\Pages')
+            ->discoverWidgets(in: app_path('Filament/Padamunegri/Widgets'), for: 'App\\Filament\\Padamunegri\\Widgets')
             ->pages([
                 Dashboard::class,
+                PerbandinganNilai::class,
             ])
             ->widgets([
                 // No widgets configured for now
