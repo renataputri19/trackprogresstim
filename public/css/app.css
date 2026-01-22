@@ -180,3 +180,46 @@ nav a.active {
 
 
 
+
+/* Shared utilities for modern UI components (safe, minimal) */
+.hover-lift {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+}
+
+.stat-card {
+    border: none !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+    overflow: hidden;
+}
+
+.table-modern tbody tr {
+    transition: background-color 0.2s ease;
+}
+.table-modern tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+.page-toolbar {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.badge-pill {
+    border-radius: 999px;
+    padding: 0.35rem 0.6rem;
+}
+
+
+
+
+
+
+
+
+

@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\SbrBusiness;
+use App\Models\LaksamanaSubmission;
+use App\Models\LaksamanaUser;
 use Illuminate\Http\Request;
 use OpenSpout\Reader\XLSX\Reader as XlsxReader;
 use OpenSpout\Reader\CSV\Reader as CsvReader;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use App\Jobs\ProcessSbrImport;
@@ -24,7 +27,179 @@ class SbrController extends Controller
         // Get distinct kecamatan for filter dropdown
         $kecamatanList = SbrBusiness::getDistinctKecamatan();
 
-        return view('laksamana.index', compact('kecamatanList'));
+        // Compute Top 5 Contributors (registered Laksamana users only)
+        $top = LaksamanaSubmission::select('laksamana_user_id', DB::raw('COUNT(*) as total'))
+            ->whereNotNull('laksamana_user_id')
+            ->groupBy('laksamana_user_id')
+            ->orderByDesc('total')
+            ->limit(5)
+            ->get();
+
+        $users = LaksamanaUser::whereIn('id', $top->pluck('laksamana_user_id'))
+            ->get()
+            ->keyBy('id');
+
+        $leaderboard = $top->map(function ($row) use ($users) {
+            return [
+                'user' => $users[$row->laksamana_user_id] ?? null,
+                'count' => $row->total,
+            ];
+        });
+
+        return view('laksamana.index', compact('kecamatanList', 'leaderboard'));
+    }
+
+    /**
+     * Display authenticated user's dashboard with their submissions
+     */
+    public function dashboard(Request $request)
+    {
+        if (!Auth::guard('laksamana')->check()) {
+            return redirect()->route('laksamana.login');
+        }
+
+        $userId = Auth::guard('laksamana')->id();
+        // Get distinct business IDs the user has submitted
+        $businessIds = LaksamanaSubmission::where('laksamana_user_id', $userId)
+            ->pluck('sbr_business_id')
+            ->unique()
+            ->values();
+
+        $perPage = (int) $request->get('per_page', 20);
+        $perPage = max(1, min($perPage, 100));
+
+        $businessQuery = SbrBusiness::whereIn('id', $businessIds);
+        $businesses = $businessQuery->orderBy('nama_usaha')->paginate($perPage);
+        $businesses->appends(['per_page' => $perPage]);
+
+        $stats = [
+            'total_my_entries' => count($businessIds),
+            'finalized' => SbrBusiness::whereIn('id', $businessIds)->whereIn('status', ['aktif', 'tutup'])->count(),
+            'editable' => SbrBusiness::whereIn('id', $businessIds)->whereNull('status')->count(),
+        ];
+
+        return view('laksamana.dashboard', compact('businesses', 'stats', 'perPage'));
+    }
+
+    /**
+     * Return Top 5 Contributors as JSON for optional dynamic use.
+     */
+    public function leaderboard()
+    {
+        $top = LaksamanaSubmission::select('laksamana_user_id', DB::raw('COUNT(*) as total'))
+            ->whereNotNull('laksamana_user_id')
+            ->groupBy('laksamana_user_id')
+            ->orderByDesc('total')
+            ->limit(5)
+            ->get();
+
+        $users = LaksamanaUser::whereIn('id', $top->pluck('laksamana_user_id'))
+            ->get()
+            ->keyBy('id');
+
+        $data = $top->map(function ($row) use ($users) {
+            $user = $users[$row->laksamana_user_id] ?? null;
+            return [
+                'name' => $user?->name ?? 'Anonim',
+                'email' => $user?->email,
+                'count' => $row->total,
+            ];
+        });
+
+        return response()->json(['data' => $data]);
+    }
+
+    /**
+     * Public leaderboard and statistics page
+     */
+    public function leaderboardPage()
+    {
+        // Pagination controls
+        $perPage = (int) request()->get('per_page', 25);
+        $perPage = max(1, min($perPage, 100));
+        $usersPage = (int) request()->get('users_page', 1);
+        $usersPage = $usersPage > 0 ? $usersPage : 1;
+        $breakdownPage = (int) request()->get('breakdown_page', 1);
+        $breakdownPage = $breakdownPage > 0 ? $breakdownPage : 1;
+
+        // Top contributors (top 20)
+        $top = LaksamanaSubmission::select('laksamana_user_id', DB::raw('COUNT(*) as total'))
+            ->whereNotNull('laksamana_user_id')
+            ->groupBy('laksamana_user_id')
+            ->orderByDesc('total')
+            ->limit(20)
+            ->get();
+
+        $users = LaksamanaUser::whereIn('id', $top->pluck('laksamana_user_id'))
+            ->get()
+            ->keyBy('id');
+
+        $leaderboard = $top->map(function ($row) use ($users) {
+            return [
+                'user' => $users[$row->laksamana_user_id] ?? null,
+                'count' => $row->total,
+            ];
+        });
+
+        // All users with counts (paginated)
+        $allCountsQuery = LaksamanaSubmission::select('laksamana_user_id', DB::raw('COUNT(*) as total'))
+            ->whereNotNull('laksamana_user_id')
+            ->groupBy('laksamana_user_id')
+            ->orderByDesc('total');
+
+        $usersWithCounts = $allCountsQuery->paginate($perPage, ['*'], 'users_page', $usersPage);
+        $allUsers = LaksamanaUser::whereIn('id', collect($usersWithCounts->items())->pluck('laksamana_user_id'))
+            ->get()
+            ->keyBy('id');
+        $usersWithCounts->appends(['per_page' => $perPage]);
+        $usersWithCounts->setCollection(
+            collect($usersWithCounts->items())->map(function ($row) use ($allUsers) {
+                return [
+                    'user' => $allUsers[$row->laksamana_user_id] ?? null,
+                    'count' => $row->total,
+                ];
+            })
+        );
+
+        // Per-user tag breakdown (distinct businesses and status counts)
+        $breakdownQuery = LaksamanaSubmission::select(
+                'laksamana_user_id',
+                DB::raw('COUNT(DISTINCT laksamana_submissions.sbr_business_id) as businesses'),
+                DB::raw("SUM(CASE WHEN sbr_businesses.status = 'aktif' THEN 1 ELSE 0 END) as aktif_count"),
+                DB::raw("SUM(CASE WHEN sbr_businesses.status = 'tutup' THEN 1 ELSE 0 END) as tutup_count")
+            )
+            ->join('sbr_businesses', 'sbr_businesses.id', '=', 'laksamana_submissions.sbr_business_id')
+            ->whereNotNull('laksamana_user_id')
+            ->groupBy('laksamana_user_id')
+            ->orderByDesc('businesses')
+            ;
+
+        $userBreakdown = $breakdownQuery->paginate($perPage, ['*'], 'breakdown_page', $breakdownPage);
+        $breakdownUsers = LaksamanaUser::whereIn('id', collect($userBreakdown->items())->pluck('laksamana_user_id'))
+            ->get()
+            ->keyBy('id');
+        $userBreakdown->appends(['per_page' => $perPage]);
+        $userBreakdown->setCollection(
+            collect($userBreakdown->items())->map(function ($row) use ($breakdownUsers) {
+                return [
+                    'user' => $breakdownUsers[$row->laksamana_user_id] ?? null,
+                    'businesses' => (int) $row->businesses,
+                    'aktif' => (int) $row->aktif_count,
+                    'tutup' => (int) $row->tutup_count,
+                ];
+            })
+        );
+
+        // Public statistics
+        $stats = [
+            'total' => SbrBusiness::count(),
+            'tagged' => SbrBusiness::whereNotNull('latitude')->whereNotNull('longitude')->count(),
+            'untagged' => SbrBusiness::whereNull('latitude')->orWhereNull('longitude')->count(),
+            'aktif' => SbrBusiness::where('status', 'aktif')->count(),
+            'tutup' => SbrBusiness::where('status', 'tutup')->count(),
+        ];
+
+        return view('laksamana.leaderboard', compact('leaderboard', 'usersWithCounts', 'userBreakdown', 'stats', 'perPage'));
     }
 
     /**
@@ -303,6 +478,14 @@ class SbrController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // Must be authenticated via Laksamana guard
+        if (!Auth::guard('laksamana')->check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda harus login untuk melakukan perubahan.'
+            ], 401);
+        }
+
         $validator = Validator::make($request->all(), [
             'latitude' => 'required|numeric|between:-90,90',
             'longitude' => 'required|numeric|between:-180,180',
@@ -318,11 +501,48 @@ class SbrController extends Controller
 
         $business = SbrBusiness::findOrFail($id);
 
+        // Block edits if already finalized
+        if (in_array($business->status, ['aktif', 'tutup'], true)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data usaha telah final (aktif/tutup) dan tidak dapat diedit.'
+            ], 403);
+        }
+
+        // Ownership: only the first submitting user can edit
+        $currentUserId = Auth::guard('laksamana')->id();
+        $firstSubmission = LaksamanaSubmission::where('sbr_business_id', $business->id)
+            ->whereNotNull('laksamana_user_id')
+            ->orderBy('id', 'asc')
+            ->first();
+
+        if ($firstSubmission && $firstSubmission->laksamana_user_id !== $currentUserId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda tidak memiliki izin untuk mengedit entri ini.'
+            ], 403);
+        }
+
         $business->update([
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,
             'status' => $request->status,
         ]);
+
+        // Record a submission for leaderboard tracking
+        try {
+            LaksamanaSubmission::create([
+                'laksamana_user_id' => $currentUserId,
+                'sbr_business_id' => $business->id,
+                'payload' => [
+                    'latitude' => $request->latitude,
+                    'longitude' => $request->longitude,
+                    'status' => $request->status,
+                ],
+            ]);
+        } catch (\Throwable $e) {
+            // Silently ignore tracking errors; don't block core functionality.
+        }
 
         return response()->json([
             'success' => true,
@@ -337,7 +557,36 @@ class SbrController extends Controller
     public function clearTagging(Request $request, $id)
     {
         try {
+            if (!Auth::guard('laksamana')->check()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Anda harus login untuk melakukan perubahan.'
+                ], 401);
+            }
+
             $business = SbrBusiness::findOrFail($id);
+
+            // Block edits if already finalized
+            if (in_array($business->status, ['aktif', 'tutup'], true)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data usaha telah final (aktif/tutup) dan tidak dapat dihapus.'
+                ], 403);
+            }
+
+            // Ownership check
+            $currentUserId = Auth::guard('laksamana')->id();
+            $firstSubmission = LaksamanaSubmission::where('sbr_business_id', $business->id)
+                ->whereNotNull('laksamana_user_id')
+                ->orderBy('id', 'asc')
+                ->first();
+            if ($firstSubmission && $firstSubmission->laksamana_user_id !== $currentUserId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Anda tidak memiliki izin untuk menghapus tagging entri ini.'
+                ], 403);
+            }
+
             $business->update([
                 'latitude' => null,
                 'longitude' => null,
@@ -363,7 +612,28 @@ class SbrController extends Controller
     public function show($id)
     {
         $business = SbrBusiness::findOrFail($id);
-        return response()->json($business);
+
+        // Determine last submission with a registered Laksamana user
+        $lastSubmission = LaksamanaSubmission::where('sbr_business_id', $business->id)
+            ->whereNotNull('laksamana_user_id')
+            ->orderByDesc('id')
+            ->first();
+
+        $lastUser = null;
+        if ($lastSubmission) {
+            $lastUser = LaksamanaUser::find($lastSubmission->laksamana_user_id);
+        }
+
+        $payload = $business->toArray();
+        $payload['finalized'] = in_array($business->status, ['aktif', 'tutup'], true);
+        $payload['last_updated'] = $lastSubmission ? [
+            'user_id' => $lastUser?->id,
+            'name' => $lastUser?->name ?? 'Anonim',
+            'email' => $lastUser?->email,
+            'at' => optional($lastSubmission->created_at)->toDateTimeString(),
+        ] : null;
+
+        return response()->json($payload);
     }
 
     /**

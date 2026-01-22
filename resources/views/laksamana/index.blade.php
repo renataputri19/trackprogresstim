@@ -177,6 +177,9 @@
         .status-badge { font-size: 0.75rem; padding: 0.35rem 0.75rem; border-radius: 20px; white-space: nowrap; font-weight: 600; }
         .status-aktif { background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); color: #065f46; }
         .status-tutup { background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); color: #991b1b; }
+        .finalized-banner { background: linear-gradient(135deg, #fee2e2 0%, #ffffff 100%); border: 1px solid #fecaca; color: #991b1b; }
+        .finalized-meta { font-size: 0.8rem; color: #6b7280; }
+        .finalized-actions .btn { font-size: 0.8rem; }
         .location-accuracy { font-size: 0.875rem; color: var(--text-secondary); margin-top: 0.5rem; }
         .stats-card {
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
@@ -513,6 +516,37 @@
             line-height: 1.6;
             margin-bottom: 1rem;
         }
+        /* Alert content improvements: wrap long text, avoid overflow, responsive stacking */
+        .alert { max-width: 100%; }
+        .alert-flex { gap: 0.5rem; }
+        .alert-flex .fa-info-circle { flex-shrink: 0; }
+        .alert-content { min-width: 0; word-break: break-word; overflow-wrap: anywhere; }
+        .alert-content ul { padding-left: 1rem; margin-bottom: 0.5rem; }
+        .alert-actions { display: flex; gap: 0.5rem; }
+        @media (max-width: 575.98px) {
+            .alert-actions { flex-direction: column; }
+            .alert-actions .btn, .alert-actions .badge, .alert-actions .user-pill { width: 100%; justify-content: center; }
+        }
+
+        /* User pill badge for current login state */
+        .user-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 0.75rem;
+            border-radius: 9999px;
+            background: linear-gradient(135deg, #e6fffa 0%, #f0fdfa 100%);
+            border: 1px solid rgba(17, 94, 89, 0.15);
+            color: var(--primary-dark);
+            box-shadow: 0 2px 6px rgba(17, 94, 89, 0.12);
+            font-weight: 500;
+        }
+        .user-pill i { color: var(--primary-color); }
+        .user-pill .label { color: var(--text-secondary); font-size: 0.85rem; }
+        .user-pill .username { font-weight: 700; color: var(--primary-dark); }
+
+        /* Leaderboard name wrapping */
+        #leaderboardSection ol li span:first-child { min-width: 0; word-break: break-word; overflow-wrap: anywhere; }
         .hero-features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -618,6 +652,69 @@
                     Sistem pemetaan lokasi usaha untuk Sensus Ekonomi. Tandai koordinat GPS, verifikasi status operasional, dan kelola data usaha berdasarkan wilayah.
                 </p>
 
+                <!-- Login Notice & Leaderboard Info -->
+                <div class="row g-3 align-items-stretch mb-3">
+                    <div class="col-lg-8">
+                        <div class="alert alert-info" style="border-radius: 12px; border-left: 4px solid var(--primary-color); background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);">
+                            <div class="d-flex flex-column flex-sm-row align-items-start alert-flex">
+                                <i class="fas fa-info-circle me-2" style="color: var(--primary-dark);"></i>
+                                <div class="alert-content">
+                                    <strong>Semua aksi memerlukan login.</strong>
+                                    <ul class="mb-2 mt-2">
+                                        <li>Pengguna yang belum login hanya dapat <em>melihat</em> konten.</li>
+                                        <li>Masuk untuk mengedit dan menyimpan perubahan. Entri berstatus <strong>aktif/tutup</strong> tidak dapat diedit oleh siapapun untuk menjaga integritas.</li>
+                                    </ul>
+                                    @if(auth('laksamana')->check())
+                                        <div class="alert-actions">
+                                            <span class="user-pill" title="Akun aktif">
+                                                <i class="fas fa-user-circle"></i>
+                                                <span class="label">Masuk sebagai</span>
+                                                <span class="username">{{ auth('laksamana')->user()->name }}</span>
+                                            </span>
+                                            <form id="laks-logout-form" method="POST" action="{{ route('laksamana.logout') }}">
+                                                @csrf
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">Keluar</button>
+                                            </form>
+                                            <a href="{{ route('laksamana.dashboard') }}" class="btn btn-sm btn-outline-success"><i class="fas fa-user me-1"></i>Dashboard Saya</a>
+                                        </div>
+                                    @else
+                                        <div class="alert-actions">
+                                            <a href="{{ route('laksamana.register') }}" class="btn btn-sm btn-primary">
+                                                <i class="fas fa-user-plus me-1"></i>Daftar
+                                            </a>
+                                            <a href="{{ route('laksamana.login') }}" class="btn btn-sm btn-outline-primary">Masuk</a>
+                                            <a href="{{ route('laksamana.leaderboard.page') }}" class="btn btn-sm btn-outline-success"><i class="fas fa-ranking-star me-1"></i>Peringkat Kontributor</a>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card h-100" style="border-radius: 12px; border: 1px solid var(--border-color);">
+                            <div class="card-header" style="background: #ffffff; border-bottom: 1px solid var(--border-color);">
+                                <strong><i class="fas fa-chart-line me-2" style="color: var(--accent-color);"></i>Top 5 Kontributor</strong>
+                            </div>
+                            <div class="card-body" id="leaderboardSection">
+                                @if(isset($leaderboard) && count($leaderboard) > 0)
+                                    <ol id="leaderboardList" class="mb-0">
+                                        @foreach($leaderboard as $row)
+                                            <li class="d-flex justify-content-between align-items-center mb-2">
+                                                <span>{{ optional($row['user'])->name ?? 'Anonim' }}</span>
+                                                <span class="badge bg-success">{{ $row['count'] }}</span>
+                                            </li>
+                                        @endforeach
+                                    </ol>
+                                    <p id="leaderboardEmpty" class="text-muted mb-0" style="display:none">Belum ada peserta terdaftar.</p>
+                                @else
+                                    <ol id="leaderboardList" class="mb-0" style="display:none"></ol>
+                                    <p id="leaderboardEmpty" class="text-muted mb-0">Belum ada peserta terdaftar.</p>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Feature Highlights with Colorful Icons -->
                 <div class="hero-features mb-3">
                     <div class="hero-feature">
@@ -683,6 +780,12 @@
                         <h6 class="card-title mb-0"><i class="fas fa-search me-2"></i>Cari Usaha</h6>
                     </div>
                     <div class="card-body">
+                        @if(!auth('laksamana')->check())
+                            <div class="alert alert-warning mb-3 py-2 px-3" role="alert" style="border-radius: 8px;">
+                                <i class="fas fa-lock me-1"></i>
+                                Anda harus <a href="{{ route('laksamana.login') }}" class="alert-link">masuk</a> atau <a href="{{ route('laksamana.register') }}" class="alert-link">mendaftar</a> untuk mengedit atau menyimpan perubahan.
+                            </div>
+                        @endif
                         <!-- Filters (geographic first) -->
                         <div class="row g-2">
                             <div class="col-12 col-lg-6">
@@ -775,6 +878,27 @@
                                 </div>
                                 <span class="status-badge" id="selectedBusinessStatus"></span>
                             </div>
+                            <div id="finalizedNotice" class="alert finalized-banner py-2 px-3 mt-2" style="display: none;">
+                                <i class="fas fa-lock me-1"></i>
+                                <strong>Status final.</strong> Entri berstatus aktif/tutup tidak dapat diubah.
+                                <div class="finalized-meta mt-1" id="finalizedMeta"></div>
+                            </div>
+                            <div id="finalizedActions" class="finalized-actions d-flex flex-wrap gap-2 mt-2" style="display: none;">
+                                {{-- <a id="openInMaps" class="btn btn-outline-primary btn-sm" target="_blank">
+                                    <i class="fas fa-map-marked-alt me-1"></i>Buka di Maps
+                                </a> --}}
+                                <button type="button" id="findAnotherBtn" class="btn btn-outline-secondary btn-sm">
+                                    <i class="fas fa-search me-1"></i>Cari usaha lain
+                                </button>
+                                {{-- <button type="button" id="submitCorrectionBtn" class="btn btn-outline-danger btn-sm">
+                                    <i class="fas fa-exclamation-circle me-1"></i>Ajukan koreksi
+                                </button> --}}
+                                @if(auth('laksamana')->check())
+                                <a href="{{ route('laksamana.dashboard') }}" id="myDashboardBtn" class="btn btn-outline-success btn-sm">
+                                    <i class="fas fa-user me-1"></i>Dashboard Saya
+                                </a>
+                                @endif
+                            </div>
                         </div>
 
                         <!-- Map Section -->
@@ -823,7 +947,7 @@
                                 <!-- Status - Prominent -->
                                 <div class="col-12 col-md-4">
                                     <label class="form-label fw-semibold small mb-1 label-required">Status Usaha</label>
-                                    <select class="form-select" id="status" required>
+                                    <select class="form-select" id="status" required @if(!auth('laksamana')->check()) disabled @endif>
                                         <option value="">— Pilih Status —</option>
                                         <option value="aktif">✓ Aktif (Beroperasi)</option>
                                         <option value="tutup">✗ Tutup (Tidak Beroperasi)</option>
@@ -971,6 +1095,8 @@
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        // Authentication flag to gate actions on the client side
+        const IS_AUTH = {{ auth('laksamana')->check() ? 'true' : 'false' }};
         // State
         let map, marker, locationCircle;
         let currentPage = 1;
@@ -1049,8 +1175,9 @@
                 }, 200);
             });
 
-            // Load stats
+            // Load stats and leaderboard on init
             loadStats();
+            loadLeaderboard();
         });
 
         // Set location on map
@@ -1418,6 +1545,52 @@
                 });
         }
 
+        // Load Top 5 leaderboard
+        function loadLeaderboard() {
+            fetch('{{ route("laksamana.leaderboard") }}')
+                .then(r => r.json())
+                .then(resp => {
+                    const listEl = document.getElementById('leaderboardList');
+                    const emptyEl = document.getElementById('leaderboardEmpty');
+                    const items = Array.isArray(resp.data) ? resp.data : [];
+
+                    if (!listEl || !emptyEl) return; // guard if section not present
+
+                    // Update UI depending on data availability
+                    if (items.length > 0) {
+                        // Show list, hide empty-state
+                        listEl.style.display = '';
+                        emptyEl.style.display = 'none';
+
+                        // Rebuild list
+                        listEl.innerHTML = '';
+                        items.forEach(row => {
+                            const li = document.createElement('li');
+                            li.className = 'd-flex justify-content-between align-items-center mb-2';
+
+                            const nameSpan = document.createElement('span');
+                            nameSpan.textContent = row.name || 'Anonim';
+
+                            const badge = document.createElement('span');
+                            badge.className = 'badge bg-success';
+                            badge.textContent = String(row.count ?? 0);
+
+                            li.appendChild(nameSpan);
+                            li.appendChild(badge);
+                            listEl.appendChild(li);
+                        });
+                    } else {
+                        // Hide list, show empty-state
+                        listEl.style.display = 'none';
+                        listEl.innerHTML = '';
+                        emptyEl.style.display = '';
+                    }
+                })
+                .catch(() => {
+                    // Non-fatal: keep current server-rendered state if request fails
+                });
+        }
+
         // Kecamatan change - load kelurahan
         document.getElementById('filterKecamatan').addEventListener('change', function() {
             const kelurahanSelect = document.getElementById('filterKelurahan');
@@ -1544,7 +1717,7 @@
                                 ? `<small class=\"text-muted d-block text-wrap-break\">${b.idsbr ? 'ID SBR: ' + b.idsbr : ''}${(b.idsbr && b.alamat) ? ' • ' : ''}${b.alamat ? b.alamat : ''}</small>`
                                 : '' }
                         </div>
-                        ${b.status ? `<span class="status-badge status-${b.status}">${b.status}</span>` : '<span class="badge bg-secondary">Belum</span>'}
+                        ${b.status ? `<span class="status-badge status-${b.status}" title="Final – tidak dapat diubah"><i class="fas fa-lock me-1"></i>${b.status}</span>` : '<span class="badge bg-secondary">Belum</span>'}
                     </div>
                 </div>
             `).join('');
@@ -1611,7 +1784,7 @@
 
                     const statusEl = document.getElementById('selectedBusinessStatus');
                     if (data.status) {
-                        statusEl.textContent = data.status;
+                        statusEl.innerHTML = `<i class="fas fa-lock me-1"></i>${data.status}`;
                         statusEl.className = `status-badge status-${data.status}`;
                     } else {
                         statusEl.textContent = 'Belum ditag';
@@ -1630,6 +1803,64 @@
                         document.getElementById('latitude').value = '';
                         document.getElementById('longitude').value = '';
                         document.getElementById('locationAccuracy').innerHTML = '';
+                    }
+
+                    // Finalized UI: show notice, metadata, and alternative actions
+                    const finalizedNotice = document.getElementById('finalizedNotice');
+                    const finalizedMeta = document.getElementById('finalizedMeta');
+                    const finalizedActions = document.getElementById('finalizedActions');
+                    const openInMaps = document.getElementById('openInMaps');
+                    const findAnotherBtn = document.getElementById('findAnotherBtn');
+                    const submitCorrectionBtn = document.getElementById('submitCorrectionBtn');
+                    const statusSelect = document.getElementById('status');
+                    const saveBtn = document.getElementById('saveBtn');
+                    const clearBtn = document.getElementById('clearBtn');
+                    const getLocationBtn = document.getElementById('getLocationBtn');
+                    const manualInputBtn = document.getElementById('manualInputBtn');
+
+                    if (data.finalized) {
+                        finalizedNotice.style.display = 'block';
+                        finalizedMeta.textContent = (data.last_updated && (data.last_updated.name || data.last_updated.email || data.last_updated.at))
+                            ? `Final oleh ${data.last_updated.name ?? 'Anonim'}${data.last_updated.email ? ' (' + data.last_updated.email + ')' : ''} pada ${data.last_updated.at ?? '-'}`
+                            : '';
+                        finalizedActions.style.display = 'flex';
+
+                        // Prepare Maps link if coordinates exist
+                        if (data.latitude && data.longitude) {
+                            openInMaps.classList.remove('disabled');
+                            openInMaps.href = `https://www.google.com/maps?q=${data.latitude},${data.longitude}`;
+                            openInMaps.title = 'Buka lokasi di Google Maps';
+                        } else {
+                            openInMaps.removeAttribute('href');
+                            openInMaps.classList.add('disabled');
+                            openInMaps.title = 'Koordinat belum tersedia';
+                        }
+
+                        // Disable form controls and add explanations
+                        statusSelect.disabled = true;
+                        saveBtn.disabled = true;
+                        clearBtn.disabled = true;
+                        getLocationBtn.disabled = true;
+                        manualInputBtn.disabled = true;
+                        statusSelect.title = 'Status final dan tidak dapat diubah';
+                        saveBtn.title = 'Status final dan tidak dapat disimpan';
+                        clearBtn.title = 'Status final dan tidak dapat direset';
+                        getLocationBtn.title = 'Status final; lokasi tidak dapat diubah';
+                        manualInputBtn.title = 'Status final; lokasi tidak dapat diubah';
+                    } else {
+                        finalizedNotice.style.display = 'none';
+                        finalizedActions.style.display = 'none';
+                        // Re-enable controls per auth state
+                        statusSelect.disabled = {{ auth('laksamana')->check() ? 'false' : 'true' }};
+                        saveBtn.disabled = true; // will be recalculated in validateForm
+                        clearBtn.disabled = false;
+                        getLocationBtn.disabled = false;
+                        manualInputBtn.disabled = false;
+                        statusSelect.title = '';
+                        saveBtn.title = '';
+                        clearBtn.title = '';
+                        getLocationBtn.title = '';
+                        manualInputBtn.title = '';
                     }
 
                     validateForm();
@@ -1655,6 +1886,7 @@
             const saveBtn = document.getElementById('saveBtn');
             const guidanceBox = document.getElementById('formGuidance');
             const guidanceText = document.getElementById('formGuidanceText');
+            const finalizedNotice = document.getElementById('finalizedNotice');
 
             const hasLocation = latEl.value && lngEl.value;
             const hasStatus = statusEl.value;
@@ -1665,8 +1897,19 @@
             if (!hasLocation) missing.push('Tandai lokasi');
             if (!hasStatus) missing.push('Pilih status');
 
-            // Toggle save button
-            saveBtn.disabled = missing.length > 0;
+            // Finalized gate: if selected business is finalized, disable everything and show notice
+            const isFinalized = !!(selectedBusiness && selectedBusiness.finalized);
+            if (isFinalized) {
+                saveBtn.disabled = true;
+                if (guidanceBox && guidanceText) {
+                    guidanceBox.style.display = 'block';
+                    guidanceText.innerHTML = '<strong>Status final:</strong> Entri tidak dapat diubah.';
+                }
+                return; // Do not proceed to normal validation when finalized
+            }
+
+            // Toggle save button and gate for guest users
+            saveBtn.disabled = (missing.length > 0) || (!IS_AUTH);
 
             // Status-specific UI
             if (!hasStatus) {
@@ -1676,7 +1919,10 @@
             }
 
             // Guidance box - simplified
-            if (missing.length > 0 && hasBusiness) {
+            if ((!IS_AUTH) && guidanceBox && guidanceText) {
+                guidanceBox.style.display = 'block';
+                guidanceText.innerHTML = '<strong>Diperlukan login:</strong> Masuk untuk menyimpan perubahan.';
+            } else if (missing.length > 0 && hasBusiness) {
                 if (guidanceBox && guidanceText) {
                     guidanceBox.style.display = 'block';
                     guidanceText.innerHTML = '<strong>Perlu:</strong> ' + missing.join(' • ');
@@ -1686,7 +1932,33 @@
             }
         }
 
-        document.getElementById('status').addEventListener('change', validateForm);
+        // Safely bind status change handler (guard if element missing)
+        (function() {
+            const statusChangeEl = document.getElementById('status');
+            if (statusChangeEl) {
+                statusChangeEl.addEventListener('change', validateForm);
+            }
+        })();
+
+        // Alternative actions handlers
+        (function() {
+            const findAnotherBtn = document.getElementById('findAnotherBtn');
+            const submitCorrectionBtn = document.getElementById('submitCorrectionBtn');
+            if (findAnotherBtn) {
+                findAnotherBtn.addEventListener('click', function() {
+                    // Scroll back to business list step
+                    document.getElementById('step1Indicator')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+            }
+            if (submitCorrectionBtn) {
+                const haloipCreateBase = '{{ route('haloip.create') }}';
+                submitCorrectionBtn.addEventListener('click', function() {
+                    if (!selectedBusiness) return;
+                    const ref = encodeURIComponent(selectedBusiness.idsbr || selectedBusiness.id);
+                    window.location.href = `${haloipCreateBase}?ref=${ref}&category=Koreksi%20SBR`;
+                });
+            }
+        })();
 
         // Clear/reset button: only clears manual inputs (lat, lng, status) for testing
         document.getElementById('clearBtn').addEventListener('click', function() {
@@ -1713,8 +1985,9 @@
             });
         });
 
-        // Delete button: set latitude, longitude, and status to null on server
-        document.getElementById('deleteBtn').addEventListener('click', function() {
+        // Delete button: set latitude, longitude, and status to null on server (guard if button exists)
+        const deleteBtnEl = document.getElementById('deleteBtn');
+        if (deleteBtnEl) deleteBtnEl.addEventListener('click', function() {
             const id = document.getElementById('businessId').value;
             if (!id) {
                 Swal.fire({ icon: 'warning', title: 'Pilih Usaha', text: 'Silakan pilih usaha terlebih dahulu.' });
@@ -1767,6 +2040,7 @@
 
                         Swal.fire({ icon: 'success', title: 'Berhasil', text: 'Tagging dihapus (null).', timer: 1400, showConfirmButton: false });
                         loadStats();
+                        loadLeaderboard();
                         searchBusinesses(currentPage);
                     } else {
                         Swal.fire({ icon: 'error', title: 'Error', text: result.message || 'Gagal menghapus tagging.' });
@@ -1786,6 +2060,15 @@
         // Form submit
         document.getElementById('taggingForm').addEventListener('submit', function(e) {
             e.preventDefault();
+
+            if (!IS_AUTH) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Butuh Login',
+                    text: 'Silakan masuk untuk menyimpan perubahan.',
+                });
+                return;
+            }
 
             const id = document.getElementById('businessId').value;
             const saveBtn = document.getElementById('saveBtn');
@@ -1820,6 +2103,7 @@
                         showConfirmButton: false
                     });
                     loadStats();
+                    loadLeaderboard();
                     searchBusinesses(currentPage);
 
                     // Reset workflow for next business on mobile
@@ -1849,6 +2133,7 @@
             })
             .finally(() => {
                 // Re-enable button
+                saveBtn.disabled = false;
                 saveBtn.innerHTML = '<i class="fas fa-save me-2"></i>Simpan Data';
                 validateForm();
             });

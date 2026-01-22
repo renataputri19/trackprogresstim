@@ -48,14 +48,29 @@ Route::get('/laksamana', [App\Http\Controllers\SbrController::class, 'index'])->
 Route::get('/laksamana/search', [App\Http\Controllers\SbrController::class, 'search'])->name('laksamana.search');
 Route::get('/laksamana/stats', [App\Http\Controllers\SbrController::class, 'stats'])->name('laksamana.stats');
 Route::get('/laksamana/kelurahan/{kecamatan}', [App\Http\Controllers\SbrController::class, 'getKelurahan'])->name('laksamana.kelurahan');
+Route::get('/laksamana/leaderboard', [App\Http\Controllers\SbrController::class, 'leaderboard'])->name('laksamana.leaderboard');
 Route::get('/laksamana/{id}', [App\Http\Controllers\SbrController::class, 'show'])
     ->whereNumber('id')
     ->name('laksamana.show');
-Route::put('/laksamana/{id}', [App\Http\Controllers\SbrController::class, 'update'])->name('laksamana.update');
-Route::delete('/laksamana/{id}/tagging', [App\Http\Controllers\SbrController::class, 'clearTagging'])->name('laksamana.clear');
+// Auth-protected modifying routes
+Route::middleware('auth:laksamana')->group(function () {
+    Route::put('/laksamana/{id}', [App\Http\Controllers\SbrController::class, 'update'])->name('laksamana.update');
+    Route::delete('/laksamana/{id}/tagging', [App\Http\Controllers\SbrController::class, 'clearTagging'])->name('laksamana.clear');
+    Route::get('/laksamana/dashboard', [App\Http\Controllers\SbrController::class, 'dashboard'])->name('laksamana.dashboard');
+});
+
+// Public leaderboard page view
+Route::get('/laksamana/leaderboard/view', [App\Http\Controllers\SbrController::class, 'leaderboardPage'])->name('laksamana.leaderboard.page');
+
+// Laksamana isolated authentication routes (separate from main app users)
+Route::get('/laksamana/register', [App\Http\Controllers\LaksamanaAuthController::class, 'showRegisterForm'])->name('laksamana.register');
+Route::post('/laksamana/register', [App\Http\Controllers\LaksamanaAuthController::class, 'register'])->name('laksamana.register.post');
+Route::get('/laksamana/login', [App\Http\Controllers\LaksamanaAuthController::class, 'showLoginForm'])->name('laksamana.login');
+Route::post('/laksamana/login', [App\Http\Controllers\LaksamanaAuthController::class, 'login'])->name('laksamana.login.post');
+Route::post('/laksamana/logout', [App\Http\Controllers\LaksamanaAuthController::class, 'logout'])->name('laksamana.logout');
 
 // Import-related routes require authentication
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth:laksamana'])->group(function () {
     Route::get('/laksamana/import', [App\Http\Controllers\SbrController::class, 'importPage'])->name('laksamana.import.page');
     Route::post('/laksamana/import', [App\Http\Controllers\SbrController::class, 'import'])->name('laksamana.import');
     Route::post('/laksamana/delete-all', [App\Http\Controllers\SbrController::class, 'deleteAll'])->name('laksamana.delete.all');

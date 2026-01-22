@@ -160,16 +160,109 @@ class ProcessSbrImport implements ShouldQueue
         }
 
         try {
-            // Prevent duplication by upserting on composite key including idsbr
-            DB::table((new SbrBusiness())->getTable())
-                ->upsert($batch, ['idsbr', 'nama_usaha', 'kecamatan', 'kelurahan'], ['alamat']);
-            $successCount += count($batch);
+            // Add-only import: insert new records and skip existing ones.
+            $table = (new SbrBusiness())->getTable();
+
+            // Build lookup sets from the batch
+            $idsSet = [];
+            $namesSet = [];
+            $kecSet = [];
+            $kelSet = [];
+            foreach ($batch as $row) {
+                $id = trim((string) ($row['idsbr'] ?? ''));
+                if ($id !== '') {
+                    $idsSet[$id] = true;
+                } else {
+                    $name = strtolower(trim((string) ($row['nama_usaha'] ?? '')));
+                    $kec = strtolower(trim((string) ($row['kecamatan'] ?? '')));
+                    $kel = strtolower(trim((string) ($row['kelurahan'] ?? '')));
+                    if ($name !== '' && $kec !== '' && $kel !== '') {
+                        $namesSet[$name] = true;
+                        $kecSet[$kec] = true;
+                        $kelSet[$kel] = true;
+                    }
+                }
+            }
+
+            // Existing ids lookup
+            $existingIds = [];
+            if (!empty($idsSet)) {
+                $existingIds = DB::table($table)
+                    ->whereIn('idsbr', array_keys($idsSet))
+                    ->pluck('idsbr')
+                    ->map(function ($v) { return trim((string) $v); })
+                    ->all();
+                $existingIds = array_flip($existingIds);
+            }
+
+            // Existing triples lookup for rows without idsbr
+            $existingTriples = [];
+            if (!empty($namesSet) && !empty($kecSet) && !empty($kelSet)) {
+                $existingRecords = DB::table($table)
+                    ->whereIn('nama_usaha', array_keys($namesSet))
+                    ->whereIn('kecamatan', array_keys($kecSet))
+                    ->whereIn('kelurahan', array_keys($kelSet))
+                    ->get(['nama_usaha', 'kecamatan', 'kelurahan']);
+
+                foreach ($existingRecords as $rec) {
+                    $key = strtolower(trim((string) $rec->nama_usaha)) . '|' .
+                           strtolower(trim((string) $rec->kecamatan)) . '|' .
+                           strtolower(trim((string) $rec->kelurahan));
+                    $existingTriples[$key] = true;
+                }
+            }
+
+            // Filter the batch to only new entries and deduplicate within the batch
+            $filtered = [];
+            $seenKeys = [];
+            foreach ($batch as $row) {
+                $id = trim((string) ($row['idsbr'] ?? ''));
+                $name = strtolower(trim((string) ($row['nama_usaha'] ?? '')));
+                $kec = strtolower(trim((string) ($row['kecamatan'] ?? '')));
+                $kel = strtolower(trim((string) ($row['kelurahan'] ?? '')));
+
+                $key = $id !== '' ? ('id:' . $id) : ('tri:' . $name . '|' . $kec . '|' . $kel);
+
+                // Skip duplicates within the same batch
+                if (isset($seenKeys[$key])) {
+                    continue;
+                }
+
+                // Skip existing DB records based on idsbr or triple when idsbr is empty
+                if ($id !== '') {
+                    if (isset($existingIds[$id])) {
+                        continue;
+                    }
+                } else {
+                    // Require valid triple identity
+                    if ($name === '' || $kec === '' || $kel === '') {
+                        $errorCount++;
+                        continue;
+                    }
+                    $triKey = $name . '|' . $kec . '|' . $kel;
+                    if (isset($existingTriples[$triKey])) {
+                        continue;
+                    }
+                }
+
+                $filtered[] = $row;
+                $seenKeys[$key] = true;
+            }
+
+            if (!empty($filtered)) {
+                $inserted = DB::table($table)->insertOrIgnore($filtered);
+                if (is_int($inserted)) {
+                    $successCount += $inserted;
+                } else {
+                    $successCount += count($filtered);
+                }
+            }
         } catch (\Throwable $e) {
-            // Fallback to row-by-row upsert to isolate errors
+            // Fallback to row-by-row insert-or-ignore to isolate errors
             foreach ($batch as $index => $rowData) {
                 try {
-                    DB::table((new SbrBusiness())->getTable())
-                        ->upsert([$rowData], ['idsbr', 'nama_usaha', 'kecamatan', 'kelurahan'], ['alamat']);
+                    $table = (new SbrBusiness())->getTable();
+                    DB::table($table)->insertOrIgnore([$rowData]);
                     $successCount++;
                 } catch (\Throwable $inner) {
                     $errorCount++;

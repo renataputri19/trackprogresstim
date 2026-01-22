@@ -40,6 +40,10 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'laksamana' => [
+            'driver' => 'session',
+            'provider' => 'laksamana_users',
+        ],
     ],
 
     /*
@@ -63,6 +67,11 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
+        ],
+
+        'laksamana_users' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\LaksamanaUser::class,
         ],
 
         // 'users' => [
@@ -93,6 +102,12 @@ return [
     'passwords' => [
         'users' => [
             'provider' => 'users',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'laksamana_users' => [
+            'provider' => 'laksamana_users',
             'table' => 'password_reset_tokens',
             'expire' => 60,
             'throttle' => 60,
