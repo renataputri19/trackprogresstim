@@ -12,6 +12,7 @@ class SbrBusinessesExport implements FromQuery, WithHeadings, WithMapping
     /** @var array<string> */
     protected array $columns = [
         'id',
+        'idsbr',
         'nama_usaha',
         'kecamatan',
         'kelurahan',
@@ -46,6 +47,7 @@ class SbrBusinessesExport implements FromQuery, WithHeadings, WithMapping
     {
         return [
             $row->id,
+            $row->idsbr,
             $row->nama_usaha,
             $row->kecamatan,
             $row->kelurahan,
