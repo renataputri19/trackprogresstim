@@ -113,6 +113,11 @@
                             <div class="app-icon"><i class="fas fa-ticket-alt"></i></div>
                             <div class="app-title">Halo IP - IT Tickets</div>
                         </a>
+                        <!-- New Link for Laksamana XLSX Export -->
+                        <a href="{{ route('laksamana.export.page') }}" class="app-item">
+                            <div class="app-icon"><i class="fas fa-file-excel"></i></div>
+                            <div class="app-title">Export Laksamana XLSX</div>
+                        </a>
                     </div>
                 </div>
             </div>

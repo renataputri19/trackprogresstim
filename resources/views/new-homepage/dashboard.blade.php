@@ -459,6 +459,23 @@
                                     <p class="text-xs text-gray-600">System</p>
                                 </div>
                             </a>
+
+                            <!-- Laksamana XLSX Export -->
+                            <a href="{{ route('laksamana.export.page') }}"
+                               class="group flex items-center rounded-lg border border-gray-200 p-4 transition-all duration-200 hover:border-teal-300 hover:bg-teal-50 hover:shadow-md">
+                                <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-green-100 text-green-600 group-hover:bg-green-200 transition-colors duration-200">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="4" width="18" height="16" rx="2"/>
+                                        <line x1="7" y1="8" x2="17" y2="8"/>
+                                        <line x1="7" y1="12" x2="17" y2="12"/>
+                                        <line x1="7" y1="16" x2="12" y2="16"/>
+                                    </svg>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-900 group-hover:text-teal-700">Laksamana Export</p>
+                                    <p class="text-xs text-gray-600">XLSX</p>
+                                </div>
+                            </a>
                         </div>
                     </div>
                 </div>

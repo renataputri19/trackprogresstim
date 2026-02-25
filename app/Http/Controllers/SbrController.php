@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use App\Jobs\ProcessSbrImport;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\SbrBusinessesExport;
 
 class SbrController extends Controller
 {
@@ -281,6 +283,32 @@ class SbrController extends Controller
     public function importPage()
     {
         return view('laksamana.import');
+    }
+
+    /**
+     * Show export page for BPS users to download XLSX of all SBR businesses
+     */
+    public function exportPage()
+    {
+        // Require main app authentication (BPS users)
+        if (!Auth::check()) {
+            return redirect()->route('login', ['redirect' => route('laksamana.export.page')]);
+        }
+
+        return view('laksamana.export');
+    }
+
+    /**
+     * Generate and stream XLSX export of all SBR business data
+     */
+    public function exportExcel()
+    {
+        if (!Auth::check()) {
+            return redirect()->route('login', ['redirect' => route('laksamana.export.xlsx')]);
+        }
+
+        $fileName = 'laksamana_businesses.xlsx';
+        return Excel::download(new SbrBusinessesExport(), $fileName, \Maatwebsite\Excel\Excel::XLSX);
     }
 
     /**

@@ -117,8 +117,8 @@ Route::middleware(['auth'])->group(function () {
 // Default route - using the new homepage
 Route::get('/', [NewHomepageController::class, 'index'])->name('home');
 
-// New improved homepage route - commented out as we've integrated the design into the main homepage
-// Route::get('/new-home', [NewHomepageController::class, 'newWelcome'])->name('new-home');
+    // New improved homepage route - commented out as we've integrated the design into the main homepage
+    // Route::get('/new-home', [NewHomepageController::class, 'newWelcome'])->name('new-home');
 
 // Documentation and Tutorials routes
 Route::get('/documentation', [App\Http\Controllers\NewHomepage\DocumentationController::class, 'index'])->name('documentation.index');
@@ -176,6 +176,10 @@ Route::middleware(['auth'])->group(function () {
     // New application routes - under development
     Route::get('/employee-performance', [NewHomepageController::class, 'underDevelopment'])->name('employee-performance.index');
     Route::get('/financial-administration', [NewHomepageController::class, 'underDevelopment'])->name('financial-administration.index');
+
+    // Laksamana Export (accessible to authenticated BPS users)
+    Route::get('/laksamana/export', [App\Http\Controllers\SbrController::class, 'exportPage'])->name('laksamana.export.page');
+    Route::get('/laksamana/export/xlsx', [App\Http\Controllers\SbrController::class, 'exportExcel'])->name('laksamana.export.xlsx');
 
     // Old welcome route - keeping for backward compatibility
     Route::get('/old-welcome', [HomeController::class, 'welcome'])->name('old-welcome');
