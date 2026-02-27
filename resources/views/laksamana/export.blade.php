@@ -11,7 +11,7 @@
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <p class="lead">Download an XLSX containing only businesses with coordinates (latitude & longitude).
-                            The file includes these fields: id, idsbr, nama_usaha, kecamatan, kelurahan, latitude, longitude.
+                            The file includes these fields: id, idsbr, nama_usaha, kecamatan, kelurahan, latitude, longitude, status.
                         </p>
 
                         <div class="d-flex justify-content-between align-items-center mt-3">
