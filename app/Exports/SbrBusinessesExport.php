@@ -18,6 +18,7 @@ class SbrBusinessesExport implements FromQuery, WithHeadings, WithMapping
         'kelurahan',
         'latitude',
         'longitude',
+        'status',
     ];
 
     /**
@@ -53,6 +54,7 @@ class SbrBusinessesExport implements FromQuery, WithHeadings, WithMapping
             $row->kelurahan,
             $row->latitude,
             $row->longitude,
+            $row->status,
         ];
     }
 }
