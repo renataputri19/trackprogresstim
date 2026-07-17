@@ -1,19 +1,43 @@
-/.phpunit.cache
-# /node_modules
-# /public/build
-# /public/hot
-# /public/storage
+# ---- Dependencies & build artifacts (NEVER commit these) ----
+/vendor
+/node_modules
+/public/build
+/public/hot
+/public/storage
+
+# ---- Laravel storage & caches ----
 /storage/*.key
-# /vendor
+/storage/pail
+/.phpunit.cache
+/.phpunit.result.cache
+.phpunit.result.cache
+
+# ---- Environment & secrets ----
 .env
+.env.*
+!.env.example
+!.env.docker.example
 .env.backup
 .env.production
-.phpunit.result.cache
+auth.json
 Homestead.json
 Homestead.yaml
-auth.json
+
+# ---- Database dumps (contain production data — keep OUT of git) ----
+/*.sql
+*.sql
+!database/**/*.sql
+
+# ---- Logs & misc ----
 npm-debug.log
 yarn-error.log
+*.log
+
+# ---- Editor / OS ----
 /.fleet
 /.idea
 /.vscode
+/.nova
+/.zed
+.DS_Store
+Thumbs.db

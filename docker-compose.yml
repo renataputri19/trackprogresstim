@@ -1,0 +1,60 @@
+# Local development / staging compose.
+#
+# In PRODUCTION on Dokploy you deploy the app from the Dockerfile and use a
+# Dokploy-managed MariaDB service instead of the `db` service below — just set
+# the DB_* env vars to point at it. See docs/DEPLOYMENT.md.
+#
+# Usage:
+#   cp .env.docker.example .env.docker      # then fill in APP_KEY etc.
+#   docker compose up --build
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: trackprogresstim-app
+    restart: unless-stopped
+    env_file:
+      - .env.docker
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      # First-boot seed. The dump stays OUT of git and OUT of the image;
+      # it is only mounted here. Remove this line after the first successful boot.
+      - ./u762815253_Rentak2171.sql:/var/www/seed/init.sql:ro
+      # Persist user uploads (ticket photos, etc.) across rebuilds.
+      - app_storage:/var/www/html/storage/app/public
+
+  db:
+    image: mariadb:11
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: "${DB_DATABASE:-trackprogresstim}"
+      MARIADB_USER: "${DB_USERNAME:-laravel}"
+      MARIADB_PASSWORD: "${DB_PASSWORD:-secret}"
+      MARIADB_ROOT_PASSWORD: "${DB_ROOT_PASSWORD:-rootsecret}"
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3307:3306"   # host 3307 -> avoid clashing with a local MySQL on 3306
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  # Optional: catch outgoing mail locally at http://localhost:8025
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: unless-stopped
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+
+volumes:
+  db_data:
+  app_storage:

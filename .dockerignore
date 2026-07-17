@@ -1,0 +1,41 @@
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# Dependencies & build output (rebuilt inside the image)
+vendor
+node_modules
+public/build
+public/hot
+public/storage
+
+# Secrets & local env (Dokploy injects env vars at runtime)
+.env
+.env.*
+!.env.docker.example
+
+# Database dumps — NEVER bake production data into the image
+*.sql
+
+# Runtime-generated storage (kept empty in the image)
+storage/app/public/*
+storage/framework/cache/data/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/logs/*
+bootstrap/cache/*.php
+
+# Dev-only tooling & docs
+tests
+.github
+.editorconfig
+.phpunit.cache
+.phpunit.result.cache
+phpunit.xml
+docker-compose*.yml
+docs
+README.md
+*.md
+webpack.mix.js
+test_vhts_v3_data.txt

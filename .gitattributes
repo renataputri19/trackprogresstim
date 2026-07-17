@@ -6,6 +6,12 @@
 *.md diff=markdown
 *.php diff=php
 
+# Container scripts must always be LF (they run inside Linux)
+*.sh              text eol=lf
+docker/entrypoint.sh text eol=lf
+Dockerfile        text eol=lf
+docker-compose*.yml text eol=lf
+
 /.github export-ignore
 CHANGELOG.md export-ignore
 .styleci.yml export-ignore
