@@ -109,5 +109,9 @@ php artisan config:cache      --no-interaction || php artisan config:clear
 php artisan route:cache       --no-interaction || php artisan route:clear
 php artisan view:cache        --no-interaction || php artisan view:clear
 
+# Re-own anything the root-run artisan commands just wrote (logs, caches) so the
+# www-data queue worker & scheduler can write to them.
+chown -R www-data:www-data storage bootstrap/cache
+
 log "Startup complete. Handing off to: $*"
 exec "$@"
