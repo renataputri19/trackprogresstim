@@ -15,7 +15,7 @@ set -euo pipefail
 APP_DIR=/var/www/html
 cd "$APP_DIR"
 
-SEED_FILE="${SEED_FILE:-/var/www/seed/init.sql}"
+SEED_FILE="${SEED_FILE:-}"   # explicit override; otherwise auto-resolved below
 DB_HOST="${DB_HOST:-127.0.0.1}"
 DB_PORT="${DB_PORT:-3306}"
 DB_DATABASE="${DB_DATABASE:-}"
@@ -40,6 +40,32 @@ fi
 # mariadb client reads the password from MYSQL_PWD (keeps it out of process args)
 export MYSQL_PWD="${DB_PASSWORD:-}"
 MYSQL="mariadb -h${DB_HOST} -P${DB_PORT} -u${DB_USERNAME}"
+
+# Find the seed dump: an explicit SEED_FILE, else a mounted file, else the
+# dump bundled in the image at database/seed/. Supports plain .sql and .sql.gz.
+resolve_seed_file() {
+    for f in \
+        "$SEED_FILE" \
+        /var/www/seed/init.sql \
+        /var/www/seed/init.sql.gz \
+        "${APP_DIR}/database/seed/init.sql" \
+        "${APP_DIR}/database/seed/init.sql.gz"; do
+        if [ -n "$f" ] && [ -f "$f" ]; then
+            echo "$f"
+            return 0
+        fi
+    done
+    return 1
+}
+
+# Stream a dump into the database, decompressing on the fly when gzipped.
+import_dump() {
+    dump="$1"
+    case "$dump" in
+        *.gz) gunzip -c "$dump" | $MYSQL "$DB_DATABASE" ;;
+        *)    $MYSQL "$DB_DATABASE" < "$dump" ;;
+    esac
+}
 
 # ---------------------------------------------------------------------------
 # 1. Runtime dirs & permissions (covers volumes mounted over storage)
@@ -112,7 +138,7 @@ else
 fi
 
 if [ "$DO_SEED" = "true" ]; then
-    if [ -f "$SEED_FILE" ]; then
+    if SEED_RESOLVED=$(resolve_seed_file); then
         # Clean slate: drop any existing tables so the import is deterministic
         # (covers a half-migrated DB with leftover tables not in the dump).
         EXISTING_TABLES=$(
@@ -128,12 +154,13 @@ if [ "$DO_SEED" = "true" ]; then
                 echo "SET FOREIGN_KEY_CHECKS=1;"
             } | $MYSQL "$DB_DATABASE"
         fi
-        log "Importing seed dump: $SEED_FILE"
-        $MYSQL "$DB_DATABASE" < "$SEED_FILE"
+        log "Importing seed dump: $SEED_RESOLVED"
+        import_dump "$SEED_RESOLVED"
         log "Seed import finished."
     else
-        log "WARNING: a seed was requested but no file exists at $SEED_FILE."
-        log "         Mount the dump there, or migrations will build an empty schema."
+        log "WARNING: a seed was requested but no dump was found (checked the mount"
+        log "         at /var/www/seed/ and the bundled database/seed/init.sql.gz)."
+        log "         Migrations will build an empty schema instead."
     fi
 fi
 

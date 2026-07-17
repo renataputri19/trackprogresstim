@@ -15,8 +15,10 @@ public/storage
 .env.*
 !.env.docker.example
 
-# Database dumps — NEVER bake production data into the image
+# Raw/ad-hoc SQL dumps stay out of the image (the big root export, etc.)...
 *.sql
+# ...but the bundled, gzipped seed IS shipped so the container can self-seed:
+!database/seed/init.sql.gz
 
 # Runtime-generated storage (kept empty in the image)
 storage/app/public/*

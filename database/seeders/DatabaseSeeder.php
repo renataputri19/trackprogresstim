@@ -12,12 +12,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+        // If the bundled production dump is present, it is the source of truth —
+        // import it instead of building data from the individual seeders.
+        if (SqlDumpSeeder::dumpExists()) {
+            $this->call(SqlDumpSeeder::class);
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+            return;
+        }
+
+        // Fallback: no dump available (e.g. a clean local setup) — build a fresh
+        // dataset from the individual seeders.
         $this->call(TimTableSeeder::class);
         $this->call(UsersTableSeeder::class);
         $this->call(TutorialSeeder::class);

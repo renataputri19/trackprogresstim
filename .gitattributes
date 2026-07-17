@@ -6,6 +6,9 @@
 *.md diff=markdown
 *.php diff=php
 
+# Binary assets — never apply EOL/text normalization (would corrupt them)
+*.gz              binary
+
 # Container scripts must always be LF (they run inside Linux)
 *.sh              text eol=lf
 docker/entrypoint.sh text eol=lf

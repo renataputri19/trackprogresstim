@@ -24,9 +24,8 @@ services:
       db:
         condition: service_healthy
     volumes:
-      # First-boot seed. The dump stays OUT of git and OUT of the image;
-      # it is only mounted here. Remove this line after the first successful boot.
-      - ./u762815253_Rentak2171.sql:/var/www/seed/init.sql:ro
+      # The seed dump is bundled in the image (database/seed/init.sql.gz) and
+      # imported automatically on a fresh DB — no mount needed.
       # Persist user uploads (ticket photos, etc.) across rebuilds.
       - app_storage:/var/www/html/storage/app/public
 

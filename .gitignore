@@ -23,10 +23,12 @@ auth.json
 Homestead.json
 Homestead.yaml
 
-# ---- Database dumps (contain production data — keep OUT of git) ----
-/*.sql
+# ---- Database dumps ----
+# Stray/ad-hoc dumps anywhere (e.g. the raw prod export) stay OUT of git:
 *.sql
-!database/**/*.sql
+# ...EXCEPT the intentionally-committed bundled seed (private repo):
+!database/seed/init.sql
+!database/seed/init.sql.gz
 
 # ---- Logs & misc ----
 npm-debug.log

@@ -32,18 +32,24 @@ never wipes real data.
 
 ---
 
-## 2. The seed dump (`u762815253_Rentak2171.sql`)
+## 2. The seed dump (`database/seed/init.sql.gz`)
 
-This dump contains **real production data** and is deliberately kept **out of
-git and out of the Docker image** (`.gitignore` + `.dockerignore`). It reaches
-the container only by being mounted for the **first** deploy.
+The production dump is **bundled in the repo** (gzipped, ~4.5 MB) at
+`database/seed/init.sql.gz`, so it ships inside the image and the container
+**seeds itself automatically** on a fresh database — no mount, no manual step.
 
-- **Local:** already wired in `docker-compose.yml` as a read-only mount.
-- **Dokploy:** add a **Volume Mount / File Mount** on the app service:
-  - Source: the uploaded `u762815253_Rentak2171.sql`
-  - Mount path: `/var/www/seed/init.sql`
-  - **Remove this mount after the first successful deploy.** Later boots ignore
-    it anyway (the guard skips import), but removing it keeps prod data off the box.
+> ⚠️ This is real production data (names, phone numbers, photos) living in a
+> **private** repo and image. That's a deliberate trade-off for zero-touch
+> deploys. Keep the repo private.
+
+- **Auto:** on a fresh DB the entrypoint imports it, then runs migrations.
+- **Manual (`php artisan db:seed`):** `DatabaseSeeder` calls `SqlDumpSeeder`,
+  which imports the same dump via the mysql/mariadb client. Handy for local dev.
+- **Override:** mount a different dump at `/var/www/seed/init.sql[.gz]` or set
+  `SEED_FILE=/path` to use it instead of the bundled one.
+
+To refresh the bundled dump after a new export:
+`gzip -c newdump.sql > database/seed/init.sql.gz` and commit it.
 
 ---
 
@@ -100,9 +106,13 @@ LOG_CHANNEL=stderr
 > to start without it.
 
 ### 4d. First deploy
-1. Add the seed **file mount** → `/var/www/seed/init.sql` (see §2).
-2. Deploy. Logs show: `Fresh database detected` → `Importing seed dump` → `Running migrations`.
-3. Remove the seed mount.
+Just **Deploy** — the dump is bundled, so on a fresh DB the logs show:
+`Fresh database detected` → `Importing seed dump: .../database/seed/init.sql.gz`
+→ `Running migrations`. No mount to add or remove.
+
+> If the DB already got a schema (e.g. migrations ran once before), the auto-seed
+> won't trigger. Set `FORCE_SEED=true` for one deploy to load the dump cleanly,
+> then remove the var (see §1).
 
 ### 4e. Persist uploads
 User uploads (ticket photos) live in `storage/app/public`. Add a **persistent
