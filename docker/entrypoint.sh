@@ -81,8 +81,18 @@ done
 log "Database is up."
 
 # ---------------------------------------------------------------------------
-# 3. First-boot seed (only when the `migrations` table does not yet exist)
+# 3. Seed the database.
+#
+#   Auto:  import only when the `migrations` table does not yet exist (a truly
+#          fresh DB). This never touches a database that already has data.
+#   Force: set FORCE_SEED=true to re-import on purpose. It DROPS every table
+#          first for a clean slate, so it is DESTRUCTIVE — use it only for a
+#          dev reset or to recover a half-initialized database (e.g. one where
+#          migrations ran before the seed file was mounted). Remove the var
+#          again after the deploy so you don't wipe data on the next redeploy.
 # ---------------------------------------------------------------------------
+FORCE_SEED="${FORCE_SEED:-false}"
+
 MIGRATIONS_TABLE=$(
     $MYSQL -N -s -e \
     "SELECT COUNT(*) FROM information_schema.tables \
@@ -90,17 +100,41 @@ MIGRATIONS_TABLE=$(
     2>/dev/null || echo 0
 )
 
-if [ "${MIGRATIONS_TABLE:-0}" = "0" ]; then
+DO_SEED=false
+if [ "$FORCE_SEED" = "true" ]; then
+    log "FORCE_SEED=true — forcing a clean re-import (this DROPS existing tables)."
+    DO_SEED=true
+elif [ "${MIGRATIONS_TABLE:-0}" = "0" ]; then
     log "Fresh database detected (no 'migrations' table)."
+    DO_SEED=true
+else
+    log "Existing database detected — skipping seed import (set FORCE_SEED=true to re-import)."
+fi
+
+if [ "$DO_SEED" = "true" ]; then
     if [ -f "$SEED_FILE" ]; then
+        # Clean slate: drop any existing tables so the import is deterministic
+        # (covers a half-migrated DB with leftover tables not in the dump).
+        EXISTING_TABLES=$(
+            $MYSQL -N -s -e \
+            "SELECT table_name FROM information_schema.tables \
+             WHERE table_schema='${DB_DATABASE}';" 2>/dev/null || true
+        )
+        if [ -n "$EXISTING_TABLES" ]; then
+            log "Dropping existing tables for a clean seed ..."
+            {
+                echo "SET FOREIGN_KEY_CHECKS=0;"
+                for t in $EXISTING_TABLES; do echo "DROP TABLE IF EXISTS \`$t\`;"; done
+                echo "SET FOREIGN_KEY_CHECKS=1;"
+            } | $MYSQL "$DB_DATABASE"
+        fi
         log "Importing seed dump: $SEED_FILE"
         $MYSQL "$DB_DATABASE" < "$SEED_FILE"
         log "Seed import finished."
     else
-        log "No seed file at $SEED_FILE — migrations will build the schema from scratch."
+        log "WARNING: a seed was requested but no file exists at $SEED_FILE."
+        log "         Mount the dump there, or migrations will build an empty schema."
     fi
-else
-    log "Existing database detected — skipping seed import."
 fi
 
 # ---------------------------------------------------------------------------

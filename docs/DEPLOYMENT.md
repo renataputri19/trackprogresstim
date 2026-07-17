@@ -22,6 +22,14 @@ add *after* the dump was taken are the only ones that ever run on redeploys.
 > To add a schema change in the future: commit a new migration file. The next
 > redeploy runs it automatically. No manual DB steps.
 
+**Forcing a re-seed (`FORCE_SEED`).** The auto-seed only runs on a truly empty
+DB. If a database got half-initialized (e.g. migrations ran before the seed
+file was mounted, so you have tables but no data), set the env var
+`FORCE_SEED=true` on the app and redeploy. It **drops all tables** and re-imports
+the dump for a clean slate — so it is **destructive**; use it only on dev or
+during first-time recovery, and **remove the var afterward** so a later redeploy
+never wipes real data.
+
 ---
 
 ## 2. The seed dump (`u762815253_Rentak2171.sql`)
