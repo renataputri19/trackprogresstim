@@ -67,8 +67,8 @@ The first `up` imports the seed dump. To start over from scratch:
    - **prod** app → branch `main`
    - (optional) **staging** app → branch `dev`
 2. Build type: **Dockerfile** (`./Dockerfile`).
-3. **Port:** the container listens on **8080** — set the app port to `8080` and
-   attach your domain.
+3. **Port:** the container listens on **80** (Dokploy's default Target Port), so
+   just attach your domain — no port change needed.
 
 ### 4c. Environment variables
 Paste from `.env.docker.example`. Minimum required:

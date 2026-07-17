@@ -18,7 +18,8 @@ services:
     env_file:
       - .env.docker
     ports:
-      - "8080:8080"
+      # host 8080 -> container 80 (keeps localhost:8080 free of privileged-port issues)
+      - "8080:80"
     depends_on:
       db:
         condition: service_healthy
