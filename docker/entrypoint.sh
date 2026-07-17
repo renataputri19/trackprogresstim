@@ -59,11 +59,21 @@ chmod -R 775 storage bootstrap/cache
 # 2. Wait for the database to accept connections
 # ---------------------------------------------------------------------------
 log "Waiting for database at ${DB_HOST}:${DB_PORT} ..."
+DB_WAIT_TRIES="${DB_WAIT_TRIES:-90}"   # 90 * 2s = 180s
 tries=0
 until $MYSQL -e "SELECT 1;" >/dev/null 2>&1; do
     tries=$((tries + 1))
-    if [ "$tries" -ge 60 ]; then
-        log "ERROR: database not reachable after 120s. Giving up."
+    if [ "$tries" -ge "$DB_WAIT_TRIES" ]; then
+        waited=$((DB_WAIT_TRIES * 2))
+        log "ERROR: database not reachable after ${waited}s. Real client error:"
+        $MYSQL -e "SELECT 1;" 2>&1 | sed 's/^/[entrypoint]   /' || true
+        log "Hints:"
+        log "  - 'Unknown MySQL server host'  -> DB_HOST is wrong or app & DB are"
+        log "    not on the same network. Use the DB's Internal Host from Dokploy."
+        log "  - 'Connection refused'         -> the MariaDB service is not running"
+        log "    (or is still starting). Check the database service in Dokploy."
+        log "  - 'Access denied'              -> DB_USERNAME / DB_PASSWORD is wrong."
+        log "  Current: DB_HOST=${DB_HOST} DB_PORT=${DB_PORT} DB_USERNAME=${DB_USERNAME} DB_DATABASE=${DB_DATABASE}"
         exit 1
     fi
     sleep 2
