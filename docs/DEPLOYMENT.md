@@ -32,24 +32,29 @@ never wipes real data.
 
 ---
 
-## 2. The seed dump (`database/seed/init.sql.gz`)
+## 2. Seeding
 
-The production dump is **bundled in the repo** (gzipped, ~4.5 MB) at
-`database/seed/init.sql.gz`, so it ships inside the image and the container
-**seeds itself automatically** on a fresh database — no mount, no manual step.
+The prod and dev databases were seeded once from the original dump during
+initial setup, and that dump was then **removed from the repo/history** — no
+production data lives in git anymore. The seeding *plumbing* stays in place so a
+brand-new environment can still be bootstrapped:
 
-> ⚠️ This is real production data (names, phone numbers, photos) living in a
-> **private** repo and image. That's a deliberate trade-off for zero-touch
-> deploys. Keep the repo private.
+The entrypoint imports a dump only on a **fresh** DB (no `migrations` table). It
+looks for one, in order:
+1. `SEED_FILE=/path` (explicit override)
+2. a mount at `/var/www/seed/init.sql` or `/var/www/seed/init.sql.gz`
+3. a bundled `database/seed/init.sql[.gz]` (not committed by default)
 
-- **Auto:** on a fresh DB the entrypoint imports it, then runs migrations.
-- **Manual (`php artisan db:seed`):** `DatabaseSeeder` calls `SqlDumpSeeder`,
-  which imports the same dump via the mysql/mariadb client. Handy for local dev.
-- **Override:** mount a different dump at `/var/www/seed/init.sql[.gz]` or set
-  `SEED_FILE=/path` to use it instead of the bundled one.
+**To bootstrap a new environment**, pick one:
+- **Mount** the dump at `/var/www/seed/init.sql[.gz]` for the first deploy (then
+  remove the mount), **or**
+- temporarily drop `init.sql.gz` into `database/seed/` and deploy (then remove it
+  again — remember it's production PII), **or**
+- import manually via the DB terminal / `php artisan db:seed` (`SqlDumpSeeder`
+  imports a dump from `database/seed/` when present).
 
-To refresh the bundled dump after a new export:
-`gzip -c newdump.sql > database/seed/init.sql.gz` and commit it.
+`FORCE_SEED=true` forces a clean re-import on an already-initialized DB
+(destructive — see §1).
 
 ---
 
@@ -106,13 +111,13 @@ LOG_CHANNEL=stderr
 > to start without it.
 
 ### 4d. First deploy
-Just **Deploy** — the dump is bundled, so on a fresh DB the logs show:
-`Fresh database detected` → `Importing seed dump: .../database/seed/init.sql.gz`
-→ `Running migrations`. No mount to add or remove.
+For a **new** environment that needs the initial data, provide a dump first
+(see §2 — mount it or drop it in `database/seed/`), then **Deploy**. On a fresh
+DB the logs show: `Fresh database detected` → `Importing seed dump: ...` →
+`Running migrations`. Afterwards, remove the dump.
 
-> If the DB already got a schema (e.g. migrations ran once before), the auto-seed
-> won't trigger. Set `FORCE_SEED=true` for one deploy to load the dump cleanly,
-> then remove the var (see §1).
+The existing prod & dev DBs are already seeded, so their redeploys just run
+`migrate` — nothing to do here.
 
 ### 4e. Persist uploads
 User uploads (ticket photos) live in `storage/app/public`. Add a **persistent
