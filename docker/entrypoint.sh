@@ -81,6 +81,17 @@ mkdir -p \
 chown -R www-data:www-data storage bootstrap/cache
 chmod -R 775 storage bootstrap/cache
 
+# nginx workers run as www-data, so its temp dirs must be writable by www-data.
+# Without this, buffering a request body (e.g. a file upload) fails with
+# "client_body ... Permission denied" and returns 500.
+mkdir -p \
+    /var/lib/nginx/tmp/client_body \
+    /var/lib/nginx/tmp/proxy \
+    /var/lib/nginx/tmp/fastcgi \
+    /var/lib/nginx/tmp/uwsgi \
+    /var/lib/nginx/tmp/scgi
+chown -R www-data:www-data /var/lib/nginx /run/nginx
+
 # ---------------------------------------------------------------------------
 # 2. Wait for the database to accept connections
 # ---------------------------------------------------------------------------
