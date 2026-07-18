@@ -10,9 +10,14 @@ class TrustProxies extends Middleware
     /**
      * The trusted proxies for this application.
      *
+     * '*' trusts the reverse proxy in front of the container (Dokploy/Traefik),
+     * so X-Forwarded-Proto is honoured and url()/route() generate https:// on
+     * TLS-terminated domains. Safe here because the container is only reachable
+     * through that proxy on the internal Docker network, never directly.
+     *
      * @var array<int, string>|string|null
      */
-    protected $proxies;
+    protected $proxies = '*';
 
     /**
      * The headers that should be used to detect proxies.
