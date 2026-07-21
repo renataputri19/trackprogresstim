@@ -1,0 +1,579 @@
+/* ==========================================================================
+   OMEGA — Outstanding Member of Great ASN
+   A modern, premium award experience for RENTAK (BPS Kota Batam).
+   Theme: teal/emerald (house colour) elevated with a warm gold award accent.
+   ========================================================================== */
+
+.omega {
+    --omega-teal: #0d9488;
+    --omega-teal-600: #0d9488;
+    --omega-teal-700: #0f766e;
+    --omega-emerald: #10b981;
+    --omega-ink: #0b3b39;
+    --omega-gold: #f5b301;
+    --omega-gold-soft: #fcd34d;
+    --omega-ring: rgba(13, 148, 136, 0.14);
+    font-feature-settings: "cv11", "ss01";
+    color: #0f172a;
+}
+
+/* ---- Motion primitives --------------------------------------------------- */
+@keyframes omega-fade-up {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes omega-aurora {
+    0%   { transform: translate3d(0,0,0) scale(1); }
+    50%  { transform: translate3d(3%, -4%, 0) scale(1.15); }
+    100% { transform: translate3d(0,0,0) scale(1); }
+}
+@keyframes omega-float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50%      { transform: translateY(-10px) rotate(2deg); }
+}
+@keyframes omega-shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+@keyframes omega-pop {
+    0%   { transform: scale(0.6); opacity: 0; }
+    60%  { transform: scale(1.08); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.omega-reveal {
+    opacity: 0;
+    animation: omega-fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.omega-reveal[data-delay="1"] { animation-delay: 0.08s; }
+.omega-reveal[data-delay="2"] { animation-delay: 0.16s; }
+.omega-reveal[data-delay="3"] { animation-delay: 0.24s; }
+.omega-reveal[data-delay="4"] { animation-delay: 0.32s; }
+
+@media (prefers-reduced-motion: reduce) {
+    .omega-reveal { opacity: 1; animation: none; }
+    .omega-aurora, .omega-float { animation: none !important; }
+}
+
+/* ---- Hero ---------------------------------------------------------------- */
+.omega-hero {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(178deg, #0e4a43 0%, #0a3b36 100%);
+    color: #e7f2ef;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Legacy badge (still used on the results header) */
+.omega-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.85rem;
+    border-radius: 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #d7efe8;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+}
+.omega-badge .dot { width: 6px; height: 6px; border-radius: 999px; background: var(--omega-gold); }
+
+.omega-wordmark {
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: #f3f8f6;
+}
+
+/* ---- Hero layout --------------------------------------------------------- */
+.omega-hero-grid {
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+}
+@media (min-width: 900px) {
+    .omega-hero-grid { grid-template-columns: minmax(0, 1fr) 320px; gap: 3.5rem; }
+}
+
+.omega-kicker {
+    display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;
+    font-size: 0.76rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+    color: rgba(210, 238, 231, 0.75);
+}
+.omega-kicker-sep { color: var(--omega-gold); font-size: 0.6rem; }
+
+.omega-lockup { position: relative; }
+.omega-name {
+    font-size: clamp(3.4rem, 9vw, 5.75rem);
+    font-weight: 800; letter-spacing: -0.035em; line-height: 0.92;
+    color: #f4f8f6;
+}
+.omega-expand {
+    margin-top: 0.5rem;
+    padding-left: 0.15rem;
+    font-size: clamp(0.95rem, 2vw, 1.15rem);
+    font-weight: 500; letter-spacing: 0.02em;
+    color: rgba(206, 235, 227, 0.82);
+}
+.omega-expand::before {
+    content: ""; display: block; width: 42px; height: 3px; margin-bottom: 0.9rem;
+    background: var(--omega-gold); border-radius: 2px;
+}
+
+.omega-lede {
+    max-width: 34rem;
+    font-size: 1.02rem; line-height: 1.65; color: rgba(203, 231, 224, 0.72);
+}
+
+.omega-hero-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+
+/* ---- Hero status card ---------------------------------------------------- */
+.omega-status {
+    padding: 1.4rem 1.5rem;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+.omega-status-head { display: flex; align-items: center; justify-content: space-between; }
+.omega-status-label {
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    color: rgba(203, 231, 224, 0.65);
+}
+.omega-status-emblem {
+    display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px;
+    color: var(--omega-gold-soft);
+    background: rgba(245, 179, 1, 0.1); border: 1px solid rgba(245, 179, 1, 0.28);
+}
+.omega-status-period { margin-top: 1rem; font-size: 1.5rem; font-weight: 800; letter-spacing: -0.01em; color: #fff; }
+.omega-status-months { margin-top: 0.15rem; font-size: 0.9rem; color: rgba(203, 231, 224, 0.7); }
+.omega-status-divider { height: 1px; margin: 1.1rem 0; background: rgba(255, 255, 255, 0.1); }
+.omega-status-note {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.82rem; font-weight: 500; color: rgba(203, 231, 224, 0.68);
+}
+
+/* ---- Generic section shell ---------------------------------------------- */
+.omega-section { padding: 3.5rem 0; }
+.omega-eyebrow {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--omega-teal-700);
+}
+.omega-h2 {
+    font-size: clamp(1.6rem, 3vw, 2.35rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #0b3b39;
+}
+
+.omega-card {
+    background: #ffffff;
+    border: 1px solid #e6f2f0;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px -18px rgba(13, 148, 136, 0.35);
+}
+
+/* ---- BerAKHLAK value chips ---------------------------------------------- */
+.omega-values { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.omega-value {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 0.95rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #0f766e;
+    background: linear-gradient(135deg, #f0fdfa, #ecfdf5);
+    border: 1px solid #ccfbf1;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.omega-value:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -12px rgba(13,148,136,0.5); }
+.omega-value .num {
+    display: grid; place-items: center;
+    width: 22px; height: 22px; border-radius: 999px;
+    font-size: 0.72rem; font-weight: 700;
+    color: #fff; background: linear-gradient(135deg, var(--omega-teal), var(--omega-emerald));
+}
+
+/* ---- Timeline steps ------------------------------------------------------ */
+.omega-steps { display: grid; gap: 1.5rem; }
+@media (min-width: 900px) { .omega-steps { grid-template-columns: repeat(3, 1fr); } }
+
+.omega-step {
+    position: relative;
+    padding: 1.75rem 1.5rem 1.5rem;
+    background: #ffffff;
+    border: 1px solid #e6f2f0;
+    border-radius: 20px;
+    box-shadow: 0 12px 34px -24px rgba(13, 148, 136, 0.6);
+    transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+    overflow: hidden;
+}
+.omega-step::before {
+    content: "";
+    position: absolute; inset: 0 0 auto 0; height: 4px;
+    background: linear-gradient(90deg, var(--omega-teal), var(--omega-emerald), var(--omega-gold));
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.4s ease;
+}
+.omega-step:hover { transform: translateY(-6px); box-shadow: 0 24px 44px -26px rgba(13,148,136,0.7); border-color: #99f6e4; }
+.omega-step:hover::before { transform: scaleX(1); }
+
+.omega-step-num {
+    position: absolute; top: 1.25rem; right: 1.25rem;
+    font-size: 2.75rem; font-weight: 800; line-height: 1;
+    color: #e6f6f3;
+}
+.omega-step-icon {
+    display: grid; place-items: center;
+    width: 54px; height: 54px; border-radius: 16px;
+    color: #0f766e;
+    background: linear-gradient(135deg, #f0fdfa, #d1fae5);
+    border: 1px solid #ccfbf1;
+    margin-bottom: 1rem;
+}
+.omega-step h3 { font-size: 1.1rem; font-weight: 700; color: #0b3b39; margin-bottom: 0.4rem; }
+.omega-step p { font-size: 0.92rem; line-height: 1.55; color: #475569; }
+
+.omega-metric {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 0.6rem 0.8rem; border-radius: 12px;
+    background: #f8fafc; border: 1px solid #eef2f7;
+    font-size: 0.82rem; color: #334155;
+}
+.omega-metric b { color: #0f766e; }
+
+/* ---- Ballot -------------------------------------------------------------- */
+.omega-ballot-shell {
+    background:
+        radial-gradient(80% 120% at 100% 0%, rgba(16,185,129,0.06), transparent 60%),
+        linear-gradient(180deg, #ffffff, #f6fbfa);
+    border: 1px solid #e2f1ee;
+    border-radius: 26px;
+    box-shadow: 0 30px 60px -40px rgba(13, 148, 136, 0.55);
+}
+
+.omega-identity-select {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    font-size: 0.98rem;
+    border-radius: 14px;
+    border: 1.5px solid #cbe7e2;
+    background: #fff;
+    color: #0f172a;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.omega-identity-select:focus {
+    outline: none;
+    border-color: var(--omega-teal);
+    box-shadow: 0 0 0 4px var(--omega-ring);
+}
+
+.omega-team-card {
+    border: 1px solid #e6f2f0;
+    border-radius: 18px;
+    background: #fff;
+    overflow: hidden;
+    transition: box-shadow 0.25s ease;
+}
+.omega-team-card.is-done { box-shadow: 0 0 0 2px #6ee7b7 inset; }
+.omega-team-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: linear-gradient(135deg, #f0fdfa, #ecfdf5);
+    border-bottom: 1px solid #e6f2f0;
+}
+.omega-team-name { display: flex; align-items: center; gap: 0.7rem; font-weight: 700; color: #0b3b39; }
+.omega-team-badge {
+    display: grid; place-items: center; min-width: 34px; height: 34px; padding: 0 0.5rem;
+    border-radius: 10px; color: #fff; font-size: 0.8rem; font-weight: 700;
+    background: linear-gradient(135deg, var(--omega-teal), var(--omega-emerald));
+}
+.omega-team-status {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    font-size: 0.78rem; font-weight: 600; color: #94a3b8;
+}
+.omega-team-status.is-done { color: #059669; }
+
+.omega-candidates {
+    display: grid; gap: 0.6rem; padding: 1.1rem 1.25rem 1.35rem;
+}
+@media (min-width: 640px) { .omega-candidates { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .omega-candidates { grid-template-columns: repeat(3, 1fr); } }
+
+.omega-candidate {
+    position: relative;
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.7rem 0.85rem;
+    border-radius: 14px;
+    border: 1.5px solid #e7edec;
+    background: #fff;
+    cursor: pointer;
+    transition: border-color 0.18s, background 0.18s, transform 0.12s, box-shadow 0.18s;
+}
+.omega-candidate:hover { border-color: #99f6e4; background: #f0fdfa; transform: translateY(-1px); }
+.omega-candidate input { position: absolute; opacity: 0; pointer-events: none; }
+.omega-candidate .avatar {
+    display: grid; place-items: center;
+    width: 38px; height: 38px; border-radius: 999px; flex-shrink: 0;
+    font-size: 0.85rem; font-weight: 700; color: #0f766e;
+    background: #d1fae5;
+    transition: background 0.18s, color 0.18s;
+}
+.omega-candidate .cname { font-size: 0.9rem; font-weight: 600; color: #1e293b; line-height: 1.25; }
+.omega-candidate .cself {
+    display: inline-block; margin-top: 2px;
+    font-size: 0.66rem; font-weight: 700; letter-spacing: 0.04em;
+    color: #b45309; text-transform: uppercase;
+}
+.omega-candidate .check {
+    margin-left: auto; opacity: 0; transform: scale(0.5);
+    color: var(--omega-emerald); transition: opacity 0.18s, transform 0.18s;
+}
+.omega-candidate.is-selected {
+    border-color: var(--omega-emerald);
+    background: linear-gradient(135deg, #ecfdf5, #f0fdfa);
+    box-shadow: 0 10px 24px -16px rgba(16,185,129,0.8);
+}
+.omega-candidate.is-selected .avatar { background: linear-gradient(135deg, var(--omega-teal), var(--omega-emerald)); color: #fff; }
+.omega-candidate.is-selected .check { opacity: 1; transform: scale(1); animation: omega-pop 0.3s ease; }
+
+/* ---- Sticky submit bar --------------------------------------------------- */
+.omega-submitbar {
+    position: sticky; bottom: 1rem;
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+    padding: 1rem 1.25rem;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid #d7ece8;
+    box-shadow: 0 18px 40px -26px rgba(13,148,136,0.7);
+}
+.omega-progress-track { width: 160px; height: 8px; border-radius: 999px; background: #e2e8f0; overflow: hidden; }
+.omega-progress-fill { height: 100%; width: 0%; border-radius: 999px;
+    background: linear-gradient(90deg, var(--omega-teal), var(--omega-emerald)); transition: width 0.35s ease; }
+
+.omega-submit {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.8rem 1.6rem; border-radius: 11px;
+    font-weight: 700; color: #093b35; border: none; cursor: pointer;
+    background: #fbbf24; transition: background 0.15s, transform 0.15s;
+}
+.omega-submit:hover:not(:disabled) { background: #f0b019; transform: translateY(-1px); }
+.omega-submit:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* ---- Success / already-voted summary ------------------------------------ */
+.omega-thanks {
+    position: relative; overflow: hidden;
+    background: linear-gradient(178deg, #0e4a43 0%, #0a3b36 100%);
+    color: #e7f2ef; border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+.omega-summary-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    padding: 0.85rem 1.1rem; border-radius: 14px;
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+}
+.omega-summary-team { font-size: 0.78rem; letter-spacing: 0.05em; text-transform: uppercase; color: #7fdfce; font-weight: 700; }
+.omega-summary-name { font-weight: 700; color: #fff; }
+
+.omega-alert {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    padding: 0.9rem 1.1rem; border-radius: 14px; font-size: 0.9rem;
+}
+.omega-alert--success { background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; }
+.omega-alert--info { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
+.omega-alert--warn { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
+
+/* ==========================================================================
+   v2 — hero buttons, quarter timeline, voting wizard
+   ========================================================================== */
+
+/* ---- Hero buttons -------------------------------------------------------- */
+.omega-hero-cta {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.8rem 1.4rem; border-radius: 11px;
+    font-size: 0.92rem; font-weight: 700; color: #093b35;
+    background: #fbbf24; transition: background 0.16s, transform 0.16s;
+}
+.omega-hero-cta:hover { background: #f0b019; transform: translateY(-1px); }
+.omega-hero-ghost {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.8rem 1.3rem; border-radius: 11px;
+    font-size: 0.92rem; font-weight: 600; color: #dcefe9;
+    border: 1px solid rgba(255,255,255,0.22); background: transparent;
+    transition: background 0.16s, border-color 0.16s;
+}
+.omega-hero-ghost:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.35); }
+
+/* ---- Quarter timeline ---------------------------------------------------- */
+.omega-timeline-card {
+    background: rgba(255,255,255,0.035);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px; padding: 1.35rem 1.5rem 1.5rem;
+}
+.omega-timeline-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.omega-timeline-title { font-size: 0.82rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(215, 239, 232, 0.8); }
+.omega-timeline-note { font-size: 0.74rem; color: rgba(203, 231, 224, 0.5); }
+
+.omega-timeline { display: flex; gap: 0.25rem; overflow-x: auto; padding-bottom: 0.25rem; }
+.omega-tl-node {
+    position: relative; flex: 1 0 84px;
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+}
+/* connector line between nodes */
+.omega-tl-node:not(:last-child)::after {
+    content: ""; position: absolute; top: 17px; left: 50%; width: 100%; height: 2px;
+    background: rgba(255,255,255,0.12); z-index: 0;
+}
+.omega-tl-node.is-closed:not(:last-child)::after { background: rgba(52, 211, 153, 0.55); }
+
+.omega-tl-dot {
+    position: relative; z-index: 1;
+    display: grid; place-items: center;
+    width: 36px; height: 36px; border-radius: 999px;
+    background: #0e4a43; color: rgba(255,255,255,0.4);
+    border: 1.5px solid rgba(255,255,255,0.2);
+}
+.omega-tl-node.is-closed .omega-tl-dot { background: #10b981; color: #05271f; border-color: #10b981; }
+.omega-tl-node.is-open .omega-tl-dot {
+    background: #fbbf24; color: #3d2a00; border-color: #fbbf24;
+    box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.18);
+}
+.omega-tl-node.is-upcoming .omega-tl-dot { border-style: dashed; border-color: rgba(255,255,255,0.22); }
+
+.omega-tl-meta { margin-top: 0.7rem; display: flex; flex-direction: column; gap: 2px; }
+.omega-tl-title { font-size: 0.83rem; font-weight: 700; color: rgba(255,255,255,0.55); }
+.omega-tl-months { font-size: 0.71rem; color: rgba(255,255,255,0.4); }
+.omega-tl-status {
+    margin-top: 0.3rem; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.04em;
+    text-transform: uppercase; color: rgba(255,255,255,0.38);
+}
+.omega-tl-node.is-closed .omega-tl-title { color: #d1fae5; }
+.omega-tl-node.is-closed .omega-tl-status { color: #6ee7b7; }
+.omega-tl-node.is-open .omega-tl-title { color: #fff; }
+.omega-tl-node.is-open .omega-tl-months { color: rgba(255,255,255,0.7); }
+.omega-tl-node.is-open .omega-tl-status { color: #fbbf24; }
+
+/* ---- Wizard shell -------------------------------------------------------- */
+.omega-wizard {
+    background: #ffffff;
+    border: 1px solid #e3ebe9; border-radius: 18px;
+    padding: 1.5rem 1.5rem 1.75rem;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 12px 28px -22px rgba(13, 60, 55, 0.35);
+}
+@media (min-width: 640px) { .omega-wizard { padding: 2rem 2.25rem 2.25rem; } }
+
+.omega-wizard-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.25rem; min-height: 44px; }
+
+.omega-chip { display: inline-flex; align-items: center; gap: 0.65rem; padding: 0.4rem 0.5rem 0.4rem 0.4rem; border-radius: 999px; background: #f0fdfa; border: 1px solid #cbe7e2; }
+.omega-chip-av, .omega-cand-av, .omega-identity-verified > .omega-chip-av {
+    display: grid; place-items: center; width: 34px; height: 34px; border-radius: 999px;
+    font-size: 0.78rem; font-weight: 700; color: #fff; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--omega-teal), var(--omega-emerald));
+}
+.omega-chip-text { display: flex; flex-direction: column; line-height: 1.1; padding-right: 0.4rem; }
+.omega-chip-name { font-size: 0.85rem; font-weight: 700; color: #0f766e; }
+.omega-chip-sub { font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.06em; color: #5e9c93; }
+.omega-chip-change {
+    margin-left: 0.15rem; padding: 0.3rem 0.7rem; border-radius: 999px;
+    font-size: 0.72rem; font-weight: 700; color: #0f766e;
+    background: #fff; border: 1px solid #cbe7e2; cursor: pointer; transition: background 0.15s;
+}
+.omega-chip-change:hover { background: #e6fffa; }
+
+.omega-wizard-progress { display: flex; align-items: center; gap: 0.6rem; }
+.omega-progress-label { font-size: 0.8rem; font-weight: 600; color: #64748b; white-space: nowrap; }
+.omega-progress-label b { color: #0f766e; }
+
+/* ---- Panels -------------------------------------------------------------- */
+.omega-panel { display: none; }
+.omega-panel.is-active { display: block; animation: omega-panel-in 0.35s cubic-bezier(0.22,1,0.36,1); }
+@keyframes omega-panel-in { from { opacity: 0; transform: translateX(14px); } to { opacity: 1; transform: none; } }
+
+.omega-panel-head { margin-bottom: 1.1rem; }
+.omega-panel-kicker { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #14b8a6; }
+.omega-panel-team { display: flex; align-items: center; gap: 0.6rem; margin-top: 0.35rem; font-size: 1.3rem; font-weight: 800; color: #0b3b39; letter-spacing: -0.01em; }
+.omega-panel-hint { margin-top: 0.4rem; font-size: 0.9rem; color: #64748b; }
+
+.omega-identity-verified { display: flex; align-items: center; gap: 0.85rem; padding: 1rem 1.1rem; border-radius: 16px; background: #f0fdfa; border: 1px solid #cbe7e2; }
+.omega-identity-verified > .omega-chip-av { width: 44px; height: 44px; font-size: 0.95rem; }
+
+/* ---- Candidate cards ----------------------------------------------------- */
+.omega-cands { display: grid; gap: 0.65rem; }
+@media (min-width: 560px) { .omega-cands { grid-template-columns: repeat(2, 1fr); } }
+
+.omega-cand {
+    position: relative; display: flex; align-items: center; gap: 0.8rem;
+    padding: 0.8rem 0.9rem; border-radius: 15px;
+    border: 1.5px solid #e7edec; background: #fff; cursor: pointer;
+    transition: border-color 0.16s, background 0.16s, transform 0.12s, box-shadow 0.16s;
+}
+.omega-cand:hover { border-color: #5eead4; background: #f0fdfa; transform: translateY(-1px); }
+.omega-cand input { position: absolute; opacity: 0; pointer-events: none; }
+.omega-cand-av { background: #d1fae5 !important; color: #0f766e !important; transition: background 0.16s, color 0.16s; }
+.omega-cand-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.omega-cand-name { font-size: 0.92rem; font-weight: 600; color: #1e293b; line-height: 1.25; }
+.omega-cand-tag {
+    align-self: flex-start; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.05em;
+    text-transform: uppercase; color: #b45309; background: #fef3c7; padding: 1px 7px; border-radius: 999px;
+}
+.omega-cand-tick { margin-left: auto; color: var(--omega-emerald); opacity: 0; transform: scale(0.5); transition: opacity 0.16s, transform 0.16s; }
+.omega-cand.is-selected {
+    border-color: var(--omega-emerald);
+    background: linear-gradient(135deg, #ecfdf5, #f0fdfa);
+    box-shadow: 0 12px 26px -16px rgba(16,185,129,0.85);
+}
+.omega-cand.is-selected .omega-cand-av { background: linear-gradient(135deg, var(--omega-teal), var(--omega-emerald)) !important; color: #fff !important; }
+.omega-cand.is-selected .omega-cand-tick { opacity: 1; transform: scale(1); animation: omega-pop 0.3s ease; }
+
+/* ---- Review -------------------------------------------------------------- */
+.omega-review { display: grid; gap: 0.6rem; }
+.omega-review-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    padding: 0.85rem 1rem; border-radius: 14px; background: #f8fafc; border: 1px solid #eef2f7;
+}
+.omega-review-team { display: block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: #14b8a6; }
+.omega-review-name { display: block; margin-top: 2px; font-weight: 700; color: #1e293b; }
+.omega-review-name em { font-weight: 500; color: #cbd5e1; }
+.omega-review-edit { flex-shrink: 0; padding: 0.4rem 0.9rem; border-radius: 999px; font-size: 0.78rem; font-weight: 700; color: #0f766e; background: #fff; border: 1px solid #cbe7e2; cursor: pointer; transition: background 0.15s; }
+.omega-review-edit:hover { background: #e6fffa; }
+
+/* ---- Nav ----------------------------------------------------------------- */
+.omega-nav { display: flex; align-items: center; gap: 0.75rem; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #eef4f3; }
+.omega-nav .omega-btn-ghost { margin-right: auto; }
+.omega-btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.8rem 1.5rem; border-radius: 11px; font-weight: 700; color: #fff; border: none; cursor: pointer;
+    background: #0f766e; transition: background 0.15s, transform 0.15s;
+}
+.omega-btn:hover:not(:disabled) { background: #0c655e; transform: translateY(-1px); }
+.omega-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.omega-btn-ghost {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.8rem 1.2rem; border-radius: 13px; font-weight: 600; color: #475569;
+    background: #fff; border: 1.5px solid #e2e8f0; cursor: pointer; transition: background 0.15s, border-color 0.15s;
+}
+.omega-btn-ghost:hover { background: #f8fafc; border-color: #cbd5e1; }
+.omega-btn-ghost[hidden] { display: none; }
+
+/* shake for empty next */
+.omega-shake { animation: omega-shake 0.4s; }
+@keyframes omega-shake { 0%,100%{transform:translateX(0);} 20%,60%{transform:translateX(-7px);} 40%,80%{transform:translateX(7px);} }
+
+/* ---- Thanks celebration -------------------------------------------------- */
+.omega-thanks-check {
+    display: grid; place-items: center; width: 60px; height: 60px; border-radius: 999px;
+    color: #093b35; background: #fbbf24; animation: omega-pop 0.5s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .omega-panel.is-active, .omega-shake, .omega-tl-pulse, .omega-thanks-check { animation: none !important; }
+}

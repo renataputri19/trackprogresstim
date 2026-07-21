@@ -271,6 +271,53 @@
 
     <!-- Main Content Container -->
     <div class="container mx-auto px-4 py-12">
+
+        {{-- Success flash after creating a user --}}
+        @if(session('user_created'))
+        <div class="mb-6 flex items-start gap-3 rounded-lg border border-green-200 bg-green-50 p-4 text-green-800 shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 flex-shrink-0">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <path d="m9 11 3 3L22 4"/>
+            </svg>
+            <p class="text-sm font-medium">{{ session('user_created') }}</p>
+        </div>
+        @endif
+
+        {{-- Add User panel - visible ONLY to IT staff --}}
+        @if(auth()->user()->is_it_staff)
+        <div class="mb-8 overflow-hidden rounded-xl bg-white shadow-lg ring-1 ring-gray-200/50">
+            <div class="flex flex-col gap-4 border-b border-gray-200 bg-gradient-to-r from-teal-50 to-emerald-50 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+                <div class="flex items-start gap-3">
+                    <div class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg bg-teal-100 text-teal-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <line x1="19" y1="8" x2="19" y2="14"/>
+                            <line x1="22" y1="11" x2="16" y2="11"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900">Manajemen Pengguna</h2>
+                        <p class="mt-1 text-sm text-gray-600">Khusus IT — tambahkan akun pengguna baru beserta perannya.</p>
+                    </div>
+                </div>
+                <button type="button" id="open-add-user-modal"
+                        class="inline-flex items-center justify-center gap-2 rounded-md bg-gradient-to-r from-teal-600 via-emerald-500 to-teal-600 px-4 py-2 text-sm font-medium text-white shadow-md transition-all duration-300 hover:from-teal-700 hover:via-emerald-600 hover:to-teal-700 hover:shadow-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"/>
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                    Tambah Pengguna
+                </button>
+            </div>
+            <div class="px-6 py-4">
+                <p class="text-sm text-gray-500">
+                    Satu pengguna dapat memiliki lebih dari satu peran. Biarkan peran kosong untuk pegawai biasa.
+                </p>
+            </div>
+        </div>
+        @endif
+
         <!-- Links and Applications Section -->
         <div class="overflow-hidden rounded-xl bg-white shadow-lg ring-1 ring-gray-200/50">
                 <div class="border-b border-gray-200 bg-gradient-to-r from-teal-50 to-emerald-50 px-6 py-4">
@@ -350,6 +397,26 @@
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Our Apps</h3>
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+                            {{-- OMEGA — Pemilihan Pegawai Terbaik Triwulanan (featured) --}}
+                            <a href="{{ route('omega.index') }}"
+                               class="group relative flex items-center overflow-hidden rounded-lg border border-amber-200 bg-gradient-to-br from-amber-50 to-teal-50 p-4 shadow-sm ring-1 ring-amber-100/60 transition-all duration-200 hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-md">
+                                <span class="absolute right-2 top-2 rounded-full bg-amber-400/90 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white shadow-sm">Baru</span>
+                                <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-amber-500 text-white shadow-inner transition-transform duration-200 group-hover:scale-105">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
+                                        <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+                                        <path d="M4 22h16"/>
+                                        <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
+                                        <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
+                                        <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
+                                    </svg>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-bold text-gray-900 group-hover:text-amber-700">OMEGA</p>
+                                    <p class="text-xs text-gray-600">Pegawai Terbaik</p>
+                                </div>
+                            </a>
+
                             <a href="https://monalisa.bpsbatam.com/" target="_blank"
                                class="group flex items-center rounded-lg border border-gray-200 p-4 transition-all duration-200 hover:border-teal-300 hover:bg-teal-50 hover:shadow-md">
                                 <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-orange-100 text-orange-600 group-hover:bg-orange-200 transition-colors duration-200">
@@ -483,6 +550,165 @@
         </div>
     </div>
     <!-- End Main Content Container -->
+
+@if(auth()->user()->is_it_staff)
+{{-- Add User Modal (IT staff only) --}}
+<div id="add-user-modal" class="{{ $errors->any() ? 'flex' : 'hidden' }} fixed inset-0 z-[100] items-center justify-center bg-black/50 p-4" aria-modal="true" role="dialog">
+    <div class="w-full max-w-lg overflow-hidden rounded-xl bg-white shadow-2xl">
+        <div class="flex items-center justify-between border-b border-gray-200 bg-gradient-to-r from-teal-50 to-emerald-50 px-6 py-4">
+            <h3 class="text-lg font-semibold text-gray-900">Tambah Pengguna Baru</h3>
+            <button type="button" id="close-add-user-modal" class="text-gray-400 transition-colors hover:text-gray-600" aria-label="Tutup">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+        </div>
+
+        <form action="{{ route('users.store') }}" method="POST" class="max-h-[75vh] overflow-y-auto px-6 py-5">
+            @csrf
+            @php
+                // Border colour per field: red when that field has a validation error.
+                $fieldBorder = fn ($field) => $errors->has($field) ? 'border-red-400' : 'border-gray-300';
+            @endphp
+
+            @if($errors->any())
+            <div class="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                <p class="font-medium">Periksa kembali isian berikut:</p>
+                <ul class="mt-1 list-inside list-disc space-y-0.5">
+                    @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
+
+            <div class="space-y-4">
+                {{-- Name --}}
+                <div>
+                    <label for="au-name" class="block text-sm font-medium text-gray-700">Nama Lengkap <span class="text-red-500">*</span></label>
+                    <input type="text" name="name" id="au-name" value="{{ old('name') }}" required autocomplete="off"
+                           class="mt-1 block w-full rounded-md border {{ $fieldBorder('name') }} px-3 py-2 text-sm shadow-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500">
+                    @error('name')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
+                </div>
+
+                {{-- Email --}}
+                <div>
+                    <label for="au-email" class="block text-sm font-medium text-gray-700">Email <span class="text-red-500">*</span></label>
+                    <input type="email" name="email" id="au-email" value="{{ old('email') }}" required autocomplete="off"
+                           class="mt-1 block w-full rounded-md border {{ $fieldBorder('email') }} px-3 py-2 text-sm shadow-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500">
+                    @error('email')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
+                </div>
+
+                {{-- Phone number (optional) --}}
+                <div>
+                    <label for="au-phone" class="block text-sm font-medium text-gray-700">Nomor Telepon <span class="text-gray-400">(opsional)</span></label>
+                    <input type="text" name="phone_number" id="au-phone" value="{{ old('phone_number') }}" autocomplete="off" inputmode="tel"
+                           class="mt-1 block w-full rounded-md border {{ $fieldBorder('phone_number') }} px-3 py-2 text-sm shadow-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500">
+                    @error('phone_number')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
+                </div>
+
+                {{-- Password --}}
+                <div>
+                    <label for="au-password" class="block text-sm font-medium text-gray-700">Password <span class="text-red-500">*</span></label>
+                    <input type="password" name="password" id="au-password" required autocomplete="new-password"
+                           class="mt-1 block w-full rounded-md border {{ $fieldBorder('password') }} px-3 py-2 text-sm shadow-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500">
+                    <p class="mt-1 text-xs text-gray-500">Minimal 8 karakter.</p>
+                    @error('password')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
+                </div>
+
+                {{-- Password confirmation --}}
+                <div>
+                    <label for="au-password-confirm" class="block text-sm font-medium text-gray-700">Konfirmasi Password <span class="text-red-500">*</span></label>
+                    <input type="password" name="password_confirmation" id="au-password-confirm" required autocomplete="new-password"
+                           class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500">
+                </div>
+
+                {{-- Roles (checkboxes - a user may have several) --}}
+                <div>
+                    <span class="block text-sm font-medium text-gray-700">Peran</span>
+                    <p class="text-xs text-gray-500">Satu pengguna bisa memiliki lebih dari satu peran. Biarkan kosong untuk pegawai biasa.</p>
+                    <div class="mt-2 space-y-2">
+                        <label class="flex items-center gap-3 rounded-md border border-gray-200 px-3 py-2 transition-colors hover:bg-gray-50">
+                            <input type="checkbox" name="roles[]" value="admin" {{ in_array('admin', old('roles', [])) ? 'checked' : '' }}
+                                   class="h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500">
+                            <span>
+                                <span class="block text-sm font-medium text-gray-900">Administrator</span>
+                                <span class="block text-xs text-gray-500">Akses penuh pengelolaan tugas &amp; admin</span>
+                            </span>
+                        </label>
+                        <label class="flex items-center gap-3 rounded-md border border-gray-200 px-3 py-2 transition-colors hover:bg-gray-50">
+                            <input type="checkbox" name="roles[]" value="it_staff" {{ in_array('it_staff', old('roles', [])) ? 'checked' : '' }}
+                                   class="h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500">
+                            <span>
+                                <span class="block text-sm font-medium text-gray-900">IT Staff</span>
+                                <span class="block text-xs text-gray-500">Kelola tiket Halo IP &amp; tambah pengguna</span>
+                            </span>
+                        </label>
+                    </div>
+                    @error('roles')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
+                    @error('roles.*')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
+                </div>
+            </div>
+
+            <div class="mt-6 flex items-center justify-end gap-3 border-t border-gray-100 pt-4">
+                <button type="button" id="cancel-add-user"
+                        class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50">
+                    Batal
+                </button>
+                <button type="submit"
+                        class="inline-flex items-center gap-2 rounded-md bg-gradient-to-r from-teal-600 via-emerald-500 to-teal-600 px-4 py-2 text-sm font-medium text-white shadow-md transition-all duration-300 hover:from-teal-700 hover:via-emerald-600 hover:to-teal-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 6 9 17l-5-5"/>
+                    </svg>
+                    Simpan Pengguna
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('add-user-modal');
+    const openBtn = document.getElementById('open-add-user-modal');
+    const closeBtn = document.getElementById('close-add-user-modal');
+    const cancelBtn = document.getElementById('cancel-add-user');
+    if (!modal) return;
+
+    function openModal() {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+        const first = document.getElementById('au-name');
+        if (first) first.focus();
+    }
+    function closeModal() {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = '';
+    }
+
+    if (openBtn) openBtn.addEventListener('click', openModal);
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+
+    // Close when clicking the backdrop (outside the dialog card)
+    modal.addEventListener('click', function (e) {
+        if (e.target === modal) closeModal();
+    });
+    // Close on Escape
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
+    });
+
+    // If server-side validation failed, the modal is already shown; keep body locked.
+    if (modal.classList.contains('flex')) {
+        document.body.style.overflow = 'hidden';
+    }
+});
+</script>
+@endif
 
 <!-- Dynamic Quotes and Scripts -->
 <script>

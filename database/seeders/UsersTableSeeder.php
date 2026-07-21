@@ -13,7 +13,33 @@ class UsersTableSeeder extends Seeder
 
 
 $users = [
-            // ['name' => 'Eko Aprianto, SST, M.T.I.', 'email' => 'e_aprianto@bps.go.id', 'password' => Hash::make('340016186'), 'is_admin' => 1],
+            // =====================================================================
+            // Pegawai dari daftar "Tim 2026" yang BELUM punya akun di sistem.
+            // Nama sudah diisi persis seperti di Tim 2026 agar cocok otomatis dengan
+            // OMEGA. Email di bawah masih placeholder — GANTI dengan email asli, dan
+            // ganti 'CHANGEME' dengan password (mis. NIP). Setelah itu jalankan:
+            //   php artisan db:seed --class=UsersTableSeeder
+            // =====================================================================
+            // Kepala BPS Kota Batam (2 orang) — dapat memilih di SEMUA bidang (lihat config/omega.php 'leaders').
+            // is_admin = 1 agar dapat melihat rekapitulasi OMEGA untuk penetapan Tahap 3.
+            // Eko Aprianto sudah ada di sistem sejak bootstrap; insertOrIgnore akan melewatinya.
+            ['name' => 'Devi Indriastuti, SST, M.Si.',         'email' => 'devi.indria@bps.go.id',         'password' => Hash::make('340017289'),  'is_admin' => 1],
+            // ['name' => 'Eko Aprianto, SST, M.T.I.',            'email' => 'e_aprianto@bps.go.id',          'password' => Hash::make('340016186'), 'is_admin' => 1],
+
+            // ['name' => 'Gideon Marpaung, S.Tr.Stat.',         'email' => 'gideon.marpaung@bps.go.id',     'password' => Hash::make('CHANGEME'), 'is_admin' => 0],
+            ['name' => 'Hanifah Ayu SST',                      'email' => 'hanifah@bps.go.id',         'password' => Hash::make('340054151'), 'is_admin' => 0],
+            ['name' => 'Hogan Da Costa Sinurat S.M.',          'email' => 'hogan.sinurat@bps.go.id',       'password' => Hash::make('340059935'), 'is_admin' => 0],
+            ['name' => 'Intan Nur Arifah, A.Md.Ak.',           'email' => 'intan.nur@bps.go.id',        'password' => Hash::make('340063808'), 'is_admin' => 0],
+            ['name' => 'Pretty Melati Pardede S.Tr.Stat.',     'email' => 'prettymelati@bps.go.id',      'password' => Hash::make('340066437'), 'is_admin' => 0],
+            // ['name' => 'Radhitya Noor Adhyaksani, S.Tr.Stat.', 'email' => 'radhitya.adhyaksani@bps.go.id', 'password' => Hash::make('CHANGEME'), 'is_admin' => 0],
+            ['name' => 'Reno Fitria, SST',                     'email' => 'reno.fitria@bps.go.id',         'password' => Hash::make('340014967'), 'is_admin' => 0],
+            ['name' => 'Weldy Melsa Saputra',                  'email' => 'weldysaputra-pppk@bps.go.id',       'password' => Hash::make('340065928'), 'is_admin' => 0],
+            // Nurmawiya belum tergabung di tim manapun pada Tim 2026 (bukan pemilih OMEGA), tetap ditambahkan sebagai pegawai:
+            ['name' => 'Nurmawiya, S.Tr.Stat.',                'email' => 'nurmawiya@bps.go.id',           'password' => Hash::make('340060259'), 'is_admin' => 0],
+
+            // ---------------------------------------------------------------------
+            // Sudah ada di sistem (di-seed saat bootstrap awal) — dibiarkan nonaktif.
+            // ---------------------------------------------------------------------
             // ['name' => 'Sri Desmiwati, S.ST', 'email' => 'desmi@bps.go.id', 'password' => Hash::make('340016419'), 'is_admin' => 1],
             // ['name' => 'Desmaini, S.Si', 'email' => 'desmaini@bps.go.id', 'password' => Hash::make('340016709'), 'is_admin' => 1],
             // ['name' => 'Adi Darmanto, S.E.', 'email' => 'adi.darmanto@bps.go.id', 'password' => Hash::make('340054823'), 'is_admin' => 1],
@@ -50,11 +76,12 @@ $users = [
             // ['name' => 'Florentz Magdalena', 'email' => 'fmagdalena@bps.go.id', 'password' => Hash::make('340056837'), 'is_admin' => 1],
             // ['name' => 'Maulidya Fan Ghul Udzan Utami', 'email' => 'maulidfan.ghul@bps.go.id', 'password' => Hash::make('340063310'), 'is_admin' => 1],
             // ['name' => 'Test User', 'email' => 'testuser@bps.go.id', 'password' => Hash::make('password'), 'is_admin' => 0],
-            ['name' => 'Radhitya Noor Adhyaksani', 'email' => 'radhitya.noor@bps.go.id', 'password' => Hash::make('340060281'), 'is_admin' => 1],
-            ['name' => 'Gideon Marpaung', 'email' => 'gideon.marpaung@bps.go.id', 'password' => Hash::make('340060118'), 'is_admin' => 1],
+            // ['name' => 'Radhitya Noor Adhyaksani', 'email' => 'radhitya.noor@bps.go.id', 'password' => Hash::make('340060281'), 'is_admin' => 1],
+            // ['name' => 'Gideon Marpaung', 'email' => 'gideon.marpaung@bps.go.id', 'password' => Hash::make('340060118'), 'is_admin' => 1],
         ];
 
-        DB::table('users')->insert($users);
+        // insertOrIgnore: aman dijalankan ulang — baris dengan email yang sudah ada dilewati.
+        DB::table('users')->insertOrIgnore($users);
 
         // Set is_it_staff for specific users
         $itStaffEmails = [

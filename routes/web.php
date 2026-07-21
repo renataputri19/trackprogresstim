@@ -156,6 +156,19 @@ Route::middleware(['auth'])->group(function () {
     // New welcome route using the new homepage controller
     Route::get('/welcome', [NewHomepageController::class, 'welcome'])->name('welcome');
 
+    // OMEGA (Outstanding Member of Great ASN) — Pemilihan Pegawai Terbaik Triwulanan
+    Route::get('/omega', [App\Http\Controllers\OmegaController::class, 'index'])->name('omega.index');
+    Route::post('/omega/vote', [App\Http\Controllers\OmegaController::class, 'vote'])->name('omega.vote');
+    // Rekapitulasi suara — akses dibatasi ke email di config('omega.results_access')
+    Route::get('/omega/results', [App\Http\Controllers\OmegaController::class, 'results'])
+        ->name('omega.results');
+
+    // Add User (IT staff only) - creating accounts from the welcome dashboard.
+    // The it_staff middleware is the real authorization gate; the UI is only hidden.
+    Route::post('/users', [App\Http\Controllers\UserManagementController::class, 'store'])
+        ->middleware('it_staff')
+        ->name('users.store');
+
     // Padamu Negeri: set selected year in session
     Route::post('/padamunegri/set-year', function (Request $request) {
         $year = (int) $request->input('year');
