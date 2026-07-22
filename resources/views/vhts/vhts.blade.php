@@ -1,7 +1,12 @@
 @extends('new-homepage.layouts.app')
 @section('title', 'BAHTERA Version 1 - RENTAK')
+
+@section('styles')
+<link rel="stylesheet" href="{{ asset('css/new-homepage/bahtera.css') }}">
+@endsection
+
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-teal-50">
+<div class="min-h-screen bh-page">
     <!-- Header Section -->
     <div class="relative overflow-hidden bg-gradient-to-r from-teal-600 via-emerald-500 to-teal-600 py-16">
         <div class="absolute inset-0 bg-black/10"></div>
@@ -20,10 +25,10 @@
 
     <!-- Main Content -->
     <div class="container mx-auto px-4 py-12">
-        <div class="overflow-hidden rounded-xl bg-white shadow-lg ring-1 ring-gray-200/50">
-            <div class="border-b border-gray-200 bg-gradient-to-r from-teal-50 to-emerald-50 px-6 py-4">
-                <h2 class="text-2xl font-bold text-gray-900">Sistem Validasi BAHTERA</h2>
-                <p class="mt-1 text-sm text-gray-600">Validasi data survei tingkat penghunian kamar hotel</p>
+        <div class="overflow-hidden rounded-xl bg-[color:var(--surface)] shadow-lg ring-1 ring-[color:var(--border)]">
+            <div class="border-b border-[color:var(--border)] bg-gradient-to-r from-brand-500/10 to-emerald-500/5 px-6 py-4">
+                <h2 class="text-2xl font-bold text-[color:var(--text-strong)]">Sistem Validasi BAHTERA</h2>
+                <p class="mt-1 text-sm text-[color:var(--text-muted)]">Validasi data survei tingkat penghunian kamar hotel</p>
             </div>
 
             <div class="p-6">
@@ -33,9 +38,9 @@
                     <form id="vhtsForm" method="POST" action="{{ route('bahtera.v1.validate') }}">
                         @csrf
                         <div class="mb-6">
-                            <label for="pasteData" class="block text-sm font-medium text-gray-700 mb-2">Paste Data dari Excel</label>
+                            <label for="pasteData" class="block text-sm font-medium text-[color:var(--text)] mb-2">Paste Data dari Excel</label>
                             <textarea
-                                class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20"
+                                class="w-full rounded-lg border border-[color:var(--border)] px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20"
                                 id="pasteData"
                                 rows="5"
                                 placeholder="Paste data dari Excel di sini (pisahkan dengan tab)"></textarea>
@@ -69,24 +74,24 @@
 
                 <!-- Tabel untuk menampilkan data -->
                 <div class="overflow-x-auto">
-                    <table class="w-full border-collapse border border-gray-300 text-sm" id="vhtsTable">
-                        <thead class="bg-gray-50">
+                    <table class="w-full border-collapse border border-[color:var(--border)] text-sm" id="vhtsTable">
+                        <thead class="bg-[color:var(--surface-muted)]">
                             <tr>
-                                <th class="border border-gray-300 px-4 py-2 text-left font-medium text-gray-900">Tanggal</th>
-                                <th class="border border-gray-300 px-4 py-2 text-left font-medium text-gray-900">Jumlah Kamar Tersedia</th>
-                                <th class="border border-gray-300 px-4 py-2 text-left font-medium text-gray-900">Jumlah Tempat Tidur Tersedia</th>
-                                <th class="border border-gray-300 px-4 py-2 text-left font-medium text-gray-900">Kamar Digunakan Kemarin</th>
-                                <th class="border border-gray-300 px-4 py-2 text-left font-medium text-gray-900">Kamar Baru Dimasuki Hari Ini (Check-in)</th>
-                                <th class="border border-gray-300 px-4 py-2 text-left font-medium text-gray-900">Kamar Ditinggalkan Hari Ini (Check-out)</th>
-                                <th class="border border-gray-300 px-4 py-2 text-left font-medium text-gray-900">Tamu Kemarin (Asing)</th>
-                                <th class="border border-gray-300 px-4 py-2 text-left font-medium text-gray-900">Tamu Kemarin (Indonesia)</th>
-                                <th class="border border-gray-300 px-4 py-2 text-left font-medium text-gray-900">Tamu Baru Datang Hari Ini (Asing)</th>
-                                <th class="border border-gray-300 px-4 py-2 text-left font-medium text-gray-900">Tamu Baru Datang Hari Ini (Indonesia)</th>
-                                <th class="border border-gray-300 px-4 py-2 text-left font-medium text-gray-900">Tamu Berangkat Hari Ini (Asing)</th>
-                                <th class="border border-gray-300 px-4 py-2 text-left font-medium text-gray-900">Tamu Berangkat Hari Ini (Indonesia)</th>
+                                <th class="border border-[color:var(--border)] px-4 py-2 text-left font-medium text-[color:var(--text-strong)]">Tanggal</th>
+                                <th class="border border-[color:var(--border)] px-4 py-2 text-left font-medium text-[color:var(--text-strong)]">Jumlah Kamar Tersedia</th>
+                                <th class="border border-[color:var(--border)] px-4 py-2 text-left font-medium text-[color:var(--text-strong)]">Jumlah Tempat Tidur Tersedia</th>
+                                <th class="border border-[color:var(--border)] px-4 py-2 text-left font-medium text-[color:var(--text-strong)]">Kamar Digunakan Kemarin</th>
+                                <th class="border border-[color:var(--border)] px-4 py-2 text-left font-medium text-[color:var(--text-strong)]">Kamar Baru Dimasuki Hari Ini (Check-in)</th>
+                                <th class="border border-[color:var(--border)] px-4 py-2 text-left font-medium text-[color:var(--text-strong)]">Kamar Ditinggalkan Hari Ini (Check-out)</th>
+                                <th class="border border-[color:var(--border)] px-4 py-2 text-left font-medium text-[color:var(--text-strong)]">Tamu Kemarin (Asing)</th>
+                                <th class="border border-[color:var(--border)] px-4 py-2 text-left font-medium text-[color:var(--text-strong)]">Tamu Kemarin (Indonesia)</th>
+                                <th class="border border-[color:var(--border)] px-4 py-2 text-left font-medium text-[color:var(--text-strong)]">Tamu Baru Datang Hari Ini (Asing)</th>
+                                <th class="border border-[color:var(--border)] px-4 py-2 text-left font-medium text-[color:var(--text-strong)]">Tamu Baru Datang Hari Ini (Indonesia)</th>
+                                <th class="border border-[color:var(--border)] px-4 py-2 text-left font-medium text-[color:var(--text-strong)]">Tamu Berangkat Hari Ini (Asing)</th>
+                                <th class="border border-[color:var(--border)] px-4 py-2 text-left font-medium text-[color:var(--text-strong)]">Tamu Berangkat Hari Ini (Indonesia)</th>
                             </tr>
                         </thead>
-                        <tbody id="vhtsTableBody" class="bg-white">
+                        <tbody id="vhtsTableBody" class="bg-[color:var(--surface)]">
                             <!-- Data akan diisi oleh JavaScript -->
                         </tbody>
                     </table>
@@ -100,7 +105,7 @@
         <!-- Back to BAHTERA Main -->
         <div class="mt-8 text-center">
             <a href="{{ route('bahtera.main') }}"
-               class="inline-flex items-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors duration-200 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2">
+               class="inline-flex items-center rounded-lg border border-[color:var(--border)] bg-[color:var(--surface)] px-4 py-2 text-sm font-medium text-[color:var(--text)] shadow-sm transition-colors duration-200 hover:bg-[color:var(--surface-muted)] focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
                     <path d="M19 12H5"/>
                     <path d="M12 19l-7-7 7-7"/>

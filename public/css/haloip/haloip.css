@@ -2804,3 +2804,112 @@ html {
 /* Keep Apply Filter button static (no hover motion) to match HaloIP buttons */
 .haloip-filter-btn { transition: none !important; box-shadow: none !important; }
 .haloip-filter-btn:hover { transform: none !important; box-shadow: none !important; }
+
+/* ==========================================================================
+   DARK THEME OVERRIDES (RENTAK) — depends on rentak-theme.css tokens.
+   Teal gradients (hero title, primary buttons, tab-active, count/action) and
+   semantic status pills stay as-is; solid white/gray surfaces become dark.
+   ========================================================================== */
+html.dark .haloip-main-wrapper { background: var(--bg); color: var(--text); }
+html.dark .haloip-hero-subtitle { color: var(--text-muted); }
+html.dark .haloip-btn-hero-secondary { background: var(--surface); color: var(--brand-300); border-color: var(--brand-500); }
+html.dark .haloip-btn-hero-secondary:hover { background: var(--surface-hover); }
+
+/* Stat cards */
+html.dark .haloip-stat-card-modern { background: var(--surface); border-color: var(--border); box-shadow: 0 8px 20px -12px rgba(0,0,0,.6); }
+html.dark .haloip-stat-value-modern { color: var(--text-strong); }
+html.dark .haloip-stat-label-modern { color: var(--text-muted); }
+
+/* Alerts */
+html.dark .haloip-alert-success { background: rgba(16,185,129,.14); border-color: rgba(16,185,129,.32); color: #6ee7b7; }
+html.dark .haloip-alert-close { color: #6ee7b7; }
+
+/* Tabs */
+html.dark .haloip-tabs-container { background: var(--surface); border-color: var(--border); }
+html.dark .haloip-tab { color: var(--text-muted); }
+html.dark .haloip-tab:hover { color: var(--brand-300); background: rgba(45,212,191,.08); }
+html.dark .haloip-tab-count { background: rgba(255,255,255,.10); color: var(--text); }
+
+/* Filter */
+html.dark .haloip-filter-modern { background: var(--surface); border-color: var(--border); }
+html.dark .haloip-filter-header { border-bottom-color: var(--border); }
+html.dark .haloip-filter-title { color: var(--text-strong); }
+html.dark .haloip-filter-desc { color: var(--text-muted); }
+html.dark .haloip-filter-label { color: var(--text); }
+html.dark .haloip-filter-select { background-color: var(--bg-elevated); border-color: var(--border-strong); color: var(--text-strong); }
+
+/* Table */
+html.dark .haloip-table-modern-wrapper { background: var(--surface); border-color: var(--border); }
+html.dark .haloip-table-header { background: linear-gradient(135deg, color-mix(in srgb, var(--brand-500) 12%, var(--surface)), var(--surface)); border-bottom-color: var(--border); }
+html.dark .haloip-table-title { color: var(--text-strong); }
+html.dark .haloip-count-text { color: var(--text-muted); }
+html.dark .haloip-table-modern thead { background: var(--surface-muted); }
+html.dark .haloip-table-modern th { color: var(--text-muted); border-bottom-color: var(--border); }
+html.dark .haloip-th-content svg { color: var(--text-faint); }
+html.dark .haloip-table-modern tbody tr { border-bottom-color: var(--border); }
+html.dark .haloip-table-modern tbody tr:nth-child(even) { background: color-mix(in srgb, var(--surface-muted) 55%, transparent); }
+html.dark .haloip-table-modern tbody tr:hover { background: var(--surface-hover); }
+html.dark .haloip-table-modern td { color: var(--text); }
+html.dark .haloip-ticket-title-modern { color: var(--text-strong); }
+html.dark .haloip-user-info { color: var(--text); }
+html.dark .haloip-unassigned { color: var(--text-faint); }
+html.dark .haloip-date-info { color: var(--text-muted); }
+html.dark .haloip-ticket-code-modern,
+html.dark .haloip-ticket-code { background: rgba(45,212,191,.14); border-color: rgba(45,212,191,.3); color: var(--brand-300); }
+
+/* Empty state */
+html.dark .haloip-empty-state svg { color: var(--border-strong); }
+html.dark .haloip-empty-state h3 { color: var(--text-strong); }
+html.dark .haloip-empty-state p { color: var(--text-muted); }
+
+/* Pagination */
+html.dark .haloip-pagination-wrapper { background: var(--surface-muted); border-top-color: var(--border); }
+html.dark .haloip-pagination-btn { background: var(--surface); border-color: var(--border); color: var(--text); }
+html.dark .haloip-pagination-btn-active { color: var(--brand-300); border-color: var(--brand-500); }
+html.dark .haloip-pagination-btn-disabled { color: var(--text-faint); background: var(--surface-muted); border-color: var(--border); }
+html.dark .haloip-pagination-page-text { color: var(--text-strong); }
+html.dark .haloip-pagination-current { color: var(--brand-300); }
+html.dark .haloip-pagination-total,
+html.dark .haloip-pagination-items-text { color: var(--text-muted); }
+html.dark .haloip-pagination-wrapper .page-link { background: var(--surface); border-color: var(--border); color: var(--text); }
+
+/* Mobile cards */
+html.dark .haloip-mobile-card { background: var(--surface); border-color: var(--border); }
+html.dark .haloip-mobile-card-header,
+html.dark .haloip-mobile-card-actions { border-color: var(--border); }
+html.dark .haloip-mobile-card-label { color: var(--text-muted); }
+html.dark .haloip-mobile-card-value { color: var(--text); }
+
+/* Legacy nav items */
+html.dark .haloip-nav-item { background-color: var(--surface); border-color: var(--border); color: var(--text-muted); }
+html.dark .haloip-nav-item:hover { color: var(--brand-300); border-color: var(--brand-500); }
+
+/* Generic form controls on any HaloIP page (create / assign / update-status / show) */
+html.dark .haloip-app input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
+html.dark .haloip-app select,
+html.dark .haloip-app textarea {
+    background-color: var(--bg-elevated);
+    color: var(--text-strong);
+    border-color: var(--border-strong);
+}
+html.dark .haloip-app input::placeholder,
+html.dark .haloip-app textarea::placeholder { color: var(--text-faint); }
+
+/* ---- Legacy tables / ticketing cards (manage, create, show) — dark ---- */
+html.dark .haloip-container { color: var(--text); }
+html.dark .haloip-filter-section { background-color: var(--surface); border-color: var(--border); }
+html.dark .haloip-table-container { background: var(--surface) !important; border-color: var(--border) !important; }
+html.dark .haloip-table tbody tr,
+html.dark .haloip-table tbody tr:hover { background: var(--surface) !important; border-bottom-color: var(--border) !important; }
+html.dark .haloip-table tbody tr:nth-child(even) { background: color-mix(in srgb, var(--surface-muted) 55%, transparent) !important; }
+html.dark .haloip-table td { color: var(--text); }
+html.dark .haloip-table th { color: var(--text-muted); border-color: var(--border) !important; }
+html.dark .haloip-table-code { background: var(--surface-muted) !important; color: var(--text) !important; border-color: var(--border) !important; }
+html.dark .haloip-table-status,
+html.dark .haloip-table-status.status-completed,
+html.dark .ticketing .status-completed { background: var(--surface-muted) !important; color: var(--text) !important; border-color: var(--border) !important; }
+html.dark .pagination .page-link { color: var(--brand-300); border-color: var(--border); background: var(--surface); }
+html.dark .pagination .page-item.disabled .page-link { color: var(--text-faint) !important; background-color: var(--surface-muted) !important; border-color: var(--border) !important; }
+html.dark .haloip-ticket-code { background: rgba(45,212,191,.14) !important; color: var(--brand-300) !important; border-color: rgba(45,212,191,.3) !important; }
+html.dark .badge { background-color: var(--surface-muted) !important; color: var(--text) !important; border-color: var(--border) !important; }
+html.dark .ticketing .ticket-card { background-color: var(--surface); border-color: var(--border); }

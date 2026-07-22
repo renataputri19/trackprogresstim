@@ -350,3 +350,31 @@
   outline: 2px solid #14b8a6;
   outline-offset: 2px;
 }
+
+/* ===== DARK THEME OVERRIDES (RENTAK) ===== */
+html.dark .superapp-cards-container-v2 {
+  background: linear-gradient(135deg, var(--bg-elevated) 0%, var(--surface) 100%);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+  border-color: var(--border);
+}
+html.dark .superapp-card-v2 {
+  background: linear-gradient(135deg, var(--surface) 0%, var(--surface-muted) 100%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+html.dark .superapp-card-v2:hover { box-shadow: 0 8px 25px rgba(0, 0, 0, 0.55); }
+html.dark .superapp-card-v2-title { color: var(--brand-300); }
+html.dark .superapp-card-v2-description { color: var(--text-muted); }
+html.dark .superapp-benefit-v2 {
+  background: color-mix(in srgb, var(--brand-400) 12%, transparent);
+  border-left-color: var(--brand-400);
+}
+html.dark .superapp-benefit-v2:hover { background: color-mix(in srgb, var(--brand-400) 20%, transparent); }
+html.dark .superapp-benefit-v2-text { color: var(--text); }
+html.dark .superapp-benefit-v2-icon { color: var(--brand-300); }
+html.dark .superapp-nav-btn-v2 {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--brand-300);
+}
+html.dark .superapp-nav-btn-v2:hover { background: var(--brand-500); color: #fff; border-color: var(--brand-500); }
+html.dark .superapp-nav-btn-v2:disabled:hover { background: var(--surface); color: var(--brand-300); border-color: var(--border); }

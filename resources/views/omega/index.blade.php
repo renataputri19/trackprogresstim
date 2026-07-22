@@ -99,7 +99,7 @@
     </section>
 
     {{-- ============================ VOTE ============================ --}}
-    <section id="vote" class="omega-section bg-gradient-to-b from-white via-teal-50/40 to-white">
+    <section id="vote" class="omega-section omega-tint">
         <div class="container mx-auto px-4">
             <div class="mx-auto max-w-3xl">
 
@@ -158,7 +158,7 @@
                     <div class="mb-8 text-center omega-reveal">
                         <span class="omega-eyebrow">Kartu Suara · {{ $periodLabel }}</span>
                         <h2 class="omega-h2 mt-2">Pilih Pegawai Terbaik di Tim Anda</h2>
-                        <p class="mt-3 text-slate-500">Satu rekan terbaik untuk setiap tim yang Anda ikuti — cukup ikuti langkahnya.</p>
+                        <p class="mt-3 text-[color:var(--text-muted)]">Satu rekan terbaik untuk setiap tim yang Anda ikuti — cukup ikuti langkahnya.</p>
                     </div>
 
                     <form method="POST" action="{{ route('omega.vote') }}" id="omega-form" class="omega-wizard omega-reveal" data-delay="1">
@@ -194,22 +194,22 @@
                                 <div class="omega-identity-verified">
                                     <span class="omega-chip-av">{{ \Illuminate\Support\Str::of($lockedIdentity)->explode(' ')->take(2)->map(fn ($w) => mb_substr($w, 0, 1))->implode('') }}</span>
                                     <div>
-                                        <p class="font-semibold text-slate-800">{{ $lockedIdentity }}</p>
-                                        <p class="text-xs font-medium text-teal-700">
+                                        <p class="font-semibold text-[color:var(--text-strong)]">{{ $lockedIdentity }}</p>
+                                        <p class="text-xs font-medium text-brand-700 dark:text-brand-300">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:-2px;margin-right:2px"><path d="M20 6 9 17l-5-5"/></svg>
                                             Terverifikasi dari akun Anda
                                         </p>
                                     </div>
                                 </div>
                             @else
-                                <label for="omega-identity" class="mb-2 block text-sm font-semibold text-slate-700">Siapa Anda?</label>
+                                <label for="omega-identity" class="mb-2 block text-sm font-semibold text-[color:var(--text)]">Siapa Anda?</label>
                                 <select name="voter_name" id="omega-identity" class="omega-identity-select">
                                     <option value="" disabled {{ old('voter_name') ? '' : 'selected' }}>— Pilih nama Anda —</option>
                                     @foreach ($memberNames as $name)
                                         <option value="{{ $name }}" @selected(old('voter_name') === $name)>{{ $name }}</option>
                                     @endforeach
                                 </select>
-                                <p class="mt-2 text-xs text-slate-500">Nama Anda belum otomatis terdeteksi dari akun — pilih dari daftar di atas.</p>
+                                <p class="mt-2 text-xs text-[color:var(--text-muted)]">Nama Anda belum otomatis terdeteksi dari akun — pilih dari daftar di atas.</p>
                             @endif
 
                             <div class="mt-6 flex justify-end">
@@ -243,7 +243,7 @@
 
                 @if ($canViewResults)
                     <div class="mt-8 text-center">
-                        <a href="{{ route('omega.results') }}" class="inline-flex items-center gap-2 text-sm font-semibold text-teal-700 hover:text-teal-900">
+                        <a href="{{ route('omega.results') }}" class="inline-flex items-center gap-2 text-sm font-semibold text-brand-700 dark:text-brand-300 hover:text-teal-900 dark:hover:text-brand-200">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect width="4" height="7" x="7" y="10"/><rect width="4" height="12" x="15" y="5"/></svg>
                             Lihat Rekapitulasi Suara
                         </a>
@@ -254,27 +254,27 @@
     </section>
 
     {{-- ============================ ABOUT + TAHAPAN ============================ --}}
-    <section class="omega-section bg-white">
+    <section class="omega-section bg-[color:var(--bg-elevated)]">
         <div class="container mx-auto px-4">
             <div class="grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-start">
                 <div class="omega-reveal">
                     <span class="omega-eyebrow">Tentang OMEGA</span>
                     <h2 class="omega-h2 mt-2">Membangun budaya kerja yang positif</h2>
-                    <p class="mt-4 leading-relaxed text-slate-600">
+                    <p class="mt-4 leading-relaxed text-[color:var(--text)]">
                         Sebagai bagian dari upaya membangun budaya kerja yang positif, BPS Kota Batam
-                        mengadakan <strong class="text-slate-800">Pemilihan Pegawai Terbaik Triwulanan</strong>,
+                        mengadakan <strong class="text-[color:var(--text-strong)]">Pemilihan Pegawai Terbaik Triwulanan</strong>,
                         sebagai apresiasi terhadap pegawai yang menunjukkan kinerja terbaik dan berkontribusi
                         nyata dalam pelaksanaan tugas.
                     </p>
-                    <p class="mt-4 leading-relaxed text-slate-600">
-                        Dengan menjunjung tinggi nilai-nilai <strong class="text-teal-700">BerAKHLAK</strong>,
+                    <p class="mt-4 leading-relaxed text-[color:var(--text)]">
+                        Dengan menjunjung tinggi nilai-nilai <strong class="text-brand-700 dark:text-brand-300">BerAKHLAK</strong>,
                         setiap pegawai diharapkan terus memberikan yang terbaik.
                     </p>
                 </div>
 
                 <div class="omega-reveal omega-card p-6 sm:p-8" data-delay="1">
-                    <h3 class="text-sm font-bold uppercase tracking-wide text-teal-700">Nilai-nilai BerAKHLAK</h3>
-                    <p class="mt-1 text-sm text-slate-500">Fondasi dari setiap kontribusi terbaik.</p>
+                    <h3 class="text-sm font-bold uppercase tracking-wide text-brand-700 dark:text-brand-300">Nilai-nilai BerAKHLAK</h3>
+                    <p class="mt-1 text-sm text-[color:var(--text-muted)]">Fondasi dari setiap kontribusi terbaik.</p>
                     <div class="omega-values mt-5">
                         @foreach (['Berorientasi Pelayanan', 'Akuntabel', 'Kompeten', 'Harmonis', 'Loyal', 'Adaptif', 'Kolaboratif'] as $i => $value)
                             <span class="omega-value"><span class="num">{{ $i + 1 }}</span>{{ $value }}</span>
@@ -288,7 +288,7 @@
                 <div class="mx-auto max-w-2xl text-center omega-reveal">
                     <span class="omega-eyebrow">Alur Kegiatan</span>
                     <h2 class="omega-h2 mt-2">Tahapan Pemilihan</h2>
-                    <p class="mt-3 text-slate-500">Tiga langkah dari penjaringan awal hingga penetapan oleh Kepala BPS Kota Batam.</p>
+                    <p class="mt-3 text-[color:var(--text-muted)]">Tiga langkah dari penjaringan awal hingga penetapan oleh Kepala BPS Kota Batam.</p>
                 </div>
 
                 <div class="omega-steps mt-10">

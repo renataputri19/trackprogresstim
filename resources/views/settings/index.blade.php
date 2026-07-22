@@ -1,133 +1,136 @@
 @extends('new-homepage.layouts.app')
 
-@section('title', 'Settings - RENTAK')
+@section('title', 'Pengaturan — RENTAK')
 
 @section('content')
-<div class="min-h-screen bg-gray-50 py-8">
-    <div class="container mx-auto px-4">
-        <div class="max-w-4xl mx-auto">
-            <!-- Header -->
-            <div class="mb-8">
-                <h1 class="text-3xl font-bold text-gray-900">Settings</h1>
-                <p class="mt-2 text-gray-600">Kelola informasi profil dan keamanan akun Anda</p>
-            </div>
+@php
+    $sClean = trim(preg_replace('/,.*$/', '', $user->name ?? 'User'));
+    $sParts = preg_split('/\s+/', $sClean) ?: ['U'];
+    $sInitials = strtoupper(mb_substr($sParts[0] ?? 'U', 0, 1) . (count($sParts) > 1 ? mb_substr(end($sParts), 0, 1) : ''));
+@endphp
 
-            <!-- Success Message -->
-            @if(session('success'))
-                <div class="mb-6 rounded-md bg-green-50 p-4 border border-green-200">
-                    <div class="flex">
-                        <div class="flex-shrink-0">
-                            <svg class="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                            </svg>
-                        </div>
-                        <div class="ml-3">
-                            <p class="text-sm font-medium text-green-800">{{ session('success') }}</p>
-                        </div>
-                    </div>
-                </div>
-            @endif
+<div class="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
+    <a href="{{ route('welcome') }}" class="inline-flex items-center gap-2 text-sm font-medium text-[color:var(--text-muted)] transition-colors hover:text-brand-600 dark:hover:text-brand-300">
+        <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+        Kembali ke Dashboard
+    </a>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Profile Information -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                    <div class="px-6 py-4 border-b border-gray-200">
-                        <h2 class="text-lg font-semibold text-gray-900">Informasi Profil</h2>
-                        <p class="mt-1 text-sm text-gray-600">Perbarui informasi profil Anda</p>
-                    </div>
-                    <form action="{{ route('settings.profile.update') }}" method="POST" class="p-6">
-                        @csrf
-                        @method('PUT')
-                        
-                        <div class="space-y-4">
-                            <div>
-                                <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Nama</label>
-                                <input type="text" 
-                                       id="name" 
-                                       name="name" 
-                                       value="{{ old('name', $user->name) }}"
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors duration-200"
-                                       required>
-                                @error('name')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            <div>
-                                <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                                <input type="email" 
-                                       id="email" 
-                                       value="{{ $user->email }}"
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 text-gray-500 cursor-not-allowed"
-                                       disabled>
-                                <p class="mt-1 text-xs text-gray-500">Email tidak dapat diubah</p>
-                            </div>
-                        </div>
-
-                        <div class="mt-6">
-                            <button type="submit" 
-                                    class="w-full bg-gradient-to-r from-teal-600 via-emerald-500 to-teal-600 text-white py-2 px-4 rounded-md hover:from-teal-700 hover:via-emerald-600 hover:to-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition-all duration-300 font-medium">
-                                Perbarui Profil
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Password Update -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                    <div class="px-6 py-4 border-b border-gray-200">
-                        <h2 class="text-lg font-semibold text-gray-900">Ubah Password</h2>
-                        <p class="mt-1 text-sm text-gray-600">Perbarui password untuk keamanan akun</p>
-                    </div>
-                    <form action="{{ route('settings.password.update') }}" method="POST" class="p-6">
-                        @csrf
-                        @method('PUT')
-                        
-                        <div class="space-y-4">
-                            <div>
-                                <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password Baru</label>
-                                <input type="password" 
-                                       id="password" 
-                                       name="password"
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors duration-200"
-                                       required>
-                                @error('password')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            <div>
-                                <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-2">Konfirmasi Password</label>
-                                <input type="password" 
-                                       id="password_confirmation" 
-                                       name="password_confirmation"
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors duration-200"
-                                       required>
-                            </div>
-                        </div>
-
-                        <div class="mt-6">
-                            <button type="submit" 
-                                    class="w-full bg-gradient-to-r from-teal-600 via-emerald-500 to-teal-600 text-white py-2 px-4 rounded-md hover:from-teal-700 hover:via-emerald-600 hover:to-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition-all duration-300 font-medium">
-                                Ubah Password
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Back to Dashboard -->
-            <div class="mt-8 text-center">
-                <a href="{{ route('welcome') }}" 
-                   class="inline-flex items-center text-teal-600 hover:text-teal-700 font-medium transition-colors duration-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
-                        <path d="m12 19-7-7 7-7"/>
-                        <path d="M19 12H5"/>
-                    </svg>
-                    Kembali ke Dashboard
-                </a>
-            </div>
+    {{-- Header --}}
+    <div class="rk-animate mt-5 flex items-center gap-4">
+        <span class="rk-avatar h-14 w-14 rounded-2xl text-lg">{{ $sInitials }}</span>
+        <div>
+            <h1 class="rk-display text-2xl font-bold text-[color:var(--text-strong)]">Pengaturan Akun</h1>
+            <p class="mt-0.5 text-sm text-[color:var(--text-muted)]">{{ $sClean }} · Kelola profil dan keamanan akun Anda.</p>
         </div>
     </div>
+
+    {{-- Success --}}
+    @if(session('success'))
+    <div class="rk-animate mt-6 flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-800 shadow-sm dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-300">
+        <svg class="mt-0.5 h-5 w-5 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+        <p class="text-sm font-medium">{{ session('success') }}</p>
+    </div>
+    @endif
+
+    <div class="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
+        {{-- Profile --}}
+        <section class="rk-card rk-animate overflow-hidden" style="animation-delay:.05s">
+            <div class="rk-card-head flex items-center gap-3">
+                <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-600/12 text-brand-600 ring-1 ring-brand-600/20 dark:text-brand-300">
+                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </span>
+                <div>
+                    <h2 class="rk-display text-base font-bold text-[color:var(--text-strong)]">Informasi Profil</h2>
+                    <p class="text-xs text-[color:var(--text-muted)]">Perbarui informasi profil Anda</p>
+                </div>
+            </div>
+            <form action="{{ route('settings.profile.update') }}" method="POST" class="space-y-4 p-6">
+                @csrf
+                @method('PUT')
+                <div>
+                    <label for="name" class="rk-label">Nama</label>
+                    <input type="text" id="name" name="name" value="{{ old('name', $user->name) }}" required class="rk-input">
+                    @error('name')<p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ $message }}</p>@enderror
+                </div>
+                <div>
+                    <label for="email" class="rk-label">Email</label>
+                    <input type="email" id="email" value="{{ $user->email }}" disabled
+                           class="rk-input cursor-not-allowed opacity-60">
+                    <p class="mt-1 text-xs text-[color:var(--text-faint)]">Email tidak dapat diubah.</p>
+                </div>
+                <button type="submit" class="rk-btn rk-btn-primary w-full">
+                    <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                    Perbarui Profil
+                </button>
+            </form>
+        </section>
+
+        {{-- Password --}}
+        <section class="rk-card rk-animate overflow-hidden" style="animation-delay:.1s">
+            <div class="rk-card-head flex items-center gap-3">
+                <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-600/12 text-brand-600 ring-1 ring-brand-600/20 dark:text-brand-300">
+                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </span>
+                <div>
+                    <h2 class="rk-display text-base font-bold text-[color:var(--text-strong)]">Ubah Kata Sandi</h2>
+                    <p class="text-xs text-[color:var(--text-muted)]">Perbarui password untuk keamanan akun</p>
+                </div>
+            </div>
+            <form action="{{ route('settings.password.update') }}" method="POST" class="space-y-4 p-6">
+                @csrf
+                @method('PUT')
+                <div>
+                    <label for="password" class="rk-label">Kata Sandi Baru</label>
+                    <input type="password" id="password" name="password" required class="rk-input">
+                    @error('password')<p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ $message }}</p>@enderror
+                </div>
+                <div>
+                    <label for="password_confirmation" class="rk-label">Konfirmasi Kata Sandi</label>
+                    <input type="password" id="password_confirmation" name="password_confirmation" required class="rk-input">
+                </div>
+                <button type="submit" class="rk-btn rk-btn-primary w-full">
+                    <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2Z"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    Ubah Kata Sandi
+                </button>
+            </form>
+        </section>
+    </div>
+
+    {{-- Appearance --}}
+    <section class="rk-card rk-animate mt-6 overflow-hidden" style="animation-delay:.15s">
+        <div class="flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
+            <div class="flex items-center gap-3">
+                <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-600/12 text-brand-600 ring-1 ring-brand-600/20 dark:text-brand-300">
+                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+                </span>
+                <div>
+                    <h2 class="rk-display text-base font-bold text-[color:var(--text-strong)]">Tampilan</h2>
+                    <p class="text-xs text-[color:var(--text-muted)]">Pilih tema terang atau gelap. Preferensi tersimpan di perangkat ini.</p>
+                </div>
+            </div>
+            <button type="button" id="settings-theme-toggle" class="rk-btn rk-btn-ghost">
+                <svg class="rk-sun h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+                <span id="settings-theme-label">Beralih Tema</span>
+            </button>
+        </div>
+    </section>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var root = document.documentElement;
+        var btn = document.getElementById('settings-theme-toggle');
+        var label = document.getElementById('settings-theme-label');
+        function sync() { if (label) label.textContent = root.classList.contains('dark') ? 'Beralih ke Mode Terang' : 'Beralih ke Mode Gelap'; }
+        sync();
+        if (btn) btn.addEventListener('click', function () {
+            var isDark = root.classList.toggle('dark');
+            root.style.colorScheme = isDark ? 'dark' : 'light';
+            try { localStorage.setItem('rentak-theme', isDark ? 'dark' : 'light'); } catch (e) {}
+            sync();
+        });
+    });
+</script>
 @endsection

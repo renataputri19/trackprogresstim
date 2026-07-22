@@ -1,0 +1,208 @@
+/* ==========================================================================
+   RENTAK — Documentation & Tutorials (theme-aware, premium)
+   Depends on rentak-theme.css tokens.
+   ========================================================================== */
+
+.dc { overflow-x: clip; }
+
+/* ---------- Shared hero --------------------------------------------------- */
+.dc-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 3.25rem 0 2.75rem;
+  background:
+    radial-gradient(55% 60% at 15% 0%, rgba(13,148,136,0.14), transparent 60%),
+    radial-gradient(50% 60% at 100% 100%, rgba(16,185,129,0.12), transparent 55%),
+    var(--bg);
+}
+html.dark .dc-hero {
+  background:
+    radial-gradient(55% 60% at 15% 0%, rgba(20,184,166,0.18), transparent 60%),
+    radial-gradient(50% 60% at 100% 100%, rgba(16,185,129,0.12), transparent 55%),
+    var(--bg);
+}
+.dc-hero::before {
+  content: ""; position: absolute; inset: 0;
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--text-strong) 4%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--text-strong) 4%, transparent) 1px, transparent 1px);
+  background-size: 46px 46px;
+  mask-image: radial-gradient(110% 90% at 30% 0%, black, transparent 72%);
+  -webkit-mask-image: radial-gradient(110% 90% at 30% 0%, black, transparent 72%);
+  pointer-events: none;
+}
+.dc-container { position: relative; z-index: 1; max-width: 1160px; margin: 0 auto; padding: 0 1.25rem; }
+.dc-hero-title {
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  font-weight: 800; letter-spacing: -0.025em;
+  font-size: clamp(1.9rem, 4vw, 2.8rem);
+  line-height: 1.1; color: var(--text-strong); margin-top: 0.75rem;
+}
+.dc-hero-title .hm-accent {
+  background: linear-gradient(103deg, var(--brand-700), var(--brand-500) 60%, #10b981);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+html.dark .dc-hero-title .hm-accent {
+  background: linear-gradient(103deg, var(--brand-300), var(--brand-400) 60%, #6ee7b7);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.dc-hero-sub { margin-top: 0.85rem; max-width: 42rem; font-size: 1.02rem; line-height: 1.65; color: var(--text-muted); }
+
+/* ---------- Documentation layout (sidebar + content) --------------------- */
+.dc-layout { display: grid; grid-template-columns: 1fr; gap: 2.5rem; padding: 2.5rem 0 4rem; }
+@media (min-width: 900px) { .dc-layout { grid-template-columns: 250px 1fr; gap: 3rem; } }
+
+.dc-side { position: relative; }
+@media (min-width: 900px) { .dc-side-inner { position: sticky; top: 5.25rem; } }
+.dc-side-title {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-faint); margin-bottom: 0.75rem; padding-left: 0.85rem;
+}
+.dc-nav { display: flex; flex-direction: column; gap: 2px; }
+.dc-nav-link {
+  display: flex; align-items: center; gap: 0.7rem;
+  padding: 0.6rem 0.85rem; border-radius: 10px;
+  font-size: 0.88rem; font-weight: 500; color: var(--text-muted);
+  border-left: 2px solid transparent;
+  transition: background-color .18s ease, color .18s ease, border-color .18s ease;
+}
+.dc-nav-link:hover { background: var(--surface-muted); color: var(--text-strong); }
+.dc-nav-link svg { flex-shrink: 0; color: var(--text-faint); }
+.dc-nav-link.is-active {
+  background: color-mix(in srgb, var(--brand-500) 10%, transparent);
+  color: var(--brand-700); border-left-color: var(--brand-500);
+}
+html.dark .dc-nav-link.is-active { color: var(--brand-300); }
+.dc-nav-link.is-active svg { color: currentColor; }
+
+/* content */
+.dc-content { min-width: 0; display: flex; flex-direction: column; gap: 1.25rem; }
+.dc-section {
+  scroll-margin-top: 5.25rem;
+  padding: 1.75rem;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-xs);
+}
+.dc-section-head { display: flex; align-items: center; gap: 0.9rem; }
+.dc-section-ic {
+  width: 46px; height: 46px; flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 12px;
+  color: var(--brand-600);
+  background: color-mix(in srgb, var(--brand-500) 12%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand-500) 20%, transparent);
+}
+html.dark .dc-section-ic { color: var(--brand-300); background: color-mix(in srgb, var(--brand-400) 18%, transparent); }
+.dc-section-tt { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 1.3rem; color: var(--text-strong); }
+.dc-section-intro { margin-top: 1rem; font-size: 0.95rem; line-height: 1.7; color: var(--text-muted); }
+
+.dc-steps { margin-top: 1.15rem; display: flex; flex-direction: column; gap: 0.65rem; counter-reset: dc; }
+.dc-step {
+  display: flex; align-items: flex-start; gap: 0.75rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  font-size: 0.9rem; line-height: 1.55; color: var(--text);
+}
+.dc-step::before {
+  counter-increment: dc; content: counter(dc);
+  flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; margin-top: 1px;
+  border-radius: 50%;
+  font-size: 0.72rem; font-weight: 700;
+  color: #fff; background: linear-gradient(135deg, var(--brand-600), #10b981);
+}
+.dc-note {
+  margin-top: 1.1rem;
+  display: flex; align-items: flex-start; gap: 0.6rem;
+  padding: 0.8rem 1rem; border-radius: 10px;
+  font-size: 0.85rem; line-height: 1.55;
+  color: var(--brand-700);
+  background: color-mix(in srgb, var(--brand-500) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand-500) 20%, transparent);
+}
+html.dark .dc-note { color: var(--brand-200); }
+.dc-note svg { flex-shrink: 0; margin-top: 1px; }
+
+/* ---------- Tutorials ----------------------------------------------------- */
+.dc-filter { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 0 0 2rem; }
+.dc-pill {
+  padding: 0.5rem 1.1rem; border-radius: 999px;
+  font-size: 0.85rem; font-weight: 600; cursor: pointer;
+  color: var(--text-muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  transition: color .2s ease, background-color .2s ease, border-color .2s ease;
+}
+.dc-pill:hover { color: var(--text-strong); border-color: var(--border-strong); }
+.dc-pill.is-active {
+  color: #fff; border-color: transparent;
+  background: linear-gradient(120deg, var(--brand-600), #10b981);
+  box-shadow: var(--shadow-brand);
+}
+
+.tut-grid { display: grid; grid-template-columns: 1fr; gap: 1.25rem; }
+@media (min-width: 720px) { .tut-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.tut-card {
+  display: flex; flex-direction: column;
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-xs);
+  transition: transform .28s cubic-bezier(.34,1.1,.4,1), box-shadow .28s ease, border-color .25s ease;
+}
+.tut-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: color-mix(in srgb, var(--brand-500) 30%, var(--border));
+}
+.tut-card-top { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+.tut-ic {
+  width: 46px; height: 46px; flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 12px;
+  color: var(--brand-600);
+  background: color-mix(in srgb, var(--brand-500) 12%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand-500) 20%, transparent);
+}
+html.dark .tut-ic { color: var(--brand-300); background: color-mix(in srgb, var(--brand-400) 18%, transparent); }
+.tut-tag {
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.03em;
+  padding: 0.25rem 0.7rem; border-radius: 999px;
+  color: var(--brand-700);
+  background: color-mix(in srgb, var(--brand-500) 12%, transparent);
+}
+html.dark .tut-tag { color: var(--brand-300); }
+.tut-tt { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 1.1rem; color: var(--text-strong); margin-top: 1rem; }
+.tut-ds { margin-top: 0.4rem; font-size: 0.88rem; line-height: 1.55; color: var(--text-muted); }
+.tut-meta { margin-top: 0.85rem; display: flex; align-items: center; gap: 0.4rem; font-size: 0.78rem; color: var(--text-faint); }
+.tut-steps { margin-top: 1.1rem; padding-top: 1.1rem; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 0.55rem; counter-reset: tut; }
+.tut-step { display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.85rem; line-height: 1.5; color: var(--text); }
+.tut-step::before {
+  counter-increment: tut; content: counter(tut);
+  flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  font-size: 0.68rem; font-weight: 700;
+  color: var(--brand-700);
+  background: color-mix(in srgb, var(--brand-500) 15%, transparent);
+}
+html.dark .tut-step::before { color: var(--brand-300); }
+
+.dc-empty {
+  grid-column: 1 / -1;
+  text-align: center; padding: 3rem 1rem;
+  color: var(--text-muted);
+}
+
+/* reuse home reveal if home.css absent */
+.dc-reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s cubic-bezier(.2,.7,.3,1), transform .6s cubic-bezier(.2,.7,.3,1); }
+.dc-reveal.is-visible { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .dc-reveal { opacity: 1; transform: none; } }

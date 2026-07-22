@@ -192,7 +192,7 @@ class HomeController extends Controller
             ]
         ];
 
-        return view('new-homepage.welcome', compact(
+        return view('new-homepage.home', compact(
             'features',
             'benefits',
             'stats',
@@ -306,6 +306,49 @@ class HomeController extends Controller
      */
     public function underDevelopment()
     {
-        return view('new-homepage.under-development');
+        $route = optional(request()->route())->getName();
+
+        $apps = [
+            'employee-performance.index' => [
+                'name' => 'Employee Performance Integration',
+                'tagline' => 'Integrasi Kinerja Pegawai',
+                'desc' => 'Dashboard dinamis untuk melacak tugas pegawai, memantau progres kerja, dan memvisualisasikan metrik kinerja secara real-time.',
+                'icon' => 'chart',
+                'accent' => '#0ea5e9',
+                'features' => [
+                    'Pelacakan tugas & progres secara real-time',
+                    'Visualisasi kinerja berbasis persentase',
+                    'Dashboard KPI yang dapat disesuaikan untuk manajemen',
+                    'Laporan & analitik kinerja otomatis',
+                ],
+            ],
+            'financial-administration.index' => [
+                'name' => 'Administrasi Keuangan',
+                'tagline' => 'Integrasi Administrasi & Keuangan',
+                'desc' => 'Sistem untuk mengelola administrasi dan keuangan proyek besar, melacak progres survei, dan memastikan transparansi keuangan.',
+                'icon' => 'wallet',
+                'accent' => '#8b5cf6',
+                'features' => [
+                    'Pengelolaan anggaran & kontrak proyek',
+                    'Pelacakan dokumen survei secara real-time',
+                    'Laporan keuangan untuk kebutuhan audit',
+                    'Dukungan untuk tim internal & eksternal',
+                ],
+            ],
+        ];
+
+        $app = $apps[$route] ?? [
+            'name' => 'Aplikasi Baru',
+            'tagline' => 'RENTAK',
+            'desc' => 'Aplikasi ini sedang dalam tahap perencanaan dan pengembangan.',
+            'icon' => 'rocket',
+            'accent' => '#0d9488',
+            'features' => [],
+        ];
+
+        // Target peluncuran: akhir tahun 2026
+        $app['target'] = 'Akhir 2026';
+
+        return view('new-homepage.under-development', ['app' => $app]);
     }
 }

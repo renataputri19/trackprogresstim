@@ -36,17 +36,17 @@
         </div>
     </section>
 
-    <section class="omega-section bg-gradient-to-b from-white via-teal-50/40 to-white">
+    <section class="omega-section omega-tint">
         <div class="container mx-auto px-4">
             <div class="mb-6 flex items-center justify-between">
-                <a href="{{ route('omega.index') }}" class="inline-flex items-center gap-2 text-sm font-semibold text-teal-700 hover:text-teal-900">
+                <a href="{{ route('omega.index') }}" class="inline-flex items-center gap-2 text-sm font-semibold text-brand-700 dark:text-brand-300 hover:text-teal-900 dark:hover:text-brand-200">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                     Kembali ke OMEGA
                 </a>
             </div>
 
             @if ($totalVotes === 0)
-                <div class="omega-card p-10 text-center text-slate-400">
+                <div class="omega-card p-10 text-center text-[color:var(--text-muted)]">
                     <p>Belum ada suara yang masuk untuk periode ini.</p>
                 </div>
             @else
@@ -55,11 +55,11 @@
                         @continue($team['total'] === 0)
                         <div class="omega-card p-6 omega-reveal">
                             <div class="mb-4 flex items-center justify-between">
-                                <h3 class="flex items-center gap-2 font-bold text-slate-800">
+                                <h3 class="flex items-center gap-2 font-bold text-[color:var(--text-strong)]">
                                     <span class="omega-team-badge">{{ $team['tallies'][0]['votes'] ?? 0 }}</span>
                                     {{ $team['team'] }}
                                 </h3>
-                                <span class="text-xs font-semibold uppercase tracking-wide text-slate-400">{{ $team['total'] }} suara</span>
+                                <span class="text-xs font-semibold uppercase tracking-wide text-[color:var(--text-muted)]">{{ $team['total'] }} suara</span>
                             </div>
                             @php $topVotes = $team['tallies'][0]['votes'] ?? 0; @endphp
                             <div class="space-y-2.5">
@@ -71,16 +71,16 @@
                                     @endphp
                                     <div>
                                         <div class="mb-1 flex items-center justify-between text-sm">
-                                            <span class="flex items-center gap-2 {{ $isLeader ? 'font-bold text-teal-800' : 'text-slate-600' }}">
+                                            <span class="flex items-center gap-2 {{ $isLeader ? 'font-bold text-brand-800 dark:text-brand-300' : 'text-[color:var(--text)]' }}">
                                                 @if ($isLeader)
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="#f5b301" stroke="#f5b301" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>
                                                 @endif
                                                 {{ $row['name'] }}
                                             </span>
-                                            <span class="text-slate-500">{{ $row['votes'] }} · {{ $pct }}%</span>
+                                            <span class="text-[color:var(--text-muted)]">{{ $row['votes'] }} · {{ $pct }}%</span>
                                         </div>
-                                        <div class="h-2 w-full overflow-hidden rounded-full bg-slate-100">
-                                            <div class="h-full rounded-full {{ $isLeader ? 'bg-gradient-to-r from-teal-500 to-emerald-500' : 'bg-slate-300' }}" style="width: {{ $pct }}%"></div>
+                                        <div class="h-2 w-full overflow-hidden rounded-full bg-[color:var(--surface-muted)]">
+                                            <div class="h-full rounded-full {{ $isLeader ? 'bg-gradient-to-r from-teal-500 to-emerald-500' : 'bg-slate-300 dark:bg-slate-600' }}" style="width: {{ $pct }}%"></div>
                                         </div>
                                     </div>
                                 @endforeach

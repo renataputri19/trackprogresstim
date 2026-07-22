@@ -122,9 +122,7 @@ Route::get('/', [NewHomepageController::class, 'index'])->name('home');
 
 // Documentation and Tutorials routes
 Route::get('/documentation', [App\Http\Controllers\NewHomepage\DocumentationController::class, 'index'])->name('documentation.index');
-Route::get('/documentation/{slug}', [App\Http\Controllers\NewHomepage\DocumentationController::class, 'show'])->name('documentation.show');
 Route::get('/tutorials', [App\Http\Controllers\NewHomepage\TutorialController::class, 'index'])->name('tutorials.index');
-Route::get('/tutorials/{id}', [App\Http\Controllers\NewHomepage\TutorialController::class, 'show'])->name('tutorials.show');
 
 // Old homepage route - keeping for backward compatibility
 Route::get('/old-home', function () {

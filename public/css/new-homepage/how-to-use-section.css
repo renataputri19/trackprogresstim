@@ -210,3 +210,15 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ===== DARK THEME OVERRIDES (RENTAK) ===== */
+html.dark .how-to-use-section { background: linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg) 100%); }
+html.dark .how-to-use-subtitle { color: var(--text-muted); }
+html.dark .how-to-use-card { background-color: var(--surface); border-color: var(--border); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5); }
+html.dark .how-to-use-card:hover { box-shadow: 0 20px 25px -5px rgba(0,0,0,0.6); }
+html.dark .how-to-use-card-title { color: var(--text-strong); }
+html.dark .how-to-use-card-description { color: var(--text-muted); }
+html.dark .how-to-use-card-icon { background-color: color-mix(in srgb, var(--brand-400) 15%, transparent); color: var(--brand-300); }
+html.dark .how-to-use-card:hover .how-to-use-card-icon { background-color: var(--brand-500); color: #fff; }
+html.dark .how-to-use-card-link { color: var(--brand-300); }
+html.dark .how-to-use-card-link::after { background-color: var(--brand-400); }
