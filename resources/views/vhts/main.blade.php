@@ -3,7 +3,7 @@
 @section('title', 'Sistem Validasi BAHTERA - RENTAK')
 
 @section('styles')
-<link rel="stylesheet" href="{{ asset('css/new-homepage/bahtera.css') }}">
+<link rel="stylesheet" href="{{ asset('css/new-homepage/bahtera.css') }}?v={{ $rkv }}">
 @endsection
 
 @section('content')

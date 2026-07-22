@@ -52,10 +52,10 @@
     </script>
 
     <!-- RENTAK design system -->
-    <link rel="stylesheet" href="{{ asset('css/new-homepage/rentak-theme.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/new-homepage/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/new-homepage/rentak-theme.css') }}?v={{ $rkv }}">
+    <link rel="stylesheet" href="{{ asset('css/new-homepage/app.css') }}?v={{ $rkv }}">
     <!-- HaloIP page styles -->
-    <link rel="stylesheet" href="{{ asset('css/haloip/haloip.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/haloip/haloip.css') }}?v={{ $rkv }}">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('img/Logo BPS.png') }}">

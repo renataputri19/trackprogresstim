@@ -2,7 +2,7 @@
 @section('title', 'BAHTERA Version 2 - RENTAK')
 
 @section('styles')
-<link rel="stylesheet" href="{{ asset('css/new-homepage/bahtera.css') }}">
+<link rel="stylesheet" href="{{ asset('css/new-homepage/bahtera.css') }}?v={{ $rkv }}">
 @endsection
 
 @section('content')

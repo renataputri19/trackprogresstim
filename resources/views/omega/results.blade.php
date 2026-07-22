@@ -3,7 +3,7 @@
 @section('title', 'OMEGA — Rekapitulasi Suara')
 
 @section('styles')
-    <link rel="stylesheet" href="{{ asset('css/new-homepage/omega.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/new-homepage/omega.css') }}?v={{ $rkv }}">
 @endsection
 
 @section('content')

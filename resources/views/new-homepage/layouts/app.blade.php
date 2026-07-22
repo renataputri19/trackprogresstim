@@ -56,10 +56,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- RENTAK design system -->
-    <link rel="stylesheet" href="{{ asset('css/new-homepage/rentak-theme.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/new-homepage/rentak-theme.css') }}?v={{ $rkv }}">
 
     <!-- Shared page styles -->
-    <link rel="stylesheet" href="{{ asset('css/new-homepage/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/new-homepage/app.css') }}?v={{ $rkv }}">
 
     <!-- Favicon and Social Sharing Images -->
     <link rel="icon" type="image/png" href="{{ asset('img/Logo BPS.png') }}">

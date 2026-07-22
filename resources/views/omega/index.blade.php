@@ -3,7 +3,7 @@
 @section('title', 'OMEGA — Outstanding Member of Great ASN')
 
 @section('styles')
-    <link rel="stylesheet" href="{{ asset('css/new-homepage/omega.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/new-homepage/omega.css') }}?v={{ $rkv }}">
 @endsection
 
 @section('content')

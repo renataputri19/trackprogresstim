@@ -3,7 +3,7 @@
 @section('title', 'Masuk — RENTAK')
 
 @section('styles')
-<link rel="stylesheet" href="{{ asset('css/new-homepage/login.css') }}">
+<link rel="stylesheet" href="{{ asset('css/new-homepage/login.css') }}?v={{ $rkv }}">
 @endsection
 
 @section('content')

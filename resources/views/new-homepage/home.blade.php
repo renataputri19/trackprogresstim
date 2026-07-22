@@ -3,7 +3,7 @@
 @section('title', 'RENTAK — Reformasi dan Integrasi Kinerja')
 
 @section('styles')
-<link rel="stylesheet" href="{{ asset('css/new-homepage/home.css') }}">
+<link rel="stylesheet" href="{{ asset('css/new-homepage/home.css') }}?v={{ $rkv }}">
 @endsection
 
 @php

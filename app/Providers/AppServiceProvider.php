@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\View;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -36,6 +37,22 @@ class AppServiceProvider extends ServiceProvider
         if ($this->shouldForceHttps()) {
             URL::forceScheme('https');
         }
+
+        // Cache-busting version for our static CSS/JS. Docker's `COPY . .`
+        // refreshes file mtimes on every image build, so this value changes each
+        // deploy — appended as ?v=… to asset links so a CDN (Cloudflare) can't
+        // keep serving a stale, modified stylesheet under the same URL.
+        View::share('rkv', $this->assetVersion());
+    }
+
+    /**
+     * A version token that changes on each deploy (mtime of a bundled asset).
+     */
+    protected function assetVersion(): string
+    {
+        $probe = public_path('css/new-homepage/rentak-theme.css');
+
+        return is_file($probe) ? (string) filemtime($probe) : (string) date('YmdHi');
     }
 
     /**

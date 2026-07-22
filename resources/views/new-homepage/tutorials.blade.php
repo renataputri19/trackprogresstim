@@ -3,7 +3,7 @@
 @section('title', 'Tutorial — RENTAK')
 
 @section('styles')
-<link rel="stylesheet" href="{{ asset('css/new-homepage/docs.css') }}">
+<link rel="stylesheet" href="{{ asset('css/new-homepage/docs.css') }}?v={{ $rkv }}">
 @endsection
 
 @section('content')
