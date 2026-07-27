@@ -160,6 +160,9 @@ Route::middleware(['auth'])->group(function () {
     // Rekapitulasi suara — akses dibatasi ke email di config('omega.results_access')
     Route::get('/omega/results', [App\Http\Controllers\OmegaController::class, 'results'])
         ->name('omega.results');
+    // Detail suara: siapa memilih siapa + siapa yang belum memilih
+    Route::get('/omega/results/detail', [App\Http\Controllers\OmegaController::class, 'resultsDetail'])
+        ->name('omega.results.detail');
 
     // Add User (IT staff only) - creating accounts from the welcome dashboard.
     // The it_staff middleware is the real authorization gate; the UI is only hidden.

@@ -649,3 +649,156 @@ html.dark .omega-alert--warn { background: rgba(245,158,11,.12); border-color: r
 
 /* Team status label (ballot + results) */
 html.dark .omega-team-status { color: var(--text-muted); }
+
+/* ==========================================================================
+   v3 — Results tabs, ballot detail table, pending roster
+   These modules are built on RENTAK tokens, so they are dark-aware by default.
+   ========================================================================== */
+
+/* ---- Tabs (Rekapitulasi / Detail) --------------------------------------- */
+.omega-tabs {
+    display: inline-flex; gap: 0.25rem; padding: 0.3rem;
+    border-radius: 14px;
+    background: var(--surface-muted); border: 1px solid var(--border);
+}
+.omega-tab {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    padding: 0.5rem 0.95rem; border-radius: 10px;
+    font-size: 0.85rem; font-weight: 600; color: var(--text-muted);
+    transition: color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+.omega-tab:hover { color: var(--brand-700); }
+.omega-tab.is-active {
+    background: var(--surface); color: var(--brand-700);
+    box-shadow: var(--shadow-xs);
+}
+html.dark .omega-tab:hover,
+html.dark .omega-tab.is-active { color: var(--brand-300); }
+
+/* ---- Toolbar (search + filters) ----------------------------------------- */
+.omega-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; }
+.omega-search { position: relative; flex: 1 1 260px; min-width: 0; }
+.omega-search svg {
+    position: absolute; left: 0.8rem; top: 50%; transform: translateY(-50%);
+    color: var(--text-faint); pointer-events: none;
+}
+.omega-field {
+    width: 100%; padding: 0.62rem 0.9rem; border-radius: 12px;
+    font-size: 0.88rem; color: var(--text-strong);
+    background: var(--surface); border: 1px solid var(--border-strong);
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+.omega-search .omega-field { padding-left: 2.35rem; }
+.omega-field::placeholder { color: var(--text-faint); }
+.omega-field:focus { outline: none; border-color: var(--brand-500); box-shadow: var(--ring-focus); }
+select.omega-field { flex: 0 0 auto; width: auto; min-width: 190px; cursor: pointer; }
+.omega-count { font-size: 0.82rem; color: var(--text-muted); white-space: nowrap; }
+.omega-count b { color: var(--text-strong); }
+
+/* ---- Generic roster avatar ---------------------------------------------- */
+.omega-av {
+    display: grid; place-items: center; flex-shrink: 0;
+    width: 38px; height: 38px; border-radius: 999px;
+    font-size: 0.78rem; font-weight: 700; letter-spacing: 0.01em;
+    color: var(--brand-700);
+    background: color-mix(in srgb, var(--brand-500) 15%, transparent);
+}
+html.dark .omega-av { color: var(--brand-200); background: color-mix(in srgb, var(--brand-400) 18%, transparent); }
+
+/* ---- Ballot detail table ------------------------------------------------ */
+.omega-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border); border-radius: var(--radius-lg);
+    background: var(--surface); box-shadow: var(--shadow-sm);
+}
+.omega-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+.omega-table thead th {
+    padding: 0.8rem 1rem; text-align: left; white-space: nowrap;
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text-muted); background: var(--surface-muted);
+    border-bottom: 1px solid var(--border);
+}
+.omega-table tbody td {
+    padding: 0.85rem 1rem; vertical-align: middle;
+    font-size: 0.88rem; color: var(--text);
+    border-top: 1px solid var(--border);
+}
+.omega-table tbody tr:first-child td { border-top: 0; }
+.omega-table tbody tr { transition: background 0.14s; }
+.omega-table tbody tr:hover { background: var(--surface-hover); }
+.omega-table .omega-idx { width: 3rem; color: var(--text-faint); font-variant-numeric: tabular-nums; }
+.omega-table .omega-when { white-space: nowrap; color: var(--text-muted); font-size: 0.8rem; }
+
+.omega-person { display: flex; align-items: center; gap: 0.7rem; min-width: 0; }
+.omega-person-name { font-weight: 600; color: var(--text-strong); line-height: 1.3; }
+.omega-person-sub { margin-top: 1px; font-size: 0.72rem; color: var(--text-faint); }
+
+/* Pick chips: TEAM -> chosen colleague */
+.omega-picks { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.omega-pick {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    padding: 0.25rem 0.7rem 0.25rem 0.3rem; border-radius: 999px;
+    background: color-mix(in srgb, var(--brand-500) 9%, transparent);
+    border: 1px solid color-mix(in srgb, var(--brand-500) 20%, transparent);
+}
+.omega-pick-team {
+    padding: 2px 7px; border-radius: 999px;
+    font-size: 0.6rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase;
+    color: var(--brand-700); background: var(--surface); border: 1px solid var(--border);
+}
+.omega-pick-name { font-size: 0.8rem; font-weight: 600; color: var(--text-strong); }
+html.dark .omega-pick-team { color: var(--brand-300); background: var(--bg-elevated); }
+
+/* Ballot completeness pill */
+.omega-pill {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    padding: 0.25rem 0.6rem; border-radius: 999px; white-space: nowrap;
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.02em;
+}
+.omega-pill--full { color: #047857; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); }
+.omega-pill--partial { color: #b45309; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.32); }
+html.dark .omega-pill--full { color: #6ee7b7; }
+html.dark .omega-pill--partial { color: #fcd34d; }
+
+/* ---- Pending (belum memilih) -------------------------------------------- */
+.omega-pending-grid { display: grid; gap: 0.7rem; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+.omega-pending {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.75rem 0.9rem; border-radius: 15px;
+    background: rgba(245, 158, 11, 0.07); border: 1px solid rgba(245, 158, 11, 0.28);
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+.omega-pending:hover { transform: translateY(-2px); box-shadow: 0 14px 28px -20px rgba(245, 158, 11, 0.9); }
+.omega-pending .omega-av { color: #b45309; background: rgba(245, 158, 11, 0.18); }
+html.dark .omega-pending { background: rgba(245, 158, 11, 0.09); border-color: rgba(245, 158, 11, 0.24); }
+html.dark .omega-pending .omega-av { color: #fcd34d; background: rgba(245, 158, 11, 0.16); }
+.omega-pending-name { font-size: 0.86rem; font-weight: 600; color: var(--text-strong); line-height: 1.3; }
+.omega-pending-sub { margin-top: 2px; font-size: 0.72rem; color: var(--text-muted); }
+
+/* [hidden] must beat the display rules the classes above set (filter/search). */
+.omega-table tbody tr[hidden],
+.omega-table tbody td[hidden],
+.omega-pick[hidden],
+.omega-pending[hidden] { display: none !important; }
+
+/* ---- Empty state --------------------------------------------------------- */
+.omega-empty {
+    display: none; padding: 2.5rem 1rem; text-align: center;
+    font-size: 0.9rem; color: var(--text-muted);
+}
+.omega-empty.is-shown { display: block; }
+
+/* ---- Responsive: table rows collapse into cards -------------------------- */
+@media (max-width: 767px) {
+    .omega-table-wrap { overflow-x: visible; }
+    .omega-table thead { display: none; }
+    .omega-table tbody tr { display: block; padding: 0.95rem 1rem; border-top: 1px solid var(--border); }
+    .omega-table tbody tr:first-child { border-top: 0; }
+    .omega-table tbody td { display: block; padding: 0.35rem 0; border: 0; }
+    .omega-table .omega-idx { display: none; }
+    .omega-table tbody td[data-label]::before {
+        content: attr(data-label); display: block; margin-bottom: 0.3rem;
+        font-size: 0.62rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
+        color: var(--text-faint);
+    }
+}

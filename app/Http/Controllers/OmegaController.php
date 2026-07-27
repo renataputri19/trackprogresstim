@@ -169,4 +169,95 @@ class OmegaController extends Controller
             'totalPossibleVoters' => count($this->roster->activeMembers()),
         ]);
     }
+
+    /**
+     * Detail suara — siapa memilih siapa, plus daftar pegawai yang belum
+     * memberikan suara. Akses sama dengan halaman rekapitulasi.
+     */
+    public function resultsDetail(Request $request)
+    {
+        abort_unless($this->canViewResults($request->user()), 403);
+
+        $period = $this->roster->period();
+        $votes = OmegaVote::with('user:id,name,email')
+            ->where('period', $period)
+            ->orderBy('id')
+            ->get();
+
+        $activeMembers = $this->roster->activeMembers();
+        // Keep each ballot's chips in the same order as the configured teams.
+        $teamOrder = array_flip($this->roster->teams());
+
+        $voters = [];
+        foreach ($votes->groupBy('voter_name') as $name => $rows) {
+            $expected = $this->roster->teamsFor($name);
+            $account = $rows->first()->user;
+
+            $choices = $rows
+                ->sortBy(fn ($vote) => $teamOrder[$vote->team] ?? PHP_INT_MAX)
+                ->map(fn ($vote) => [
+                    'team' => $vote->team,
+                    'candidate' => $vote->candidate_name,
+                    'initials' => $this->initials($vote->candidate_name),
+                ])
+                ->values()
+                ->all();
+
+            $voters[] = [
+                'name' => $name,
+                'initials' => $this->initials($name),
+                'account' => $account?->name,
+                'email' => $account?->email,
+                'submittedAt' => $rows->first()->created_at,
+                'choices' => $choices,
+                'expected' => count($expected),
+                // A ballot is complete when every team the voter belongs to is filled.
+                'complete' => count($expected) === 0 || count($choices) >= count($expected),
+                'onRoster' => array_key_exists($name, $activeMembers),
+            ];
+        }
+
+        usort($voters, fn ($a, $b) => strnatcasecmp($a['name'], $b['name']));
+
+        $votedNames = array_column($voters, 'name');
+        $pending = [];
+        foreach ($this->roster->activeMemberNames() as $name) {
+            if (in_array($name, $votedNames, true)) {
+                continue;
+            }
+            $pending[] = [
+                'name' => $name,
+                'initials' => $this->initials($name),
+                'teams' => $this->roster->teamsFor($name),
+            ];
+        }
+
+        return view('omega.detail', [
+            'periodLabel' => $this->roster->periodLabel(),
+            'teams' => $this->roster->teams(),
+            'voters' => $voters,
+            'pending' => $pending,
+            'totalVotes' => $votes->count(),
+            'totalVoters' => count($voters),
+            'totalPossibleVoters' => count($activeMembers),
+        ]);
+    }
+
+    /**
+     * Two-letter monogram for a roster name, with academic titles stripped
+     * ("Renata Putri Henessa, S.Tr.Stat." -> "RH").
+     */
+    private function initials(string $name): string
+    {
+        $parts = array_values(array_filter(preg_split('/\s+/', $this->roster->normalize($name)) ?: []));
+
+        if (empty($parts)) {
+            return '?';
+        }
+
+        $first = mb_substr($parts[0], 0, 1);
+        $last = count($parts) > 1 ? mb_substr($parts[count($parts) - 1], 0, 1) : '';
+
+        return mb_strtoupper($first . $last);
+    }
 }

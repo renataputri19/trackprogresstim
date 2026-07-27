@@ -38,11 +38,21 @@
 
     <section class="omega-section omega-tint">
         <div class="container mx-auto px-4">
-            <div class="mb-6 flex items-center justify-between">
+            <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
                 <a href="{{ route('omega.index') }}" class="inline-flex items-center gap-2 text-sm font-semibold text-brand-700 dark:text-brand-300 hover:text-teal-900 dark:hover:text-brand-200">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                     Kembali ke OMEGA
                 </a>
+                <nav class="omega-tabs">
+                    <a href="{{ route('omega.results') }}" class="omega-tab is-active">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="8" rx="1"/><rect x="13" y="6" width="3" height="12" rx="1"/></svg>
+                        Rekapitulasi
+                    </a>
+                    <a href="{{ route('omega.results.detail') }}" class="omega-tab">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="m16 11 2 2 4-4"/></svg>
+                        Detail Pemilih
+                    </a>
+                </nav>
             </div>
 
             @if ($totalVotes === 0)
