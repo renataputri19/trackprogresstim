@@ -35,7 +35,8 @@ RUN npm run build
 ##############################################################################
 # Stage 3 — Runtime image (php-fpm + nginx + supervisor)
 ##############################################################################
-FROM php:8.1-fpm-alpine AS app
+# Pinned to the php2shell fix (CVE-2026-109618/109619); 8.1 gets no fix, hence 8.3
+FROM php:8.3.36-fpm-alpine AS app
 
 # --- System packages + PHP extensions ---------------------------------------
 RUN set -eux; \
