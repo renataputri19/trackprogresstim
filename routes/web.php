@@ -163,6 +163,13 @@ Route::middleware(['auth'])->group(function () {
     // Detail suara: siapa memilih siapa + siapa yang belum memilih
     Route::get('/omega/results/detail', [App\Http\Controllers\OmegaController::class, 'resultsDetail'])
         ->name('omega.results.detail');
+    // Susunan tim per periode: switch tim tiap pegawai (akses sama dengan rekapitulasi)
+    Route::get('/omega/teams', [App\Http\Controllers\OmegaController::class, 'teams'])
+        ->name('omega.teams');
+    Route::post('/omega/teams', [App\Http\Controllers\OmegaController::class, 'saveTeams'])
+        ->name('omega.teams.save');
+    Route::delete('/omega/teams', [App\Http\Controllers\OmegaController::class, 'resetTeams'])
+        ->name('omega.teams.reset');
 
     // Add User (IT staff only) - creating accounts from the welcome dashboard.
     // The it_staff middleware is the real authorization gate; the UI is only hidden.

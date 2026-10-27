@@ -2,14 +2,16 @@
 
 namespace App\Services;
 
+use App\Models\OmegaPeriodRoster;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
 /**
  * OMEGA roster helper.
  *
- * Wraps the static team/member data defined in config/omega.php and provides
- * the lookups the OMEGA voting flow needs: the active voting quarter (derived
+ * Wraps the team/member data — the composition saved for the period on the
+ * "Susunan Tim" page, falling back to config/omega.php — and provides the
+ * lookups the OMEGA voting flow needs: the active voting quarter (derived
  * from today's date), who belongs to which team, matching a logged-in account
  * to a roster name, building a personal ballot, and tallying results.
  */
@@ -37,11 +39,17 @@ class OmegaRoster
         'smat', 'skom', 'me', 'st', 'ssos', 'mts', 'mp', 'mep', 'sstat',
     ];
 
-    /** @var array<string, array<int, string>> name => list of team names */
-    private array $members;
+    /** @var array<string, array<int, string>>|null name => list of team names (null until loaded) */
+    private ?array $members = null;
 
-    /** @var array<int, string> */
-    private array $teams;
+    /** @var array<int, string>|null */
+    private ?array $teams = null;
+
+    /** Period whose team composition is used; null means the active voting period. */
+    private ?string $membershipPeriod = null;
+
+    /** The saved composition in force, or null when config/omega.php is used. */
+    private ?OmegaPeriodRoster $source = null;
 
     /**
      * Leaders may vote in every (or specific) teams but are never candidates.
@@ -52,9 +60,59 @@ class OmegaRoster
 
     public function __construct()
     {
-        $this->teams = array_values(config('omega.teams', []));
-        $this->members = config('omega.members', []);
         $this->leaders = config('omega.leaders', []);
+    }
+
+    /**
+     * A copy of this roster using the team composition in force for $period.
+     * The voting period itself (period(), periodLabel()) is unchanged.
+     */
+    public function forPeriod(string $period): static
+    {
+        $copy = clone $this;
+        $copy->membershipPeriod = $period;
+        $copy->members = null;
+        $copy->teams = null;
+        $copy->source = null;
+
+        return $copy;
+    }
+
+    /**
+     * Load the composition lazily so resolving this service (e.g. when routes
+     * are listed) never touches the database.
+     */
+    private function loadMembership(): void
+    {
+        if ($this->members !== null) {
+            return;
+        }
+
+        $this->source = OmegaPeriodRoster::effectiveFor($this->membershipPeriod ?? $this->period());
+
+        if ($this->source) {
+            $this->teams = array_values($this->source->teams ?? []);
+            $this->members = $this->source->members ?? [];
+        } else {
+            $this->teams = array_values(config('omega.teams', []));
+            $this->members = config('omega.members', []);
+        }
+    }
+
+    /** @return array<string, array<int, string>> name => teams, as stored (leaders not included) */
+    private function members(): array
+    {
+        $this->loadMembership();
+
+        return $this->members;
+    }
+
+    /** The saved composition in force for this roster's period, or null for the config default. */
+    public function source(): ?OmegaPeriodRoster
+    {
+        $this->loadMembership();
+
+        return $this->source;
     }
 
     /** Teams a leader is entitled to vote in. */
@@ -76,7 +134,32 @@ class OmegaRoster
      */
     public function candidateMembers(): array
     {
-        return array_filter($this->members, fn ($teams) => ! empty($teams));
+        return array_filter($this->members(), fn ($teams) => ! empty($teams));
+    }
+
+    /**
+     * Everyone whose teams can be switched on the "Susunan Tim" page,
+     * including employees not in any team. Leaders are configured separately.
+     *
+     * @return array<string, array<int, string>> name => teams, naturally sorted by name
+     */
+    public function editableMembers(): array
+    {
+        $members = array_diff_key($this->members(), $this->leaders);
+        uksort($members, fn ($a, $b) => strnatcasecmp($a, $b));
+
+        return $members;
+    }
+
+    /** @return array<int, string> */
+    public function leaderNames(): array
+    {
+        return array_keys($this->leaders);
+    }
+
+    public function isLeader(string $name): bool
+    {
+        return array_key_exists($name, $this->leaders);
     }
 
     /* ====================================================================
@@ -118,9 +201,43 @@ class OmegaRoster
 
     public function periodLabel(): string
     {
-        $a = $this->activeQuarter();
+        return $this->labelFor($this->period());
+    }
 
-        return 'Triwulan ' . $this->roman($a['q']) . ' ' . $a['year'];
+    /** "2026-Q3" -> "Triwulan III 2026". */
+    public function labelFor(string $period): string
+    {
+        if (! preg_match('/^(\d{4})-Q([1-4])$/', $period, $m)) {
+            return $period;
+        }
+
+        return 'Triwulan ' . $this->roman((int) $m[2]) . ' ' . $m[1];
+    }
+
+    /**
+     * Periods whose team composition can be edited: the one open for voting
+     * and the next one, so a new composition can be prepared ahead of time.
+     *
+     * @return array<int, array{period: string, label: string, isActive: bool}>
+     */
+    public function editablePeriods(): array
+    {
+        $a = $this->activeQuarter();
+        $next = $a['q'] === 4
+            ? ['year' => $a['year'] + 1, 'q' => 1]
+            : ['year' => $a['year'], 'q' => $a['q'] + 1];
+
+        $periods = [];
+        foreach ([$a, $next] as $i => $quarter) {
+            $period = $quarter['year'] . '-Q' . $quarter['q'];
+            $periods[] = [
+                'period' => $period,
+                'label' => $this->labelFor($period),
+                'isActive' => $i === 0,
+            ];
+        }
+
+        return $periods;
     }
 
     /**
@@ -171,6 +288,8 @@ class OmegaRoster
     /** @return array<int, string> */
     public function teams(): array
     {
+        $this->loadMembership();
+
         return $this->teams;
     }
 
@@ -207,7 +326,7 @@ class OmegaRoster
     /** @return array<int, string> teams this person votes in (member teams, or all teams for a leader) */
     public function teamsFor(string $name): array
     {
-        $teams = $this->members[$name] ?? [];
+        $teams = $this->members()[$name] ?? [];
         if (empty($teams) && array_key_exists($name, $this->leaders)) {
             $teams = $this->leaderTeams($name);
         }
@@ -340,7 +459,16 @@ class OmegaRoster
         $byTeam = $votes->groupBy('team');
         $results = [];
 
-        foreach ($this->teams() as $team) {
+        // A team can be dropped from the composition after votes were cast in
+        // it; keep those votes visible instead of silently losing them.
+        $teams = $this->teams();
+        foreach ($byTeam->keys() as $team) {
+            if (! in_array($team, $teams, true)) {
+                $teams[] = $team;
+            }
+        }
+
+        foreach ($teams as $team) {
             $teamVotes = $byTeam->get($team, collect());
             $counts = $teamVotes->groupBy('candidate_name')
                 ->map->count()

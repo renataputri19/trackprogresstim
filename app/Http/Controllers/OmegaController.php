@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\OmegaPeriodRoster;
 use App\Models\OmegaVote;
 use App\Services\OmegaRoster;
 use Illuminate\Database\QueryException;
@@ -16,7 +17,8 @@ class OmegaController extends Controller
 
     /**
      * Only the accounts listed in config('omega.results_access') may view the
-     * recap — this is intentionally NOT tied to the admin flag.
+     * recap and manage team composition — this is intentionally NOT tied to
+     * the admin flag.
      */
     private function canViewResults(?\App\Models\User $user): bool
     {
@@ -241,6 +243,135 @@ class OmegaController extends Controller
             'totalVoters' => count($voters),
             'totalPossibleVoters' => count($activeMembers),
         ]);
+    }
+
+    /**
+     * Susunan Tim — switch which teams each employee belongs to, per period.
+     * Akses sama dengan halaman rekapitulasi.
+     */
+    public function teams(Request $request)
+    {
+        abort_unless($this->canViewResults($request->user()), 403);
+
+        $periods = $this->roster->editablePeriods();
+        $period = (string) $request->query('period', '');
+        if (! in_array($period, array_column($periods, 'period'), true)) {
+            $period = $this->roster->period();
+        }
+
+        $roster = $this->roster->forPeriod($period);
+        $source = $roster->source();
+        $source?->loadMissing('editor:id,name');
+
+        $people = [];
+        foreach ($roster->editableMembers() as $name => $teams) {
+            $people[] = [
+                'name' => $name,
+                'initials' => $this->initials($name),
+                'teams' => $teams,
+            ];
+        }
+
+        return view('omega.teams', [
+            'periods' => $periods,
+            'period' => $period,
+            'periodLabel' => $this->roster->labelFor($period),
+            'isActivePeriod' => $period === $this->roster->period(),
+            'teams' => $roster->teams(),
+            'people' => $people,
+            'leaders' => $roster->leaderNames(),
+            'source' => $source,
+            'sourceLabel' => $source ? $this->roster->labelFor($source->period) : null,
+            'votersInPeriod' => OmegaVote::where('period', $period)->distinct()->count('voter_name'),
+        ]);
+    }
+
+    /**
+     * Save the team composition for one period (it also applies to later
+     * periods until those get their own).
+     */
+    public function saveTeams(Request $request)
+    {
+        abort_unless($this->canViewResults($request->user()), 403);
+
+        $period = $this->editablePeriodFrom($request);
+
+        $request->validate([
+            'teams' => ['required', 'array', 'max:60'],
+            'teams.*' => ['required', 'string', 'max:60'],
+            'people' => ['required', 'array', 'max:300'],
+            'people.*.name' => ['required', 'string', 'max:150'],
+            'people.*.teams' => ['sometimes', 'array'],
+            'people.*.teams.*' => ['string', 'max:60'],
+        ]);
+
+        $squish = fn ($value) => trim(preg_replace('/\s+/u', ' ', (string) $value));
+
+        $teams = [];
+        foreach ((array) $request->input('teams') as $team) {
+            $team = mb_strtoupper($squish($team));
+            if ($team !== '' && ! in_array($team, $teams, true)) {
+                $teams[] = $team;
+            }
+        }
+
+        $members = [];
+        $seen = [];
+        foreach ((array) $request->input('people') as $person) {
+            $name = $squish($person['name'] ?? '');
+            $key = mb_strtolower($name);
+            // Leaders are configured in config/omega.php, not on this page.
+            if ($name === '' || isset($seen[$key]) || $this->roster->isLeader($name)) {
+                continue;
+            }
+            $seen[$key] = true;
+
+            $picked = array_map(fn ($team) => mb_strtoupper($squish($team)), (array) ($person['teams'] ?? []));
+            // Keep each employee's teams in the column order.
+            $members[$name] = array_values(array_filter($teams, fn ($team) => in_array($team, $picked, true)));
+        }
+
+        // A team nobody belongs to is dropped from the composition.
+        $used = array_unique(array_merge(...array_values($members)));
+        $teams = array_values(array_filter($teams, fn ($team) => in_array($team, $used, true)));
+
+        if (empty($teams)) {
+            return back()
+                ->withErrors(['teams' => 'Minimal satu pegawai harus tergabung di satu tim.'])
+                ->withInput();
+        }
+
+        OmegaPeriodRoster::updateOrCreate(
+            ['period' => $period],
+            ['teams' => $teams, 'members' => $members, 'updated_by' => $request->user()->id],
+        );
+
+        return redirect()
+            ->route('omega.teams', ['period' => $period])
+            ->with('omega_success', 'Susunan tim untuk ' . $this->roster->labelFor($period) . ' berhasil disimpan.');
+    }
+
+    /**
+     * Drop a period's own composition so it follows the previous one again.
+     */
+    public function resetTeams(Request $request)
+    {
+        abort_unless($this->canViewResults($request->user()), 403);
+
+        $period = $this->editablePeriodFrom($request);
+        OmegaPeriodRoster::where('period', $period)->delete();
+
+        return redirect()
+            ->route('omega.teams', ['period' => $period])
+            ->with('omega_info', 'Penyesuaian untuk ' . $this->roster->labelFor($period) . ' dihapus. Susunan tim kembali mengikuti periode sebelumnya.');
+    }
+
+    private function editablePeriodFrom(Request $request): string
+    {
+        $period = (string) $request->input('period', '');
+        abort_unless(in_array($period, array_column($this->roster->editablePeriods(), 'period'), true), 422);
+
+        return $period;
     }
 
     /**

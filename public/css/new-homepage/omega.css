@@ -802,3 +802,157 @@ html.dark .omega-pending .omega-av { color: #fcd34d; background: rgba(245, 158, 
         color: var(--text-faint);
     }
 }
+
+/* ==========================================================================
+   v4 — Susunan Tim: per-period team composition with on/off switches
+   Built on RENTAK tokens, so dark-aware by default.
+   ========================================================================== */
+
+/* ---- Period tabs: small status tag next to the label ---------------------- */
+.omega-tab-tag {
+    padding: 2px 7px; border-radius: 999px;
+    font-size: 0.6rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+    color: var(--text-faint); background: var(--surface); border: 1px solid var(--border);
+}
+.omega-tab.is-active .omega-tab-tag {
+    color: var(--brand-700);
+    background: color-mix(in srgb, var(--brand-500) 12%, transparent);
+    border-color: color-mix(in srgb, var(--brand-500) 26%, transparent);
+}
+html.dark .omega-tab.is-active .omega-tab-tag { color: var(--brand-300); }
+
+/* ---- Source note (which composition this period follows) ----------------- */
+.omega-source {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1rem;
+    padding: 0.9rem 1rem; border-radius: 16px;
+    font-size: 0.86rem; color: var(--text);
+    background: var(--surface); border: 1px solid var(--border);
+}
+.omega-source-text { display: flex; align-items: flex-start; gap: 0.65rem; flex: 1 1 320px; min-width: 0; }
+.omega-source-text svg { flex-shrink: 0; margin-top: 2px; color: var(--brand-600); }
+html.dark .omega-source-text svg { color: var(--brand-300); }
+.omega-source b { color: var(--text-strong); }
+
+/* ---- Small buttons ------------------------------------------------------- */
+.omega-btn--sm { padding: 0.6rem 1rem; border-radius: 11px; font-size: 0.85rem; }
+
+/* ---- Matrix: employees x teams ------------------------------------------- */
+.omega-matrix-wrap {
+    position: relative; overflow: auto; overscroll-behavior: contain;
+    max-height: min(72vh, 920px);
+    border: 1px solid var(--border); border-radius: var(--radius-lg);
+    background: var(--surface); box-shadow: var(--shadow-sm);
+}
+.omega-matrix { min-width: 100%; border-collapse: separate; border-spacing: 0; }
+.omega-matrix thead th {
+    position: sticky; top: 0; z-index: 2;
+    padding: 0.75rem 0.5rem; vertical-align: bottom;
+    background: var(--surface-muted); border-bottom: 1px solid var(--border);
+}
+.omega-matrix .omega-mx-person {
+    position: sticky; left: 0; z-index: 1;
+    min-width: 250px; max-width: 290px; padding: 0.55rem 1rem;
+    text-align: left; font-weight: 400;
+    background: var(--surface); border-right: 1px solid var(--border);
+}
+.omega-matrix thead .omega-mx-person {
+    z-index: 3; background: var(--surface-muted);
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text-muted);
+}
+.omega-matrix thead th.omega-mx-team { min-width: 74px; max-width: 104px; padding-left: 0.3rem; padding-right: 0.3rem; text-align: center; }
+.omega-mx-team-name {
+    display: block; line-height: 1.25;
+    font-size: 0.62rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase;
+    color: var(--text-muted);
+}
+.omega-mx-count {
+    display: inline-block; min-width: 1.7rem; margin-top: 0.4rem; padding: 1px 7px; border-radius: 999px;
+    font-size: 0.7rem; font-weight: 700; font-variant-numeric: tabular-nums;
+    color: var(--brand-700); background: color-mix(in srgb, var(--brand-500) 12%, transparent);
+}
+html.dark .omega-mx-count { color: var(--brand-300); }
+
+.omega-matrix tbody th,
+.omega-matrix tbody td { border-top: 1px solid var(--border); }
+.omega-matrix tbody tr:first-child th,
+.omega-matrix tbody tr:first-child td { border-top: 0; }
+.omega-matrix tbody td { padding: 0.35rem 0.3rem; text-align: center; transition: background 0.14s; }
+.omega-matrix tbody tr:hover th,
+.omega-matrix tbody tr:hover td { background: var(--surface-hover); }
+/* Unsaved change */
+.omega-matrix tbody td.is-dirty,
+.omega-matrix tbody tr:hover td.is-dirty { background: rgba(245, 158, 11, 0.12); box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.4); }
+.omega-matrix tbody tr[hidden] { display: none !important; }
+
+.omega-mx-new {
+    display: inline-block; padding: 1px 6px; border-radius: 999px;
+    font-size: 0.58rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase;
+    color: #b45309; background: rgba(245, 158, 11, 0.14);
+}
+html.dark .omega-mx-new { color: #fcd34d; }
+.omega-mx-team .omega-mx-new { margin-top: 0.3rem; }
+.omega-mx-remove {
+    margin-left: 0.25rem; padding: 0; border: 0; background: none; cursor: pointer;
+    font-size: 0.72rem; font-weight: 600; color: #dc2626; text-decoration: underline;
+}
+html.dark .omega-mx-remove { color: #f87171; }
+
+/* ---- Switch -------------------------------------------------------------- */
+.omega-switch { position: relative; display: inline-flex; padding: 6px; border-radius: 999px; cursor: pointer; }
+.omega-switch input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.omega-switch-track {
+    position: relative; display: block; width: 36px; height: 20px; border-radius: 999px;
+    background: var(--border-strong); transition: background 0.16s;
+}
+.omega-switch-track::after {
+    content: ""; position: absolute; top: 2px; left: 2px;
+    width: 16px; height: 16px; border-radius: 999px;
+    background: #fff; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.3);
+    transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.omega-switch input:checked + .omega-switch-track { background: var(--brand-600); }
+.omega-switch input:checked + .omega-switch-track::after { transform: translateX(16px); }
+.omega-switch input:focus-visible + .omega-switch-track { box-shadow: var(--ring-focus); }
+html.dark .omega-switch input:checked + .omega-switch-track { background: var(--brand-500); }
+@media (prefers-reduced-motion: reduce) {
+    .omega-switch-track, .omega-switch-track::after { transition: none; }
+}
+
+/* ---- Add employee / team ------------------------------------------------- */
+.omega-mx-add { display: grid; gap: 0.75rem; margin-top: 1rem; }
+@media (min-width: 768px) { .omega-mx-add { grid-template-columns: 1fr 1fr; } }
+.omega-mx-add-label { display: block; margin-bottom: 0.35rem; font-size: 0.78rem; font-weight: 700; color: var(--text-strong); }
+.omega-mx-add-row { display: flex; gap: 0.5rem; }
+.omega-mx-hint { min-height: 1.1rem; margin-top: 0.3rem; font-size: 0.74rem; color: var(--text-muted); }
+.omega-mx-hint.is-error { color: #dc2626; }
+html.dark .omega-mx-hint.is-error { color: #f87171; }
+
+/* ---- Sticky save bar ----------------------------------------------------- */
+.omega-savebar {
+    position: sticky; bottom: 1rem; z-index: 20;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 0.75rem;
+    margin-top: 1.25rem; padding: 0.75rem 0.85rem 0.75rem 1.1rem; border-radius: 16px;
+    background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-lg);
+}
+.omega-savebar-status { display: flex; align-items: center; gap: 0.55rem; margin-right: auto; font-size: 0.86rem; color: var(--text-muted); }
+.omega-savebar-dot { width: 8px; height: 8px; border-radius: 999px; background: var(--border-strong); }
+.omega-savebar.is-dirty .omega-savebar-status { font-weight: 600; color: var(--text-strong); }
+.omega-savebar.is-dirty .omega-savebar-dot { background: #f59e0b; box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.18); }
+
+/* ---- Leaders note -------------------------------------------------------- */
+.omega-leaders { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; font-size: 0.8rem; color: var(--text-muted); }
+.omega-leaders .omega-pick { padding: 0.25rem 0.7rem; }
+
+/* ---- Phones: tabs share the row, slimmer name column -------------------- */
+@media (max-width: 639px) {
+    .omega-tabs { display: flex; width: 100%; }
+    .omega-tab { flex: 1 1 0; justify-content: center; padding: 0.5rem 0.4rem; font-size: 0.8rem; text-align: center; }
+    .omega-tab > svg { display: none; }
+
+    .omega-matrix .omega-mx-person { min-width: 150px; max-width: 170px; padding: 0.5rem 0.7rem; }
+    .omega-matrix .omega-mx-person .omega-av { display: none; }
+    .omega-matrix .omega-person-name { font-size: 0.8rem; }
+
+    .omega-savebar .omega-btn { flex: 1 1 auto; justify-content: center; }
+}

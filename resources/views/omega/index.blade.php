@@ -242,10 +242,14 @@
                 @endif
 
                 @if ($canViewResults)
-                    <div class="mt-8 text-center">
+                    <div class="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
                         <a href="{{ route('omega.results') }}" class="inline-flex items-center gap-2 text-sm font-semibold text-brand-700 dark:text-brand-300 hover:text-teal-900 dark:hover:text-brand-200">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect width="4" height="7" x="7" y="10"/><rect width="4" height="12" x="15" y="5"/></svg>
                             Lihat Rekapitulasi Suara
+                        </a>
+                        <a href="{{ route('omega.teams') }}" class="inline-flex items-center gap-2 text-sm font-semibold text-brand-700 dark:text-brand-300 hover:text-teal-900 dark:hover:text-brand-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="12" x="2" y="6" rx="6"/><circle cx="16" cy="12" r="2"/></svg>
+                            Atur Susunan Tim
                         </a>
                     </div>
                 @endif

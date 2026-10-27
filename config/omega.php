@@ -12,9 +12,10 @@
 | "Tim 2026.xlsx". Setiap pegawai adalah anggota dari sebuah tim jika sel
 | tim tersebut tidak kosong (baik bernilai "1" maupun label peran).
 |
-| Suara (votes) disimpan di tabel `omega_votes`. Roster ini adalah sumber
-| kebenaran untuk keanggotaan tim — cukup ubah array di bawah bila susunan
-| tim berubah untuk triwulan berikutnya.
+| Suara (votes) disimpan di tabel `omega_votes`. Roster di bawah adalah
+| susunan AWAL. Bila susunan tim berubah, ubah lewat halaman Susunan Tim
+| (/omega/teams) — disimpan per triwulan di tabel `omega_period_rosters`
+| dan berlaku sampai diubah lagi. Roster ini dipakai bila belum ada.
 |
 */
 
@@ -120,7 +121,8 @@ return [
     ],
 
     /*
-     | Siapa yang boleh membuka halaman Rekapitulasi Suara (/omega/results).
+     | Siapa yang boleh membuka halaman Rekapitulasi Suara (/omega/results)
+     | dan mengatur Susunan Tim (/omega/teams).
      | Hanya email di daftar ini yang dapat mengakses — bukan semua admin.
      | Tambahkan email lain di sini bila perlu.
      */
