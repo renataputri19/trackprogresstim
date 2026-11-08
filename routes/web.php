@@ -176,6 +176,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/users', [App\Http\Controllers\UserManagementController::class, 'store'])
         ->middleware('it_staff')
         ->name('users.store');
+    // Reset a user's password (IT staff only) - no old password needed.
+    Route::put('/users/password', [App\Http\Controllers\UserManagementController::class, 'updatePassword'])
+        ->middleware('it_staff')
+        ->name('users.password.update');
 
     // Padamu Negeri: set selected year in session
     Route::post('/padamunegri/set-year', function (Request $request) {

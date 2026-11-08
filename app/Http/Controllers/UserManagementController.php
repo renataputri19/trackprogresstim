@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
@@ -76,5 +77,38 @@ class UserManagementController extends Controller
             ->route('welcome')
             // Blade's {{ }} escapes on output, so pass the raw name (no double-encoding).
             ->with('user_created', 'Pengguna "' . trim($validated['name']) . '" berhasil ditambahkan.');
+    }
+
+    /**
+     * Set a new password for any user, e.g. one who forgot theirs.
+     *
+     * IT staff pick the user and type the new password; the old password is
+     * not required. Errors go to their own bag so they reopen the
+     * "Ubah Password" tab instead of the add-user form.
+     */
+    public function updatePassword(Request $request)
+    {
+        $validated = $request->validateWithBag('resetPassword', [
+            'user_id' => ['required', 'integer', Rule::exists('users', 'id')],
+            'password' => ['required', 'confirmed', Password::defaults()],
+        ], [
+            'user_id.required' => 'Pilih pengguna yang akan diubah passwordnya.',
+            'user_id.integer' => 'Pengguna tidak ditemukan.',
+            'user_id.exists' => 'Pengguna tidak ditemukan.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+        ]);
+
+        $user = User::findOrFail($validated['user_id']);
+
+        // Rotating the remember token also ends any "remember me" logins
+        // made with the old password. forceFill: it is not mass assignable.
+        $user->forceFill([
+            'password' => Hash::make($validated['password']),
+            'remember_token' => Str::random(60),
+        ])->save();
+
+        return redirect()
+            ->route('welcome')
+            ->with('user_password_reset', 'Password untuk "' . $user->name . '" berhasil diubah.');
     }
 }

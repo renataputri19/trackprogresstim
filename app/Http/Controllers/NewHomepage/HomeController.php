@@ -220,9 +220,15 @@ class HomeController extends Controller
             $userTim = $userAssignment?->tim ?? null;
         }
 
+        // IT staff pick from this list in the "Ubah Password" tab.
+        $managedUsers = $user->is_it_staff
+            ? \App\Models\User::orderBy('name')->get(['id', 'name', 'email'])
+            : collect();
+
         return view('new-homepage.dashboard', compact(
             'user',
-            'userTim'
+            'userTim',
+            'managedUsers'
         ));
     }
 
